@@ -11,7 +11,9 @@ springboot + jetty + springdatajpa
 
 
 e.g 
-请求地址（可配置）：http://localhost:16089/aixapigateway/api/v1/manageclient/cmd_10010?factoryid=zav6f0t3w6fwz9u85remvqxkduo99tjj&factorysecretkey=3fpjfimcp2iybd6h4l30c1kpvjzfcipg
+![eg1](https://github.com/SummerWindL/imgrepository/blob/master/platform-aix/application-json.png) 
+
+请求地址（可配置）：```http://localhost:16089/aixapigateway/api/v1/manageclient/cmd_10010factoryid=zav6f0t3w6fwz9u85remvqxkduo99tjj&factorysecretkey=3fpjfimcp2iybd6h4l30c1kpvjzfcipg```
 
 数据请求采用Web  Post请求的方式,上传和回应数据为JSON格式，在接收页面处理上传的数据即可
 

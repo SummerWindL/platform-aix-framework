@@ -1,0 +1,19 @@
+
+logging:
+  file: logs/platform-aix-gateway.log
+  level:
+    root: INFO
+    com:
+      ikinloop: DEBUG
+    org:
+      springframework:
+        data:
+          mongodb:
+            core: WARN
+
+spring:
+  main:
+    allow-bean-definition-overriding: true # 存在repo相同的情况 原phis的存储过程与aigw重名
+  profiles:
+    active:
+    - dev

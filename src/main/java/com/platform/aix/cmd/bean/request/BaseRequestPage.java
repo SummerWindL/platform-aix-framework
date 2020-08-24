@@ -1,6 +1,6 @@
 package com.platform.aix.cmd.bean.request;
 
-import com.ikinloop.common.enumeration.EnumCountflagType;
+import com.platform.common.enumeration.EnumCountflagType;
 import lombok.Getter;
 import lombok.ToString;
 

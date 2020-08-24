@@ -1,6 +1,6 @@
 package com.platform.aix.common.validator;
 
-import com.ikinloop.common.validator.Validator;
+import com.platform.common.validator.Validator;
 import org.springframework.util.StringUtils;
 
 /**

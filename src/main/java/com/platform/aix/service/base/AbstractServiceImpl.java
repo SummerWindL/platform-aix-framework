@@ -1,8 +1,8 @@
 package com.platform.aix.service.base;
 
-import com.ikinloop.common.util.JsonAdaptor;
 import com.platform.aix.common.exception.BIZException;
 import com.platform.aix.common.response.enums.ResponseResult;
+import com.platform.aix.common.util.JsonAdaptor;
 import com.platform.repo.pg.model.base.BasePlpgsqlModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

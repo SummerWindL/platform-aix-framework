@@ -5,7 +5,7 @@
 
 springboot + jetty + springdatajpa
 
-使用的
+若启动存在异常多半是包依赖的问题，去到对应的目录删除包重新maven update就好
 
 可自行实现业务逻辑
 

@@ -254,5 +254,5 @@ application/x-www-form-urlencoded
 ## Future
 - [x] 基础调用
 - [ ] 动态返回结构 目前只有IBaseHandler接口
-- [ ] 接口限流处理
+- [x] 接口限流处理
 - [ ] 请求权限控制

@@ -1,6 +1,8 @@
 package com.platform.aix.cmd.cmd10010;
 
 import com.platform.aix.cmd.bean.request.BaseRequest;
+import com.platform.aix.common.annotation.Access;
+import com.platform.aix.common.annotation.AccessLimit;
 import com.platform.aix.common.constants.Constants;
 import com.platform.aix.common.exception.BIZException;
 import com.platform.aix.common.handler.base.CommandSonkaExtHandler;
@@ -20,6 +22,7 @@ import java.util.List;
  * @author: fuyl
  * @create: 2020-08-24 15:26
  **/
+@Access
 @Controller(Constants.MANAGE_CLIENT_REQ_URL+"/cmd_10010")
 public class Cmd10010Handler extends CommandSonkaExtHandler {
 
@@ -34,6 +37,7 @@ public class Cmd10010Handler extends CommandSonkaExtHandler {
     }
 
     @Override
+    @AccessLimit(limit = 1,sec = 10) //该接口访问限制 10秒一次
     public <T> T execute(BaseRequest request) throws BIZException, IOException {
         Cmd10010Req req = (Cmd10010Req) request;
         //1.初始化 member 信息

@@ -9,6 +9,7 @@ import com.platform.aix.common.annotation.DisableCheckAuthHeader;
 import com.platform.aix.common.annotation.FileUploadFunction;
 import com.platform.aix.common.constants.Constants;
 import com.platform.aix.common.handler.base.IBaseHandler;
+import com.platform.aix.common.interceptor.AccessLimitInterceptors;
 import com.platform.aix.common.request.CheckSign;
 import com.platform.aix.common.request.RequestAuthHeaderCheckor;
 import com.platform.aix.common.response.ZxApiResponse;
@@ -35,6 +36,7 @@ public class HandlerRequestRunnable implements Runnable {
 
     private final RequestAuthHeaderCheckor authCheckor = AppService.getBean("requestAuthHeaderCheckor");
     private JsonAdaptor mapper = AppService.getBean("jsonAdaptor");
+    private AccessLimitInterceptors accessInterceptor = AppService.getBean("accessLimitInterceptors");
     private ApisPorperties apisPorperties = AppService.getBean("apisPorperties");
 
     public HandlerRequestRunnable(Continuation continuation, HttpServletRequest servlet) {
@@ -64,7 +66,7 @@ public class HandlerRequestRunnable implements Runnable {
 
                 // 1.验证请求协议
                 if (!uri.startsWith(Constants.COMMON_REQ_URL)) {
-                    response = new ZxApiResponse(ResponseResult.HTTP_ERROR_UNSURPORT_PROTO_VER);
+                    response = new ZxApiResponse(ZxResponseResult.HTTP_ERROR_UNSURPORT_PROTO_VER);
                     return;
                 }
 
@@ -81,7 +83,15 @@ public class HandlerRequestRunnable implements Runnable {
                 IBaseHandler handler = AppService.getBean(uri);
 
                 if (handler == null) {
-                    response = new ZxApiResponse(ResponseResult.HTTP_ERROR_INVALID_REQUEST);
+                    response = new ZxApiResponse(ZxResponseResult.HTTP_ERROR_INVALID_REQUEST);
+                    return;
+                }
+                /**
+                 * 限流处理
+                 * eg. 某个接口限制 10秒访问一次
+                 */
+                if(!accessInterceptor.accessLimitInterceptor(servlet,response,handler)){
+                    response = new ZxApiResponse(ZxResponseResult.HTTP_ACCESS_FREQUENCY);
                     return;
                 }
 
@@ -111,27 +121,28 @@ public class HandlerRequestRunnable implements Runnable {
 
                 }
 
+                //赋值
+                params = zxHttpRequest.getParams();
+                factoryid = zxHttpRequest.getFactoryid();
+                factorysecretkey = zxHttpRequest.getFactorysecretkey();
                 // 4、没有DisableCheckAuthHeader注解的handler，需要验证签名和auth头
                 if (AopUtils.getTargetClass(handler).getAnnotation(DisableCheckAuthHeader.class) == null) {
                     // 1.验证请求参数
                     if (StringUtils.isEmpty(zxHttpRequest.getFactoryid()) || StringUtils.isEmpty(zxHttpRequest.getFactorysecretkey()) || StringUtils.isEmpty(zxHttpRequest.getParams())) {
-                        response = new ZxApiResponse(ResponseResult.HTTP_ERROR_INVALID_PARAM);
+                        response = new ZxApiResponse(ZxResponseResult.HTTP_ERROR_INVALID_PARAM);
                         return;
                     }
 
                     // 2.校验签名信息
                     if (!CheckSign.checkFactoryAuth(zxHttpRequest.getFactoryid(), zxHttpRequest.getFactorysecretkey())) {
-                        response = new ZxApiResponse(ResponseResult.HTTP_ERROR_INVALID_AUTH);
+                        response = new ZxApiResponse(ZxResponseResult.HTTP_ERROR_INVALID_AUTH);
                         return;
                     }
 
 
                 }
 
-                //赋值
-                params = zxHttpRequest.getParams();
-                factoryid = zxHttpRequest.getFactoryid();
-                factorysecretkey = zxHttpRequest.getFactorysecretkey();
+
                 if(!params.contains("factoryid")){
                     //为没有factoryid的请求附上factoryid
 
@@ -144,7 +155,7 @@ public class HandlerRequestRunnable implements Runnable {
                 BaseRequest request = mapper.readValue(params, handler.getRequestClass());
                 // 请求参数params不能为空
                 if (request == null) {
-                    response = new ZxApiResponse(ResponseResult.HTTP_ERROR_INVALID_PARAM);
+                    response = new ZxApiResponse(ZxResponseResult.HTTP_ERROR_INVALID_PARAM);
                     return;
                 }
 
@@ -156,13 +167,13 @@ public class HandlerRequestRunnable implements Runnable {
 
             } catch (JsonMappingException e) {
                 log.error(e.getMessage(), e);
-                response = new ZxApiResponse(ResponseResult.HTTP_ERROR_PARSE_JSON);
+                response = new ZxApiResponse(ZxResponseResult.HTTP_ERROR_PARSE_JSON);
             } catch (JsonParseException e) {
                 log.error(e.getMessage(), e);
-                response = new ZxApiResponse(ResponseResult.HTTP_ERROR_PARSE_JSON);
+                response = new ZxApiResponse(ZxResponseResult.HTTP_ERROR_PARSE_JSON);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
-                response = new ZxApiResponse(ResponseResult.COMMON_ERROR_EXCEPTION);
+                response = new ZxApiResponse(ZxResponseResult.COMMON_ERROR_EXCEPTION);
             } finally {
 
                 // APIResponse转成json格式字符串
@@ -170,7 +181,7 @@ public class HandlerRequestRunnable implements Runnable {
                     resp = mapper.writeValueAsString(response);
                 } catch (JsonProcessingException e) {
                     // TODO Auto-generated catch block
-                    response = new ZxApiResponse(ResponseResult.HTTP_ERROR_PARSE_JSON);
+                    response = new ZxApiResponse(ZxResponseResult.HTTP_ERROR_PARSE_JSON);
                     log.error(e.getMessage(), e);
                 }
 

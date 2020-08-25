@@ -77,6 +77,17 @@
             <scope>provided</scope>
         </dependency>
 
+        <!--内部依赖-->
+        <dependency>
+            <groupId>com.lemon</groupId>
+            <artifactId>platform-common-util</artifactId>
+            <version>0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.cluster</groupId>
+            <artifactId>redis-platform</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
         <!-- json -->
         <dependency>
             <groupId>com.alibaba</groupId>

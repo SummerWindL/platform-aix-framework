@@ -22,6 +22,7 @@ public enum ZxResponseResult {
 
     // ++++++++++++++++++HTTP 通讯协议错误+++++++++++++++++++++++
     HTTP_ERROR("false", "HTTP错误"),
+    HTTP_ACCESS_FREQUENCY("false", "请求太频繁"),
     HTTP_ERROR_INVALID_REQUEST("false", "请求命令无效"),
     HTTP_ERROR_INVALID_PARAM("false", "参数不正确"),
     HTTP_ERROR_INVALID_SIGN("false", "签名无效"),

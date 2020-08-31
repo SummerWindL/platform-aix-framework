@@ -4,6 +4,7 @@ import cn.hutool.core.exceptions.ExceptionUtil;
 import com.platform.aix.common.handler.HttpHandler;
 import com.platform.aix.config.ApisPorperties;
 import com.platform.aix.config.ApisServer;
+import com.platform.aix.service.base.ServiceThreadManagerRunner;
 import org.eclipse.jetty.server.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +25,8 @@ public class ServerRunner implements ApplicationRunner {
 
     @Autowired
     private ApisPorperties apisPorperties;
-
+    @Autowired
+    private ServiceThreadManagerRunner serviceThreadManagerRunner;
 
     @Override
     public void run(ApplicationArguments var1) throws Exception {
@@ -40,6 +42,7 @@ public class ServerRunner implements ApplicationRunner {
         server.setHandler(new HttpHandler(executorService));
         try {
             server.start();
+            serviceThreadManagerRunner.submit();
             LOGGER.info("--------服务启动成功 Listen: {}, Thread count: {} -------- ", port, threadCount);
 
             //server.join();

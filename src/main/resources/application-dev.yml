@@ -6,7 +6,7 @@ spring:
     # 使用阿里的Druid连接池
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://192.168.9.201:5432/mb_dev_v3.5?stringtype=unspecified&currentSchema=aigw
+    url: jdbc:postgresql://192.168.3.21:5432/cluster?stringtype=unspecified&currentSchema=aix
     username: postgres
     password: 123456
     druid:

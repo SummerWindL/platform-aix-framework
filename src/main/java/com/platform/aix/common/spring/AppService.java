@@ -1,5 +1,6 @@
 package com.platform.aix.common.spring;
 
+import com.platform.aix.config.ServiceBeanConfig;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
@@ -49,6 +50,8 @@ public class AppService implements ApplicationContextAware {
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         AppService.context = applicationContext;
+        //启动时就获取 直接获取可能存在问题
+        ServiceBeanConfig.dataSource = AppService.getBean("dataSource");
     }
 
 }

@@ -257,3 +257,7 @@ application/x-www-form-urlencoded
 - [ ] 动态返回结构 目前只有IBaseHandler接口
 - [x] 接口限流处理
 - [ ] 请求权限控制
+- [x] 数据库通知Java pg_notify 
+---
+可参考 [在PostgreSQL触发器函数中使用pg_notify](http://www.voidcn.com/article/p-kpomgajq-bts.html)
+[!官方Listen/Notify](https://jdbc.postgresql.org/documentation/81/listennotify.html) 

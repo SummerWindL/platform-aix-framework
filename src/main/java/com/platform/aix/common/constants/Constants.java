@@ -70,6 +70,16 @@ public class Constants {
     public static final String DESTINATION_SS_INSPECTION_DATA_UPDATE = "ss_inspection_data_update";
 
 
-
+    /**
+     * PostgreSQL Notify
+     */
+    public static final int POSTGRES_NOTIFY_SUCCESS = 1;
+    public static final int POSTGRES_NOTIFY_FAILURE = 0;
+    public static final String POSTGRES_DESTINATION = "mymessage";
+    public static final String POSTGRES_DESTINATION_ALERT_INSPECTION = "alert_notification";
+    public static final String POSTGRES_DESTINATION_SSINFO_INSPECTION = "ssinfo_notification";
+    public static final String POSTGRES_DESTINATION_INSPECTION_INSPECTION = "inspection_notification";
+    public static final String POSTGRES_DESTINATION_SF_INSPECTION = "sf_notification";
+    public static final String POSTGRES_DESTINATION_GY_INSPECTION = "gy_notification";
 
 }

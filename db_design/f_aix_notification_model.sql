@@ -26,7 +26,7 @@ begin
 	
 	perform pg_notify(in_destination,in_params);
 	--插入消息发送记录表
-	insert into t_pg_notification_send_log values (zxuuid(),in_functionname,in_destination,in_params::jsonb,now());
+	insert into t_pg_notification_send_log values (aixuuid(),in_functionname,in_destination,in_params::jsonb,now());
 	retcode := 0;
 	retvalue := '{"error_msg":"success"}';
 	

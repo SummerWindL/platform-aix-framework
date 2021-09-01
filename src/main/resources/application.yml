@@ -1,6 +1,6 @@
 
 logging:
-  file: logs/platform-aix-gateway.log
+  file: logs/platform-aix-framework.log
   level:
     root: INFO
     com:

@@ -78,7 +78,7 @@ declare
 v_cnt numeric default 0;
 v_rec record ;
 begin 
-	select * into v_rec from f_zx_notification_model('f_test_pg_notify','alert_notification','{"notifyno":"cmd_4060001", "notifytype" :"update","notifyparam":{"disecode":"xxx","disename":"xxxx"}}');
+	select * into v_rec from f_aix_notification_model('f_test_pg_notify','alert_notification','{"notifyno":"cmd_4060001", "notifytype" :"update","notifyparam":{"disecode":"xxx","disename":"xxxx"}}');
 	-- 处理返回结果
 	retcode := v_rec.retcode;
 	retvalue := v_rec.retvalue;
@@ -104,7 +104,7 @@ declare
 v_cnt numeric default 0;
 v_rec record ;
 begin 
-	select * into v_rec from f_zx_notification_model('f_test_pg_notify1','ssinfo_notification','{"notifyno":"cmd_4060002", "notifytype" :"update","notifyparam":{"disecode":"xxx","disename":"xxxx"}}');
+	select * into v_rec from f_aix_notification_model('f_test_pg_notify1','ssinfo_notification','{"notifyno":"cmd_4060002", "notifytype" :"update","notifyparam":{"disecode":"xxx","disename":"xxxx"}}');
 	-- 处理返回结果
 	retcode := v_rec.retcode;
 	retvalue := v_rec.retvalue;

@@ -5,6 +5,7 @@ import com.platform.aix.common.notify.impl.PostgresNotificationListener;
 import org.springframework.stereotype.Service;
 
 import static com.platform.aix.common.constants.Constants.POSTGRES_DESTINATION;
+import static com.platform.aix.common.constants.Constants.POSTGRES_DESTINATION_ALERT_INSPECTION;
 
 /**
  * @ClassName PgNotifyMessageAccepter
@@ -20,7 +21,7 @@ public class PgNotifyMessageAccepter implements Runnable {
 
     public void startPgNotificationListener(){
         StaticLog.info("\n-------- PgNotifyMessageAccepter [数据库XX通知服务] start --------");
-        pgNotificationListener = new PostgresNotificationListener(POSTGRES_DESTINATION);
+        pgNotificationListener = new PostgresNotificationListener(POSTGRES_DESTINATION_ALERT_INSPECTION);
         if(pgNotificationListener != null){
             //1.启动监听目标线程
             pgNotificationListener.startListener();

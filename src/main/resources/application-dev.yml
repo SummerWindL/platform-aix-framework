@@ -54,10 +54,10 @@ spring:
         login-password: 123456
   redis:
     database: 0
-    host: 192.168.9.201
+    host: 192.168.79.130
 #    host: 114.55.11.51
     port: 6379
-    password: redis
+    password: 123456
     pool:
       max-active: 8
       max-wait: -1

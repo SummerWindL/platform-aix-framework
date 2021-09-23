@@ -1,6 +1,6 @@
 
 logging:
-  file: logs/platform-aix-gateway.log
+  file: logs/platform-aix-framework.log
   level:
     root: INFO
     com:
@@ -16,4 +16,4 @@ spring:
     allow-bean-definition-overriding: true # 存在repo相同的情况 原phis的存储过程与aigw重名
   profiles:
     active:
-    - dev
+      - dev

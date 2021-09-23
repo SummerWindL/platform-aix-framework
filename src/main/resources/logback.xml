@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="false" scan="true" scanPeriod="1 seconds">
 
-    <property name="serviceName" value="platform-aix-gateway" />
-    <contextName>platform-aix-gateway</contextName>
+    <property name="serviceName" value="platform-aix-framework" />
+    <contextName>platform-aix-framework</contextName>
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>

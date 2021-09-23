@@ -52,6 +52,7 @@ public class PostgresNotificationImpl implements Runnable {
             selectStatement = conn.createStatement();
             selectStatement.execute("LISTEN "+target);
             selectStatement.close();
+            log.info("初始化数据库监听地址成功：{}",target);
         } catch (SQLException e) {
             log.error("初始化监听地址失败：{}",e.getMessage());
             e.printStackTrace();

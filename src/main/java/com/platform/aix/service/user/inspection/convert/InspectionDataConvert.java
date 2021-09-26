@@ -20,7 +20,7 @@ import java.util.List;
 import static com.platform.aix.service.user.inspection.adapter.InspectionAdapter.filterInspectionItem;
 
 /**
- * @description: 双佳数据转换为竹信检测记录插入检测表中
+ * @description: 双佳数据转换为检测记录插入检测表中
  * @author: fuyl
  * @create: 2020-08-21 14:09
  **/
@@ -93,7 +93,7 @@ public class InspectionDataConvert extends MemberService {
             return new ArrayList<InspectionDatas>();
         }
         List<InspectionDatas> list = new ArrayList<>();
-        //尿潜血  竹信这三项是定性数据 双佳定量数据 暂时不上传这个数据
+        //尿潜血  这三项是定性数据 双佳定量数据 暂时不上传这个数据
         /*DictInspectionBean bldBean = filterInspectionItem(EnumSonka2ZxInspection.E00038);
         String bld = String.valueOf(urinalysis.get("BLD"));
         list.add(commonConstructorInspectionDatas(bldBean.getInspectionitemcode(),bldBean.getInspectionitemname()
@@ -676,10 +676,10 @@ public class InspectionDataConvert extends MemberService {
         }
         List<InspectionDatas> list = new ArrayList<>();
 
-        //1. 获取竹信身高实例
+        //1. 获取身高实例
         DictInspectionBean heightBean = filterInspectionItem(EnumSonka2ZxInspection.E00001);
 
-        //2. 组装竹信身高结构体
+        //2. 组装身高结构体
         String ht = (String) height.get("Height");
         list.add(commonConstructorInspectionDatas(heightBean.getInspectionitemcode()
                 ,heightBean.getInspectionitemname(),heightBean.getInspectionsubitemcode(),heightBean.getInspectionsubitemname(),

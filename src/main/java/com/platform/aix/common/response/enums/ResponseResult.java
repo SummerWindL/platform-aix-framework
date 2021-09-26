@@ -57,7 +57,8 @@ public enum ResponseResult {
     HTTP_ERROR_UNSURPORT_PROTO_VER(-4007, "不支持的协议版本"),
     HTTP_ERROR_URL_ENCODE_ERROR(-4008, "URL编码错误"),
     HTTP_ERROR_WRITE_JSON(-4009, "生成JSON失败"),
-    HTTP_ERROR_INVALID_AUTH(-4003, "非法的权限"),
+    HTTP_ERROR_INVALID_AUTH(-4010, "非法的权限"),
+    HTTP_ACCESS_FREQUENCY(-4011, "请求太频繁"),
 
     // ++++++++++++++++++HTTP 通讯协议上传文件错误+++++++++++++++++++++++
     HTTP_ERROR_UPLOAD_FILE_EMPTY(-5000, "上传文件为空"),

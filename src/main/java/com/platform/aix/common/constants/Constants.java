@@ -35,6 +35,11 @@ public class Constants {
     public static final String MANAGE_CLIENT_REQ_URL = COMMON_REQ_URL + "/manageclient";
 
     /**
+     * aix平台访问路径
+     */
+    public static final String CLIENT_REQ_URL = "/aixapiplatform/api/v1";
+
+    /**
      * 验证码过期时间 ，默认10分钟
      */
     public static final long USER_CHECK_CODE_EXPIRED = 10 * 60 * 1000;

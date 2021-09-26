@@ -5,7 +5,6 @@ import com.platform.aix.cmd.bean.request.BaseRequest;
 import com.platform.aix.common.annotation.Access;
 import com.platform.aix.common.annotation.AccessLimit;
 import com.platform.aix.common.handler.base.IBaseHandler;
-import com.platform.aix.common.response.ZxApiResponse;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,11 +28,10 @@ public class AccessLimitInterceptors {
     /**
      * 拦截所有请求
      * @param request
-     * @param response
      * @param handler
      * @return
      */
-    public boolean accessLimitInterceptor(HttpServletRequest request , ZxApiResponse response, IBaseHandler handler) throws NoSuchMethodException {
+    public boolean accessLimitInterceptor(HttpServletRequest request , IBaseHandler handler) throws NoSuchMethodException {
         if (AopUtils.getTargetClass(handler).getAnnotation(Access.class)!=null) {
             Method method = handler.getClass().getMethod("execute", BaseRequest.class);
             if (!method.isAnnotationPresent(AccessLimit.class)) {

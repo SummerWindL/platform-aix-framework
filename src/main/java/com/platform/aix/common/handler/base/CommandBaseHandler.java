@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @description: 竹信统一返回结构体
+ * @description: AIX统一返回结构体
  * @author: fuyl
  * @create: 2020-08-24 10:47
  **/

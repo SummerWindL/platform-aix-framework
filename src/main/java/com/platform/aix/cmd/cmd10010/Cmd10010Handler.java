@@ -3,6 +3,7 @@ package com.platform.aix.cmd.cmd10010;
 import com.platform.aix.cmd.bean.request.BaseRequest;
 import com.platform.aix.common.annotation.Access;
 import com.platform.aix.common.annotation.AccessLimit;
+import com.platform.aix.common.annotation.DisableCheckAuthHeader;
 import com.platform.aix.common.constants.Constants;
 import com.platform.aix.common.exception.BIZException;
 import com.platform.aix.common.handler.base.CommandSonkaExtHandler;
@@ -23,7 +24,8 @@ import java.util.List;
  * @create: 2020-08-24 15:26
  **/
 @Access
-@Controller(Constants.MANAGE_CLIENT_REQ_URL+"/cmd_10010")
+@Controller(Constants.CLIENT_REQ_URL+"/cmd_10010")
+@DisableCheckAuthHeader
 public class Cmd10010Handler extends CommandSonkaExtHandler {
 
 //    @Autowired

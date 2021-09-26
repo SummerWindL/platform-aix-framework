@@ -14,7 +14,7 @@ public class CheckSign {
         // 计算签名
         signStr = DigestUtils.md5Hex(signStr.getBytes());
 
-        // 返回签名是否争取
+        // 返回签名是否正确
         return signStr.equals(sign) ? true : false;
     }
 

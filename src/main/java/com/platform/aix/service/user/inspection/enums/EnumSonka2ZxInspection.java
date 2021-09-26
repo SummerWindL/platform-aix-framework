@@ -1,7 +1,7 @@
 package com.platform.aix.service.user.inspection.enums;
 
 /**
- * @description: key为双佳叶子节点字段名称 value为竹信inspectionindexname 映射
+ * @description: key为双佳叶子节点字段名称 value为 inspectionindexname 映射
  * @author: fuyl
  * @create: 2020-08-20 20:09
  **/

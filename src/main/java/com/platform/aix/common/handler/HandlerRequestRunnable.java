@@ -12,9 +12,10 @@ import com.platform.aix.common.handler.base.IBaseHandler;
 import com.platform.aix.common.interceptor.AccessLimitInterceptors;
 import com.platform.aix.common.request.CheckSign;
 import com.platform.aix.common.request.RequestAuthHeaderCheckor;
+import com.platform.aix.common.response.APIResponse;
 import com.platform.aix.common.response.ZxApiResponse;
 import com.platform.aix.common.response.enums.ResponseResult;
-import com.platform.aix.common.response.enums.ZxResponseResult;
+import com.platform.aix.common.response.enums.ResponseResult;
 import com.platform.aix.common.spring.AppService;
 import com.platform.aix.common.util.JsonAdaptor;
 import com.platform.aix.config.ApisPorperties;
@@ -50,8 +51,7 @@ public class HandlerRequestRunnable implements Runnable {
             long start = System.currentTimeMillis();
 
             // 默认返回未知错误
-//            APIResponse response = new APIResponse(ResponseResult.COMMON_ERROR_UNKNOWN);
-            ZxApiResponse response = new ZxApiResponse(ZxResponseResult.COMMON_ERROR_UNKNOWN);
+            APIResponse response = new APIResponse(ResponseResult.COMMON_ERROR_UNKNOWN);
             ZxHttpRequest zxHttpRequest = null;
             // 获取基础参数
             String contentType = servlet.getContentType();
@@ -66,7 +66,7 @@ public class HandlerRequestRunnable implements Runnable {
 
                 // 1.验证请求协议
                 if (!uri.startsWith(Constants.COMMON_REQ_URL)) {
-                    response = new ZxApiResponse(ZxResponseResult.HTTP_ERROR_UNSURPORT_PROTO_VER);
+                    response = new APIResponse(ResponseResult.HTTP_ERROR_UNSURPORT_PROTO_VER);
                     return;
                 }
 
@@ -74,7 +74,7 @@ public class HandlerRequestRunnable implements Runnable {
 //                    ZxApiResponse zxResponse = null;
 //                    IBaseHandler handler = AppService.getBean(uri);
 //                    if(handler == null){
-//                        zxResponse = new ZxApiResponse(ZxResponseResult.HTTP_ERROR_UNSURPORT_PROTO_VER);
+//                        zxResponse = new ZxApiResponse(ResponseResult.HTTP_ERROR_UNSURPORT_PROTO_VER);
 //                        return;
 //                    }
 //                }
@@ -83,15 +83,15 @@ public class HandlerRequestRunnable implements Runnable {
                 IBaseHandler handler = AppService.getBean(uri);
 
                 if (handler == null) {
-                    response = new ZxApiResponse(ZxResponseResult.HTTP_ERROR_INVALID_REQUEST);
+                    response = new APIResponse(ResponseResult.HTTP_ERROR_INVALID_REQUEST);
                     return;
                 }
                 /**
                  * 限流处理
                  * eg. 某个接口限制 10秒访问一次
                  */
-                if(!accessInterceptor.accessLimitInterceptor(servlet,response,handler)){
-                    response = new ZxApiResponse(ZxResponseResult.HTTP_ACCESS_FREQUENCY);
+                if(!accessInterceptor.accessLimitInterceptor(servlet,handler)){
+                    response = new APIResponse(ResponseResult.HTTP_ACCESS_FREQUENCY);
                     return;
                 }
 
@@ -129,13 +129,13 @@ public class HandlerRequestRunnable implements Runnable {
                 if (AopUtils.getTargetClass(handler).getAnnotation(DisableCheckAuthHeader.class) == null) {
                     // 1.验证请求参数
                     if (StringUtils.isEmpty(zxHttpRequest.getFactoryid()) || StringUtils.isEmpty(zxHttpRequest.getFactorysecretkey()) || StringUtils.isEmpty(zxHttpRequest.getParams())) {
-                        response = new ZxApiResponse(ZxResponseResult.HTTP_ERROR_INVALID_PARAM);
+                        response = new APIResponse(ResponseResult.HTTP_ERROR_INVALID_PARAM);
                         return;
                     }
 
                     // 2.校验签名信息
                     if (!CheckSign.checkFactoryAuth(zxHttpRequest.getFactoryid(), zxHttpRequest.getFactorysecretkey())) {
-                        response = new ZxApiResponse(ZxResponseResult.HTTP_ERROR_INVALID_AUTH);
+                        response = new APIResponse(ResponseResult.HTTP_ERROR_INVALID_AUTH);
                         return;
                     }
 
@@ -155,7 +155,7 @@ public class HandlerRequestRunnable implements Runnable {
                 BaseRequest request = mapper.readValue(params, handler.getRequestClass());
                 // 请求参数params不能为空
                 if (request == null) {
-                    response = new ZxApiResponse(ZxResponseResult.HTTP_ERROR_INVALID_PARAM);
+                    response = new APIResponse(ResponseResult.HTTP_ERROR_INVALID_PARAM);
                     return;
                 }
 
@@ -167,13 +167,13 @@ public class HandlerRequestRunnable implements Runnable {
 
             } catch (JsonMappingException e) {
                 log.error(e.getMessage(), e);
-                response = new ZxApiResponse(ZxResponseResult.HTTP_ERROR_PARSE_JSON);
+                response = new APIResponse(ResponseResult.HTTP_ERROR_PARSE_JSON);
             } catch (JsonParseException e) {
                 log.error(e.getMessage(), e);
-                response = new ZxApiResponse(ZxResponseResult.HTTP_ERROR_PARSE_JSON);
+                response = new APIResponse(ResponseResult.HTTP_ERROR_PARSE_JSON);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
-                response = new ZxApiResponse(ZxResponseResult.COMMON_ERROR_EXCEPTION);
+                response = new APIResponse(ResponseResult.COMMON_ERROR_EXCEPTION);
             } finally {
 
                 // APIResponse转成json格式字符串
@@ -181,7 +181,7 @@ public class HandlerRequestRunnable implements Runnable {
                     resp = mapper.writeValueAsString(response);
                 } catch (JsonProcessingException e) {
                     // TODO Auto-generated catch block
-                    response = new ZxApiResponse(ZxResponseResult.HTTP_ERROR_PARSE_JSON);
+                    response = new APIResponse(ResponseResult.HTTP_ERROR_PARSE_JSON);
                     log.error(e.getMessage(), e);
                 }
 

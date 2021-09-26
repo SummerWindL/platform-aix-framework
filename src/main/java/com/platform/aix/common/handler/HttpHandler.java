@@ -33,7 +33,7 @@ public class HttpHandler extends AbstractHandler {
         response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
         response.setHeader("Access-Control-Allow-Credentials", "true");
         response.setCharacterEncoding("utf-8");
-        response.setContentType("application/com.ikinloop.zxapigateway.json;charset=utf-8");
+        response.setContentType("application/json;charset=utf-8");
 
         PrintWriter out = response.getWriter();
 

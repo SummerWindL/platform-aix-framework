@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.platform.aix.cmd.bean.request.BaseRequest;
+import com.platform.aix.common.annotation.DisableAccess;
 import com.platform.aix.common.annotation.DisableCheckAuthHeader;
 import com.platform.aix.common.annotation.FileUploadFunction;
 import com.platform.aix.common.constants.Constants;
@@ -89,10 +90,13 @@ public class HandlerRequestRunnable implements Runnable {
                 /**
                  * 限流处理
                  * eg. 某个接口限制 10秒访问一次
+                 * 思路，应该对所有接口都限流，不限流的应该做一个DisAccess注解 标记为不限流
                  */
-                if(!accessInterceptor.accessLimitInterceptor(servlet,handler)){
-                    response = new APIResponse(ResponseResult.HTTP_ACCESS_FREQUENCY);
-                    return;
+                if(AopUtils.getTargetClass(handler).getAnnotation(DisableAccess.class) == null){
+                    if(!accessInterceptor.accessLimitInterceptor(servlet,handler)){
+                        response = new APIResponse(ResponseResult.HTTP_ACCESS_FREQUENCY);
+                        return;
+                    }
                 }
 
                 // 2.解析参数ts、 sign、auth、params

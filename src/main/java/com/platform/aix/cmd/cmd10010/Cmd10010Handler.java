@@ -3,6 +3,7 @@ package com.platform.aix.cmd.cmd10010;
 import com.platform.aix.cmd.bean.request.BaseRequest;
 import com.platform.aix.common.annotation.Access;
 import com.platform.aix.common.annotation.AccessLimit;
+import com.platform.aix.common.annotation.DisableAccess;
 import com.platform.aix.common.annotation.DisableCheckAuthHeader;
 import com.platform.aix.common.constants.Constants;
 import com.platform.aix.common.exception.BIZException;
@@ -25,6 +26,7 @@ import java.util.List;
  * @author: fuyl
  * @create: 2020-08-24 15:26
  **/
+@DisableAccess
 @Access
 @Controller(Constants.CLIENT_REQ_URL+"/cmd_10010")
 @DisableCheckAuthHeader

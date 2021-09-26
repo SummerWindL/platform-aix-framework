@@ -30,14 +30,14 @@ public class Constants {
     /**
      * 公共接口URL
      */
-    public static final String COMMON_REQ_URL = "/aixapigateway/api/" + SERVER_VERSION;
+    public static final String COMMON_REQ_URL = "/aixapiplatform/api/" + SERVER_VERSION;
 
     public static final String MANAGE_CLIENT_REQ_URL = COMMON_REQ_URL + "/manageclient";
 
     /**
      * aix平台访问路径
      */
-    public static final String CLIENT_REQ_URL = "/aixapiplatform/api/v1";
+    public static final String CLIENT_REQ_URL = COMMON_REQ_URL + "/client";
 
     /**
      * 验证码过期时间 ，默认10分钟

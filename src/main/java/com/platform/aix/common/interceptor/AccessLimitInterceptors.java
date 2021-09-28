@@ -4,6 +4,7 @@ import com.cluster.platform.redis.ICache;
 import com.platform.aix.cmd.bean.request.BaseRequest;
 import com.platform.aix.common.annotation.Access;
 import com.platform.aix.common.annotation.AccessLimit;
+import com.platform.aix.common.handler.CommandHandler;
 import com.platform.aix.common.handler.base.IBaseHandler;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class AccessLimitInterceptors {
      * @param handler
      * @return
      */
-    public boolean accessLimitInterceptor(HttpServletRequest request , IBaseHandler handler) throws NoSuchMethodException {
+    public boolean accessLimitInterceptor(HttpServletRequest request , CommandHandler handler) throws NoSuchMethodException {
         if (AopUtils.getTargetClass(handler).getAnnotation(Access.class)!=null) {
             Method method = handler.getClass().getMethod("execute", BaseRequest.class);
             if (!method.isAnnotationPresent(AccessLimit.class)) {

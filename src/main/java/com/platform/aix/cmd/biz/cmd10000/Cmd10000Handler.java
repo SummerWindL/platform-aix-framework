@@ -1,4 +1,4 @@
-package com.platform.aix.cmd.cmd10000;
+package com.platform.aix.cmd.biz.cmd10000;
 
 import com.platform.aix.cmd.bean.request.BaseRequest;
 import com.platform.aix.common.constants.Constants;

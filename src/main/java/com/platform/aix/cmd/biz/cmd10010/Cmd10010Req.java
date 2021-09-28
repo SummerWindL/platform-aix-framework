@@ -1,4 +1,4 @@
-package com.platform.aix.cmd.cmd10010;
+package com.platform.aix.cmd.biz.cmd10010;
 
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonProperty;

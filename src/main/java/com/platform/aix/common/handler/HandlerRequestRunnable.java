@@ -62,6 +62,8 @@ public class HandlerRequestRunnable implements Runnable {
             String auth = null;
             String params = null;
             String resp = null;
+            String sign = null;
+            String ts = null;
 
             try {
 
@@ -70,18 +72,28 @@ public class HandlerRequestRunnable implements Runnable {
                     response = new APIResponse(ResponseResult.HTTP_ERROR_UNSURPORT_PROTO_VER);
                     return;
                 }
+                // 2.解析参数ts、 sign、auth、params
+                // 判断是否文件上传接口 upload_file，文件上传ts、 sign、auth、params填充在HTTP Header中
+                // if (uri.equals(AppService.getBeanName(UploadFileHandler.class)))
+                if (uri.contains("cmd_11011")) {
+                    // Continuation timeout默认30,setTimeout代码实现有锁，会造成代码执行阻塞
+                    // continuation.setTimeout(600000);
+                    sign = servlet.getHeader("sign");
+                    ts = servlet.getHeader("ts");
+                    auth = servlet.getHeader("auth");
+                    params = servlet.getHeader("params");
+                } else {
+                    // Continuation timeout默认30
+                    //continuation.setTimeout(100000);
+                    sign = servlet.getParameter("sign");
+                    ts = servlet.getParameter("ts");
+                    auth = servlet.getParameter("auth");
+                    params = servlet.getParameter("params");
+                }
 
-//                if("cmd_05110001".equals(uri)){
-//                    ZxApiResponse zxResponse = null;
-//                    IBaseHandler handler = AppService.getBean(uri);
-//                    if(handler == null){
-//                        zxResponse = new ZxApiResponse(ResponseResult.HTTP_ERROR_UNSURPORT_PROTO_VER);
-//                        return;
-//                    }
-//                }
 
-                // 2.根据http请求URI获取处理方法
-                IBaseHandler handler = AppService.getBean(uri);
+                // 3.根据http请求URI获取处理方法
+                CommandHandler handler = AppService.getBean(uri);
 
                 if (handler == null) {
                     response = new APIResponse(ResponseResult.HTTP_ERROR_INVALID_REQUEST);
@@ -92,6 +104,7 @@ public class HandlerRequestRunnable implements Runnable {
                  * eg. 某个接口限制 10秒访问一次
                  * 思路，应该对所有接口都限流，不限流的应该做一个DisAccess注解 标记为不限流
                  */
+                //4.限流判断
                 if(AopUtils.getTargetClass(handler).getAnnotation(DisableAccess.class) == null){
                     if(!accessInterceptor.accessLimitInterceptor(servlet,handler)){
                         response = new APIResponse(ResponseResult.HTTP_ACCESS_FREQUENCY);
@@ -99,11 +112,11 @@ public class HandlerRequestRunnable implements Runnable {
                     }
                 }
 
-                // 2.解析参数ts、 sign、auth、params
+                // 5.解析参数ts、 sign、auth、params
                 //判断请求参数是否需要从头部获取
-                if(AopUtils.getTargetClass(handler).getAnnotation(FileUploadFunction.class) != null ){
-//                    sign = servlet.getHeader("sign");
-//                    ts = servlet.getHeader("ts");
+                /*if(AopUtils.getTargetClass(handler).getAnnotation(FileUploadFunction.class) != null ){
+                    // sign = servlet.getHeader("sign");
+                    // ts = servlet.getHeader("ts");
                     auth = servlet.getHeader("auth");
                     params = servlet.getHeader("params");
                 }else{
@@ -123,37 +136,47 @@ public class HandlerRequestRunnable implements Runnable {
                         zxHttpRequest = HttpRequestConverter.formConverter2Obj(servlet);
                     }
 
-                }
+                }*/
 
                 //赋值
-                params = zxHttpRequest.getParams();
-                factoryid = zxHttpRequest.getFactoryid();
-                factorysecretkey = zxHttpRequest.getFactorysecretkey();
+                //params = zxHttpRequest.getParams();
+                //factoryid = zxHttpRequest.getFactoryid();
+                //factorysecretkey = zxHttpRequest.getFactorysecretkey();
                 // 4、没有DisableCheckAuthHeader注解的handler，需要验证签名和auth头
                 if (AopUtils.getTargetClass(handler).getAnnotation(DisableCheckAuthHeader.class) == null) {
                     // 1.验证请求参数
-                    if (StringUtils.isEmpty(zxHttpRequest.getFactoryid()) || StringUtils.isEmpty(zxHttpRequest.getFactorysecretkey()) || StringUtils.isEmpty(zxHttpRequest.getParams())) {
+                    if (StringUtils.isEmpty(sign) || StringUtils.isEmpty(ts) || StringUtils.isEmpty(params)) {
                         response = new APIResponse(ResponseResult.HTTP_ERROR_INVALID_PARAM);
                         return;
                     }
-
                     // 2.校验签名信息
-                    if (!CheckSign.checkFactoryAuth(zxHttpRequest.getFactoryid(), zxHttpRequest.getFactorysecretkey())) {
-                        response = new APIResponse(ResponseResult.HTTP_ERROR_INVALID_AUTH);
+                    if (!CheckSign.checkSignValid(sign, ts, params)) {
+                        response = new APIResponse(ResponseResult.HTTP_ERROR_INVALID_SIGN);
                         return;
                     }
 
+                    // 3.校验auth
+                    boolean isInvalid = authCheckor.checkRequestAuthHeaderValid(auth);
+                    if (!isInvalid) {
+                        response = new APIResponse(ResponseResult.BIZ_ERROR_TOKEN_INVALID);
+                        return;
+                    }
+
+                    // 4.校验第三方调用信息
+                    /*if (!CheckSign.checkFactoryAuth(zxHttpRequest.getFactoryid(), zxHttpRequest.getFactorysecretkey())) {
+                        response = new APIResponse(ResponseResult.HTTP_ERROR_INVALID_AUTH);
+                        return;
+                    }*/
 
                 }
 
-
-                if(!params.contains("factoryid")){
+                /*if(!params.contains("factoryid")){
                     //为没有factoryid的请求附上factoryid
 
                     JSONObject jsonObject = (JSONObject)JSONObject.parse(params);
                     jsonObject.put("factoryid", factoryid);
                     params = jsonObject.toJSONString();
-                }
+                }*/
                 log.info("===============>获取到请求：{},客户端IP：{}，请求参数：{}",uri,servlet.getRemoteAddr(),params);
                 // 5.把http请求params参数转换成对应的Request Bean
                 BaseRequest request = mapper.readValue(params, handler.getRequestClass());
@@ -223,7 +246,7 @@ public class HandlerRequestRunnable implements Runnable {
 
                 if (apisPorperties.isLogResp()) {
                     String logres = resp.length() < 1024 * 1024 ? resp : resp.substring(0, 1024 * 1024);
-                    log.info("uri=" + uri + " resp=" + logres + " factoryid=" + factoryid + " factorysecretkey=" + factorysecretkey + " auth=" + auth + " params=" + params + " costime=" + (System.currentTimeMillis() - start) + "ms");
+                    log.info("uri=" + uri + " resp=" + logres + " ts=" + ts + " sign=" + sign + " auth=" + auth + " params=" + params + " costime=" + (System.currentTimeMillis() - start) + "ms");
                 }
                 // 响应结果返回给通过continuation Attribute返回给httphandler
                 continuation.setAttribute("ret", resp);

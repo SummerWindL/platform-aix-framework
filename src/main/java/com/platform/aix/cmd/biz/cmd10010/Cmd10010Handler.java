@@ -1,4 +1,4 @@
-package com.platform.aix.cmd.cmd10010;
+package com.platform.aix.cmd.biz.cmd10010;
 
 import com.platform.aix.cmd.bean.request.BaseRequest;
 import com.platform.aix.common.annotation.Access;
@@ -8,18 +8,12 @@ import com.platform.aix.common.annotation.DisableCheckAuthHeader;
 import com.platform.aix.common.constants.Constants;
 import com.platform.aix.common.exception.BIZException;
 import com.platform.aix.common.handler.base.CommandBaseHandler;
-import com.platform.aix.common.handler.base.CommandSonkaExtHandler;
 import com.platform.aix.common.response.APIResponse;
-import com.platform.aix.common.response.ZxApiResponse;
 import com.platform.aix.service.user.inspection.UserInspectionDataService;
-import com.platform.aix.service.user.inspection.adapter.InspectionAdapter;
-import com.platform.aix.service.user.inspection.bean.InspectionDatas;
-import com.platform.aix.service.user.inspection.impl.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * @description:

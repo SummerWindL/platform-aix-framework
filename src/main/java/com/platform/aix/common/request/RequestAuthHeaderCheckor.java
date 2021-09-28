@@ -1,5 +1,7 @@
 package com.platform.aix.common.request;
 
+import com.cluster.platform.redis.ICache;
+import com.cluster.platform.redis.model.TLoginCacheBase;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.platform.aix.common.util.JsonAdaptor;
@@ -17,8 +19,8 @@ import java.io.IOException;
 @Component
 public class RequestAuthHeaderCheckor {
 
-//    @Autowired
-//    private ICache iCache;
+    @Autowired
+    private ICache iCache;
 
     @Autowired
     private JsonAdaptor mapper;
@@ -51,20 +53,27 @@ public class RequestAuthHeaderCheckor {
         return false;
     }
 
-    private boolean checkAuth(String auth) throws JsonParseException, JsonMappingException, IOException {
+    /**
+     * 鉴权
+     * @author Advance
+     * @date 2021/9/28 12:00
+     * @param auth
+     * @return boolean
+     */
+    private boolean checkAuth(String auth) throws IOException {
         RequestAuthHeader authHeader = mapper.readValue(auth, RequestAuthHeader.class);
         if (authHeader != null && authHeader.getId() != null) {
             String id = authHeader.getId();
 
-//            TLoginCacheBase loginCache = iCache.get(id);
-//            if (loginCache != null) {
-//                String token = loginCache.getToken();
-//                if (!StringUtils.isEmpty(token) && token.equals(authHeader.getToken())) {
-//                    // 更新登录信息过期时间
-//                    iCache.setExpire(id, loginCache, apisPorperties.getTokenExpire());
-//                    return true;
-//                }
-//            }
+            TLoginCacheBase loginCache = iCache.get(id);
+            if (loginCache != null) {
+                String token = loginCache.getToken();
+                if (!StringUtils.isEmpty(token) && token.equals(authHeader.getToken())) {
+                    // 更新登录信息过期时间
+                    iCache.setExpire(id, loginCache, apisPorperties.getTokenExpire());
+                    return true;
+                }
+            }
 
         }
 

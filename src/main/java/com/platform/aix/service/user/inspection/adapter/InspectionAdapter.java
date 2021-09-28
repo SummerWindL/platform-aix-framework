@@ -1,11 +1,10 @@
 package com.platform.aix.service.user.inspection.adapter;
 
-import com.platform.aix.cmd.cmd10010.Cmd10010Req;
+import com.platform.aix.cmd.biz.cmd10010.Cmd10010Req;
 import com.platform.aix.service.user.inspection.bean.DictInspectionBean;
 import com.platform.aix.service.user.inspection.bean.InspectionDatas;
 import com.platform.aix.service.user.inspection.convert.InspectionDataConvert;
 import com.platform.aix.service.user.inspection.enums.EnumSonka2ZxInspection;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;

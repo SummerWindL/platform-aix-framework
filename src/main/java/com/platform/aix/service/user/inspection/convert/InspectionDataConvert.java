@@ -1,7 +1,7 @@
 package com.platform.aix.service.user.inspection.convert;
 
 import com.alibaba.fastjson.JSONObject;
-import com.platform.aix.cmd.cmd10010.Cmd10010Req;
+import com.platform.aix.cmd.biz.cmd10010.Cmd10010Req;
 import com.platform.aix.service.user.inspection.bean.DictInspectionBean;
 import com.platform.aix.service.user.inspection.bean.InspectionCommonBean;
 import com.platform.aix.service.user.inspection.bean.InspectionDatas;

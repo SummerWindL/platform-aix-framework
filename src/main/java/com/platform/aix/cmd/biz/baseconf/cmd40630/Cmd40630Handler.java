@@ -52,7 +52,7 @@ public class Cmd40630Handler extends CommandBaseHandler {
             e.printStackTrace();
         }
         List<Cmd40630Resp> tlist = CollectionUtils.arrayToList(cmd40630Resps);
-        Page<Cmd40630Resp> cmd40630RespsPage = new PageImpl<Cmd40630Resp>(tlist);
+        Page<Cmd40630Resp> cmd40630RespsPage = new PageImpl<Cmd40630Resp>(tlist,PageRequest.of(0,1),tlist.size());
         return new APIResponse(cmd40630RespsPage);
     }
 }

@@ -7,6 +7,7 @@ import com.platform.repo.pg.model.base.BasePlpgsqlModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
@@ -57,7 +58,8 @@ public class AbstractServiceImpl {
         T[] arrBean = (T[]) basePlpgsqlModel2Clz(basePlpgsqlModel, arr.getClass());
 
         List<T> arrBeanList = CollectionUtils.arrayToList(arrBean);
-        Page<T> arrBeanPage = new PageImpl<T>(arrBeanList, null, (long) basePlpgsqlModel.getRetcode());
+        //spring-boot版本升级后 pageable不允许为空 默认给其赋值
+        Page<T> arrBeanPage = new PageImpl<T>(arrBeanList, PageRequest.of(0, 1), (long) basePlpgsqlModel.getRetcode());
 
         return arrBeanPage;
     }

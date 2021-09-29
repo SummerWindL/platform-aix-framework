@@ -11,7 +11,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.2.6.RELEASE</version>
-        <!-- <version>1.5.12.RELEASE</version> -->
+        <!--<version>1.5.12.RELEASE</version>-->
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <properties>
@@ -64,12 +64,19 @@
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
         </dependency>
-
+        <!--如果使用1.5.12.RELEASE版本的springboot 需要打开以下依赖-->
+        <!--<dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>5.3.6.Final</version>
+        </dependency>-->
+        <!--如果使用2.2.6.RELEASE版本的springboot 需要打开以下依赖-->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
             <version>6.0.18.Final</version>
         </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

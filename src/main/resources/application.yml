@@ -10,6 +10,12 @@ logging:
         data:
           mongodb:
             core: WARN
+      # 获取到请求参数
+      hibernate:
+        type:
+          descriptor:
+            sql:
+              BasicBinder: trace
 
 spring:
   main:

@@ -78,3 +78,10 @@ application/x-www-form-urlencoded
 >{"notifyno":"cmd_4060001", "notifytype" :"update","notifyparam":{"disecode":"xxx","disename":"xxxx"}}
 
 notifyno的value一定时addHandler的第一个参数，否则Java将无法收到消息。
+
+
+
+--------------------------
+登录用户密码：
+admin
+123456

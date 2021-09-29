@@ -177,7 +177,7 @@ public class HandlerRequestRunnable implements Runnable {
                     jsonObject.put("factoryid", factoryid);
                     params = jsonObject.toJSONString();
                 }*/
-                log.info("===============>获取到请求：{},客户端IP：{}，请求参数：{}",uri,servlet.getRemoteAddr(),params);
+                log.info("\n获取到请求：{} ,\n客户端IP：{}，\n请求参数：{}",uri,servlet.getRemoteAddr(),params);
                 // 5.把http请求params参数转换成对应的Request Bean
                 BaseRequest request = mapper.readValue(params, handler.getRequestClass());
                 // 请求参数params不能为空

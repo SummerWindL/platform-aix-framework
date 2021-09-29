@@ -10,8 +10,8 @@ import com.platform.aix.service.user.role.rolegroup.RoleGroupService;
 import com.platform.repo.pg.model.base.BasePlpgsqlModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.*;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 
@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * 查询角色
  *
- * @author: fyw
+ * @author: Advance
  * @date: 2018/7/28
  * @description:
  */
@@ -52,7 +52,7 @@ public class Cmd40630Handler extends CommandBaseHandler {
             e.printStackTrace();
         }
         List<Cmd40630Resp> tlist = CollectionUtils.arrayToList(cmd40630Resps);
-        Page<Cmd40630Resp> cmd40630RespsPage = new PageImpl<Cmd40630Resp>(tlist, null, (long) basePlpgsqlModel.getRetcode());
+        Page<Cmd40630Resp> cmd40630RespsPage = new PageImpl<Cmd40630Resp>(tlist);
         return new APIResponse(cmd40630RespsPage);
     }
 }

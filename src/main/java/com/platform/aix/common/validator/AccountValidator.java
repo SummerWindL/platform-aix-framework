@@ -7,7 +7,7 @@ import org.springframework.util.StringUtils;
  * 账号注解 @Account 校验器
  *
  * @ClassName        : AccountValidator
- * @author            : Alfred
+ * @author            : Advance
  * @date : 2017年5月12日 上午10:52:31
  */
 public class AccountValidator {

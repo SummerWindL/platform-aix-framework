@@ -6,7 +6,7 @@ import com.platform.aix.service.user.prj.bean.TUserAccountPrj;
 /**
  * 用户项目关联
  *
- * @author: fyw
+ * @author: Advance
  * @date: 2018/8/5
  * @description:
  */

@@ -1,0 +1,5425 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 13.4
+-- Dumped by pg_dump version 13.4
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: aix; Type: SCHEMA; Schema: -; Owner: postgres
+--
+
+CREATE SCHEMA aix;
+
+
+ALTER SCHEMA aix OWNER TO postgres;
+
+--
+-- Name: aixuuid(); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.aixuuid() RETURNS text
+    LANGUAGE plpgsql
+    AS $$
+
+/*
+ * 函数说明：生成UUID字符串
+ * 参数：按要求填写参数
+ *  * 返回：UUID字符串
+*/
+declare
+	--	入参说明
+	--	程序变量说明
+	v_uuid					TEXT default '';
+begin
+
+	-- 生成UUID
+	--	SELECT md5('aa:aa:aa:aa:aa:aa' || now() || random()) into v_uuid;
+	select lower(array_to_string(array(select substring('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz' FROM (ceil(random()*62))::int FOR 1) FROM generate_series(1, 32)), '')) into v_uuid ;
+
+	RETURN v_uuid;
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.aixuuid() OWNER TO postgres;
+
+--
+-- Name: conversation_notify(); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.conversation_notify() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+    BEGIN
+        perform  pg_notify('mymessage', '{"DoctorName":"医生名称","MachineId":"HST821255555","BloodPressure":{"HighPressure":"96","Pulse":"65","LowPressure":"57","Result":""},"Temperature":{"Temperature":"37","Result":"1"},"Chol":{"Chol":"2.77","Result":"1"},"Urinalysis":{"BIL":0,"PRO":0,"VC":0,"CR":0,"Result":0,"GLU":0,"UCA":0,"URO":0,"SG":0,"PH":0,"NIT":0,"MAL":0,"BLD":0,"KET":0,"LEU":0},"Cardiovascular":{"CMBV":"","HeartFunction1":"","SV":"","HeartFunction2":"","TPR":"","VascularCondition1":"","VascularCondition2":"","CO":"","HOV":"","N":"","Result":"","PAWP":""},"Lung":{"PEF":5.77,"FEF25":5.69,"FVC":3.6,"Lung":"1112","FEV1":3.25,"FEF2575":4.02,"FEF75":2.16,"Result":"0"},"Alcohol":{"errcode":"","AlcoholImg":"null","errinfo":"","Alcohol":"2.0","Result":"0"},"BloodSugar":{"BloodsugarType":"1","BloodSugar":"3.8","Result":"1"},"UnitNo":"4450585525","DoctorId":"医生工号","PEEcg":{"QTc":"","PR":"","QT":"","QRSAxis":"","Hr":"","TAxis":"","SV1":"","Result":"","RV5":"","QRS":"","PAxis":"","EcgData":"","EcgImg":""},"ArteryAve":{"SBP":"0","CSBP":"0","CAPP":"0","DBP":"0","AVI":"0","Pulse":"0","API":"0"},"MacAddr":"00-06-55-55-0A-2B","MinFat":{"Shape":"3","Height":"182","FatRate":"17","Physique":"3","BasicMetabolism":"1157","Weight":"80","Bmi":"24.4","Result":"1"},"BMD":{"PAB":"","TSCORE":"2.0","SOS":"300","EOA":"","RRF":"","YOUNG_ADULT":"","OI":"","BQI":"","ZSCORE":"2.2","AGE_MATCHED":"","BUA":"","Result":""},"Height":{"Height":"180","IdealWeight":"74","Weight":"70","BMI":"22","Result":"2"},"Hb":{"Hct":"6.0","Hb":"5.0","Result":"0"},"LoginType":"1","Member":{"Nation":"","IcCode":"","Address":"广东省XX市","Sex":"1","BarCode":"","Birthday":"1989-09-28","SocialCode":"","Mobile":"15811397368","EndDate":"","Name":"陈XX ","StartDate":"","Department":"","UserID":"","UserIcon":"","IdCode":"361103196005178567","Age":"25"},"Whr":{"Waistline":"22","Whr":"25","Hipline":"88","Result":"1"},"UnitName":"XX医院","RecordNo":"2125555520150409143202","Ecg":{"nGain":"2","Analysis":"","Hr":"88","EcgData":"","Result":""},"Ua":{"Ua":"0.54","Result":"1"},"Bo":{"Oxygen":"99","BpmList":"","EndTime":"2015-04-09 14:32:02","SecondCount":"","OxygenList":"","StartTime":"2015-04-09 14:32:02","Bpm":"","Result":""},"DeviceType":"SK-T8","Fat":{"Water":"26.8","YoutuiFat":"3.0","Minerals":"1.2","Result":"","FatAdjust":"-0.3","ZuotuiMuscle":"9.7","Viscera":"7","YoutuiMuscle":"9.9","Bmc":"3.1","YoubiMuscle":"3.1","WaterRate":"36.4","Muscle":"34.4","Foc":"9","MuscleAdjust":"0.4","ZuobiMuscle":"2.9","MuscleRate":"75.2","QuganMuscle":"30.9","ExceptFat":"49.8","Fic":"17.8","WeightAdjust":"0.1","YoubiFat":"0.7","QuganFat":"8.0","Protein":"7.6","Fat":"26.2","FatRate":"16","ZuotuiFat":"3.0","ZuobiFat":"0.7","BasicMetabolism":"1140"},"MeasureTime":"2015-04-09 14:32:02","BloodFat":{"HdlChol":"3.56","CalcLdl":"2.35","TChol":"2.77","Trig":"4.21","TcHdl":"","Result":"1"}}');
+        raise notice '%',11111111111;
+        --NOTIFY mymessage, 'fired by NOTIFY';
+        RETURN NULL;
+    END; 
+$$;
+
+
+ALTER FUNCTION aix.conversation_notify() OWNER TO postgres;
+
+--
+-- Name: f_aix_notification_model(character varying, character varying, text); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_aix_notification_model(in_functionname character varying, in_destination character varying, in_params text, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+
+declare 
+
+begin 
+	
+	--判断入参in_params 的格式是否符合要求
+	if(in_params::jsonb ?& array['notifyno', 'notifytype','notifyparam'] = false)then 
+		retcode := -7;
+		retvalue := '{"error_msg":"in_params ['||in_params||'] is not correct"}';
+		return;
+	end if;
+	
+	perform pg_notify(in_destination,in_params);
+	--插入消息发送记录表
+	insert into t_pg_notification_send_log values (aixuuid(),in_functionname,in_destination,in_params::jsonb,now());
+	retcode := 0;
+	retvalue := '{"error_msg":"success"}';
+	
+end
+
+$$;
+
+
+ALTER FUNCTION aix.f_aix_notification_model(in_functionname character varying, in_destination character varying, in_params text, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_auth_hosp_user_account_list_query(character varying, character varying, character varying, character varying, character varying, character varying, character varying, integer, integer, integer); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_auth_hosp_user_account_list_query(in_userid character varying, in_hospcode character varying, in_doctoruserid character varying, in_deptcode character varying, in_hospname character varying, in_doctorname character varying, in_deptname character varying, in_countflag integer, in_offset integer, in_pagesize integer, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+/*
+* 函数说明：查询当前登录用户权限医院下医生列表
+ * 参数：当所有参数为空串‘’时，默认存储过程赋值
+ * 返回：
+ *     retcode： 小于0，表示失败；>=0表示成功;当大于0时，返回记录总数 
+ *     retvalue：返回关联表查询字段记录
+ * 
+ *    data: {
+ * 			"doctorteamid":"uuid"
+ * 		}
+ *  备注：
+ * 
+*/
+
+DECLARE
+	v_rec            record;
+begin
+	
+		--	合法性校验
+		if (in_userid IS  NULL OR  trim(in_userid) = '') THEN 
+			retcode := -6;
+			retvalue := '{"error_msg":"field value is null or empty"}';
+			return;
+		end if;
+	
+		with c_mb_record as (
+						select
+							a.userid,
+						   a.acc,
+						   a.pwd,
+						   a.salt,
+						   a.enableflag,
+						   a.regtime,
+						   b.hospcode,
+						   c.hospname,
+						   b.deptcode,
+						   d.deptname,
+						   b.doctorlevelcode,
+						   b.workdepartment,
+						   b.idcardno,
+						   b.phone,
+						   b.workno,
+						   b.signature,
+						   b.resume,
+						   b.doctorname,
+						   b.gendercode,
+						   b.gendername,
+						   b.certtype,
+						   b.certtypename,
+						   b.doctorlevelname,
+						   b.openflag,
+						   b.birth,
+						   b.nickname,
+						   b.photo,
+						   b.areacode,
+						   b.address,
+						   b.params
+						from
+							t_mb_user_account a
+						left join t_mb_user_info b on
+							a.userid = b.userid
+						LEFT JOIN t_mb_hosp c on b.hospcode = c.hospcode 
+						LEFT JOIN t_mb_hosp_dept d on b.hospcode = d.hospcode and b.deptcode = d.deptcode
+						where 
+							a.enableflag = '10000' --10000=正常使用，20000=禁用
+							and b.hospcode in (select hospcode from t_mb_user_auth_hosp where userid = in_userid)
+							and (in_hospcode = '' or b.hospcode = in_hospcode)
+							and (in_doctoruserid = '' or a.userid = in_doctoruserid)
+							and (in_deptcode = '' or b.deptcode = in_deptcode)
+							and (in_hospname ='' or c.hospname ~* in_hospname )
+							and (in_doctorname ='' or b.doctorname ~* in_doctorname )
+							and (in_deptname ='' or d.deptname ~* in_deptname )
+						ORDER BY b.createdtime  ASC 
+		),
+			--	虚拟表前缀 o_l_c 代表对前定义的虚拟表，增加了记录数限定条件
+			c_mb_record_limit as
+			(
+				select * from c_mb_record  offset in_offset limit in_pagesize
+			)		
+		
+			select 
+				case when (in_countflag = 2) then 
+						(select count(1) from c_mb_record ) end as ret_code, 
+				case when (in_countflag = 3) then 
+						(select array_to_json(array_agg(row_to_json(t))) from c_mb_record_limit t ) end as ret_value
+			into v_rec;
+					
+			retcode := v_rec.ret_code;
+			retvalue := v_rec.ret_value;
+			
+			if (retcode is NULL) THEN
+				retcode := 0; --成功
+			end if;
+		
+			if (retvalue is NULL) then 
+				retvalue := '[]';
+			end if;
+	
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_auth_hosp_user_account_list_query(in_userid character varying, in_hospcode character varying, in_doctoruserid character varying, in_deptcode character varying, in_hospname character varying, in_doctorname character varying, in_deptname character varying, in_countflag integer, in_offset integer, in_pagesize integer, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_function_menu_delete(character varying, character varying); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_function_menu_delete(in_functionid character varying, in_lang character varying, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+/*
+ * 函数说明：--删除网关。
+ * 参数：in_hospcode 指定的医院编码
+ *     in_gwid 网关ID
+ * 返回：
+ *     retcode： 小于0，失败；==0成功
+ *     retvalue：返回成功或失败的信息
+ * 备注：外部程序调用必须判断retcode的返回值进行处理
+*/
+declare
+	--程序变量
+	v_rec record;
+begin
+	
+	delete from  t_mb_function_menu where (functionid = in_functionid and lang = in_lang);
+
+	retcode := 0;
+  	retvalue := '{"error_msg":"success"}';
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_function_menu_delete(in_functionid character varying, in_lang character varying, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_function_menu_insert(character varying, character varying, character varying, character varying, integer, character varying, character varying, integer, character varying); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_function_menu_insert(in_functionid character varying, in_lang character varying, in_functionname character varying, in_parentfunctionid character varying, in_sortid integer, in_functionpage character varying, in_functionicon character varying, in_visibletype integer, in_memo character varying, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+/*
+ * 函数说明：插入一个功能菜单。。
+ * 参数：按要求填写参数
+ * 返回：
+ *     retcode： 小于0，失败；==0成功
+ *     retvalue：返回成功或失败的信息
+ * 备注：外部程序调用必须判断retcode的返回值进行处理
+*/
+declare
+	--参数说明
+
+	--	程序变量
+    v_cnt 		    int4 DEFAULT 0;
+	v_createdtime   TIMESTAMP DEFAULT Now();
+	v_modifiedtime  TIMESTAMP DEFAULT Now();
+begin
+	
+	if (trim(in_functionid) = '' or trim(in_lang) = '') then
+		retcode := -6;
+		retvalue := '{"error_msg":"field value is null or empty"}';
+		return;
+	end if;
+	
+	
+	select now() into v_createdtime;
+	v_modifiedtime := v_createdtime;
+
+	insert into t_mb_function_menu(
+				   functionid,
+				   lang,
+				   functionname,
+				   parentfunctionid,
+				   sortid,
+				   functionpage,
+				   functionicon,
+				   visibletype,
+				   memo,
+				   createdtime,
+				   modifiedtime)
+			values (
+				   in_functionid,
+				   in_lang,
+				   in_functionname,
+				   in_parentfunctionid,
+				   in_sortid,
+				   in_functionpage,
+				   in_functionicon,
+				   in_visibletype,
+				   in_memo,
+				   v_createdtime,
+				   v_modifiedtime);
+
+	--处理返回结果
+	retcode := 0;
+	retvalue := '{"error_msg":"success"}';
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_function_menu_insert(in_functionid character varying, in_lang character varying, in_functionname character varying, in_parentfunctionid character varying, in_sortid integer, in_functionpage character varying, in_functionicon character varying, in_visibletype integer, in_memo character varying, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_function_menu_query(character varying, character varying, character varying, character varying, integer, integer, integer); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_function_menu_query(in_functionid character varying, in_lang character varying, in_functionname character varying, in_parentfunctionid character varying, in_countflag integer, in_offset integer, in_pagesize integer, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+
+ /*
+ * 函数说明：查询功能列表
+ * 参数：当所有参数为空串‘’时，查询所有记录，否则查询指定参数的记录
+ * 		in_countflag : 1 查询记录总数和分页的记录，记录总数放在retvalue中；
+ *                     2 仅查询记录总数，不查询分页记录，记录总数放在retvalue中，
+ * 					   3 仅查询分页记录，不查询记录总数。 retvalue始终=0
+ * 		in_offset:    该页记录的起始位置
+ * 		in_pagesize：     该页记录的总数
+ * 返回：
+ *     retcode： 小于0，表示失败；>=0表示成功;当大于0时，返回记录总数 
+ *     retvalue：返回关联表查询字段记录
+ * 备注：
+ * 
+*/
+declare
+	--程序变量
+    v_cnt 		    int4 DEFAULT 0;
+	v_createdtime   TIMESTAMP DEFAULT Now();
+	v_modifiedtime  TIMESTAMP DEFAULT Now();
+	v_rec			record;
+begin
+		
+	if ((in_countflag != 1 and in_countflag != 2 and in_countflag != 3) or 
+		in_offset < 0 OR in_pagesize < 0) THEN
+		retcode := -7; 
+		retvalue:='{"error_msg":"param is not correct"}';
+		return;
+	end if;
+
+	with c_dx_record as 
+	(
+		 select 
+		 	functionid,
+		 	lang,
+		 	functionname,
+		 	parentfunctionid,
+		 	sortid,
+		 	functionpage,
+		 	functionicon,
+		 	visibletype,
+		 	memo,
+		 	functionlevel,
+		 	pcsystype,
+		 	createdtime,
+		 	modifiedtime
+		from t_mb_function_menu
+		where 
+			functionid != '000000' and
+			(in_functionid = '' or functionid = in_functionid) and 
+			(in_lang = '' or lang = in_lang) and
+			(in_functionname = '' or functionname = in_functionname) and
+			(in_parentfunctionid = '' or parentfunctionid = in_parentfunctionid)
+		order by functionid asc
+
+	),
+	--	虚拟表前缀 o_l_c 代表对前定义的虚拟表，增加了记录数限定条件
+	c_dx_record_limit as
+	(
+		select * from c_dx_record  offset in_offset limit in_pagesize
+	)
+
+	select 
+		case when (in_countflag = 1 or in_countflag = 2)  then 
+				(select count(1) from c_dx_record ) end as ret_code, 
+		case when (in_countflag = 1 or in_countflag = 3) then 
+				(select array_to_json(array_agg(row_to_json(t))) from c_dx_record_limit t ) end as ret_value
+	into v_rec;
+	
+	retcode := v_rec.ret_code;
+	retvalue := v_rec.ret_value;
+	
+	if (retcode is NULL) THEN
+		retcode := 0; --成功
+	end if;
+	if (retvalue is NULL) then 
+		retvalue := '[]';
+	end if;
+
+end
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_function_menu_query(in_functionid character varying, in_lang character varying, in_functionname character varying, in_parentfunctionid character varying, in_countflag integer, in_offset integer, in_pagesize integer, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_function_menu_query_nopage(character varying, character varying, character varying, character varying); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_function_menu_query_nopage(in_functionid character varying, in_lang character varying, in_functionname character varying, in_parentfunctionid character varying, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+
+ /*
+ * 函数说明：查询功能列表
+ * 返回：
+ *     retcode： 小于0，表示失败；>=0表示成功;当大于0时，返回记录总数 
+ *     retvalue：返回关联表查询字段记录
+ * 备注：
+ * 
+*/
+declare
+	--程序变量
+    v_cnt 		    int4 DEFAULT 0;
+	v_createdtime   TIMESTAMP DEFAULT Now();
+	v_modifiedtime  TIMESTAMP DEFAULT Now();
+	v_rec			record;
+begin
+
+	
+	select array_to_json(array_agg(row_to_json(t))) into retvalue
+	from (
+		select 
+		 	functionid,
+		 	lang,
+		 	functionname,
+		 	parentfunctionid,
+		 	sortid,
+		 	functionpage,
+		 	functionicon,
+		 	visibletype,
+		 	memo,
+		 	functionlevel,
+		 	pcsystype,		 	
+		 	createdtime,
+		 	modifiedtime
+		from t_mb_function_menu
+		where 
+			functionid != '000000' and
+			(in_functionid = '' or functionid = in_functionid) and 
+			(in_lang = '' or lang = in_lang) and
+			(in_functionname = '' or functionname = in_functionname) and
+			(in_parentfunctionid = '' or parentfunctionid = in_parentfunctionid)
+		order by functionid asc
+    	
+	) AS t;
+	--	处理空结果集
+	if (retvalue IS NULL ) then
+		retvalue := '[]';
+ 	end if;
+	--	处理返回结果
+	retcode := 0;
+
+end
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_function_menu_query_nopage(in_functionid character varying, in_lang character varying, in_functionname character varying, in_parentfunctionid character varying, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_function_menu_update(character varying, character varying, character varying, character varying, integer, character varying, character varying, integer, character varying); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_function_menu_update(in_functionid character varying, in_lang character varying, in_functionname character varying, in_parentfunctionid character varying, in_sortid integer, in_functionpage character varying, in_functionicon character varying, in_visibletype integer, in_memo character varying, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+/*
+ * 函数说明：修改一个功能菜单。。
+ * 参数：按要求填写参数
+ * 返回：
+ *     retcode： 小于0，失败；==0成功
+ *     retvalue：返回成功或失败的信息
+ * 备注：外部程序调用必须判断retcode的返回值进行处理
+*/
+declare
+	--参数说明
+
+	--	程序变量
+    v_cnt 		    int4 DEFAULT 0;
+	v_createdtime   TIMESTAMP DEFAULT Now();
+	v_modifiedtime  TIMESTAMP DEFAULT Now();
+begin
+	
+	if (trim(in_functionid) = '' or trim(in_lang) = '') then
+		retcode := -6;
+		retvalue := '{"error_msg":"field value is null or empty"}';
+		return;
+	end if;
+
+	update t_mb_function_menu set
+				   functionname = in_functionname,
+				   parentfunctionid = in_parentfunctionid,
+				   sortid = in_sortid,
+				   functionpage = in_functionpage,
+				   functionicon = in_functionicon,
+				   visibletype = in_visibletype,
+				   memo = in_memo,
+				   modifiedtime = v_modifiedtime
+	where functionid = in_functionid AND lang = in_lang; 
+
+	--处理返回结果
+	retcode := 0;
+	retvalue := '{"error_msg":"success"}';
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_function_menu_update(in_functionid character varying, in_lang character varying, in_functionname character varying, in_parentfunctionid character varying, in_sortid integer, in_functionpage character varying, in_functionicon character varying, in_visibletype integer, in_memo character varying, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_prj_delete(character varying); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_prj_delete(in_projectid character varying, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+/*
+ * 函数说明：删除项目
+ * in_projectid 指定的项目编码
+ * 返回：
+ *     retcode： 小于0，失败;== 0 成功
+ *     retvalue：返回成功或失败的信息
+ * 备注：外部程序调用必须判断retcode的返回值进行处理
+*/
+declare
+	--程序变量
+    v_cnt 		    int4 DEFAULT 0;
+	v_createdtime   TIMESTAMP DEFAULT Now();
+	v_modifiedtime  TIMESTAMP DEFAULT Now();
+	v_rec record;
+begin
+
+	--先删除和该项目相关的东西
+	-- todo:是否需要提示？
+	--判断项目标题是否存在
+	select count(1) into v_cnt from t_mb_prj_title where projectid = in_projectid;
+	if (v_cnt != 0) then
+		--删除项目标题
+		PERFORM f_mb_prj_title_delete(in_projectid,'');
+	end if;
+	
+	--删除项目
+	delete from  t_mb_prj where projectid = in_projectid;
+	
+	retcode := 0;
+  	retvalue := '{"error_msg":"success"}';
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_prj_delete(in_projectid character varying, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_prj_insert(character varying, character varying, text, character varying); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_prj_insert(in_projectid character varying, in_projectname character varying, in_projectdesc text, in_hospcode character varying, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+
+/*
+ * 函数说明：插入项目。
+ * 参数：按要求填写参数
+ *  * 返回：
+ *     retcode： 小于0，失败；==0成功
+ *     retvalue：返回成功或失败的信息
+ * 备注：外部程序调用必须判断retcode的返回值进行处理
+*/
+declare
+	--	入参说明
+	--	程序变量说明
+	v_createdtime   TIMESTAMP DEFAULT Now();
+	v_modifiedtime  TIMESTAMP DEFAULT Now();
+	
+	v_cnt  int4  default 0 ; 	
+	
+begin
+
+	
+	if (in_projectname is null or trim(in_projectname) = '') then
+		retcode := -6;
+		retvalue := '{"error_msg":"in_projectname value is null or empty"}';
+		return;
+	end if;
+	
+	if (in_hospcode is null or trim(in_hospcode) = '') then
+		retcode := -6;
+		retvalue := '{"error_msg":"in_hospcode value is null or empty"}';
+		return;
+	end if;
+	
+	
+	if (in_projectid is null or trim(in_projectid) = '') then
+		select zxuuid() into in_projectid;  
+	end if;
+	
+	--判定医院是否存在重名的项目名称
+	select count(1) into v_cnt from t_mb_prj where hospcode = in_hospcode and projectname = in_projectname;
+	if (v_cnt != 0) then
+		retcode := -1;
+		retvalue := '{"error_msg":"record already exist"}';
+		return;
+	end if;
+	
+	insert into t_mb_prj (
+			 	projectid,
+				projectname,
+				projectdesc,
+				hospcode,
+			  createdtime,
+			  modifiedtime
+		) values (
+			in_projectid,
+			in_projectname,
+			in_projectdesc,
+			in_hospcode,
+			v_createdtime,
+			 v_modifiedtime);
+
+	--	处理返回结果
+	retcode := 0;
+	retvalue := '{"error_msg":"success"}';
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_prj_insert(in_projectid character varying, in_projectname character varying, in_projectdesc text, in_hospcode character varying, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_prj_query(character varying, character varying, character varying, integer, integer, integer); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_prj_query(in_projectid character varying, in_projectname character varying, in_hospcode character varying, in_countflag integer, in_offset integer, in_pagesize integer, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+	--函数说明
+	--
+/*
+ * 函数说明：查询项目列表
+ * 参数：按要求填写参数。当所有参数为空串‘’时，查询所有记录，否则查询指定参数的记录
+ * 		in_countflag : 1 查询记录总数和分页的记录，记录总数放在retvalue中；
+ *                     2 仅查询记录总数，不查询分页记录，记录总数放在retvalue中，
+ * 					   3 仅查询分页记录，不查询记录总数。 retvalue始终=0
+ * 		in_offset:    该页记录的起始位置
+ * 		in_pagesize：     该页记录的总数
+ * 返回：
+ *     retcode： 小于0，表示失败；>=0表示成功;当大于0时，返回记录总数 
+ *     retvalue：返回关联表查询字段记录
+ * 备注：
+*/
+declare
+	--程序变量
+    v_cnt 		    int4 DEFAULT 0;
+	v_createdtime   TIMESTAMP DEFAULT Now();
+	v_modifiedtime  TIMESTAMP DEFAULT Now();
+	v_rec record;
+begin
+	
+	if ((in_countflag != 1 and in_countflag != 2 and in_countflag != 3) or 
+		in_offset < 0 OR in_pagesize < 0) THEN
+		retcode := -7; 
+		retvalue:='{"error_msg":"param is not correct"}';
+		return;
+	end if;
+	
+	--	虚拟表前缀 c_ 代表对物理表，增加了查询条件
+	with c_mb_record as 
+	(
+		 select a.projectid,
+			 a.projectname,
+			 a.projectdesc,
+			 a.createdtime,
+			 a.modifiedtime
+		from t_mb_prj a
+	     where 
+	     		(in_projectid = '' or a.projectid = in_projectid) and 
+	     		(in_projectname = '' or a.projectname = in_projectname) AND 
+	     		(in_hospcode = '' OR a.hospcode = in_hospcode)
+
+	),
+	--	虚拟表前缀 o_l_c 代表对前定义的虚拟表，增加了记录数限定条件
+	c_mb_record_limit as
+	(
+		select * from c_mb_record  offset in_offset limit in_pagesize
+	)
+
+	select 
+		case when (in_countflag = 1 or in_countflag = 2)  then 
+				(select count(1) from c_mb_record ) end as ret_code, 
+		case when (in_countflag = 1 or in_countflag = 3) then 
+				(select array_to_json(array_agg(row_to_json(t))) from c_mb_record_limit t ) end as ret_value
+	into v_rec;
+	
+	retcode := v_rec.ret_code;
+	retvalue := v_rec.ret_value;
+	
+	if (retcode is NULL) THEN
+		retcode := 0;
+	end if;
+	if (retvalue is NULL) then 
+		retvalue := '[]';
+	end if;
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_prj_query(in_projectid character varying, in_projectname character varying, in_hospcode character varying, in_countflag integer, in_offset integer, in_pagesize integer, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_prj_title_delete(character varying, character varying); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_prj_title_delete(in_projectid character varying, in_titleid character varying, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+/*
+ * 函数说明：删除项目标题
+ * 参数：in_hospcode 指定的医院编码
+ * 返回：
+ *     retcode： 小于0，失败;== 0 成功
+ *     retvalue：返回成功或失败的信息
+ * 备注：外部程序调用必须判断retcode的返回值进行处理
+*/
+declare
+	--程序变量
+    v_cnt 		    int4 DEFAULT 0;
+	v_createdtime   TIMESTAMP DEFAULT Now();
+	v_modifiedtime  TIMESTAMP DEFAULT Now();
+	v_rec record;
+begin
+
+	--先删除和该项目标题相关的东西
+	--判断用户项目标题是否存在
+	select count(1) into v_cnt from t_mb_user_account_prj_tiltle where projectid = in_projectid;
+	if (v_cnt != 0) then
+		--删除用户项目标题
+		delete from  t_mb_user_account_prj_tiltle 
+			where (projectid = in_projectid) and  (in_titleid  = '' OR in_titleid = titleid);
+	end if;
+
+	--删除项目标题
+	delete from  t_mb_prj_title 
+	where (projectid = in_projectid) and  (in_titleid  = '' OR in_titleid = titleid);
+	
+	retcode := 0;
+  	retvalue := '{"error_msg":"success"}';
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_prj_title_delete(in_projectid character varying, in_titleid character varying, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_prj_title_insert(character varying, character varying, character varying, text); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_prj_title_insert(in_projectid character varying, in_titleid character varying, in_titlename character varying, in_titlelogo text, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+
+/*
+ * 函数说明：插入项目标题。
+ * 参数：按要求填写参数
+ *  * 返回：
+ *     retcode： 小于0，失败；==0成功
+ *     retvalue：返回成功或失败的信息
+ * 备注：外部程序调用必须判断retcode的返回值进行处理
+*/
+declare
+	--	入参说明
+	--	程序变量说明
+	v_createdtime   TIMESTAMP DEFAULT Now();
+	v_modifiedtime  TIMESTAMP DEFAULT Now();
+	
+	v_cnt  int4  default 0 ; 	
+	
+begin
+	
+	if (in_projectid is null or trim(in_projectid) = '') then
+		retcode := -6;
+		retvalue := '{"error_msg":"in_projectid value is null or empty"}';
+		return;
+	end if;
+	
+	if (in_titlename is null or trim(in_titlename) = '') then
+		retcode := -6;
+		retvalue := '{"error_msg":"in_titlename value is null or empty"}';
+		return;
+	end if;
+	
+	
+	if (in_titleid is null or trim(in_titleid) = '') then
+		select zxuuid() into in_titleid;  
+	end if;
+	
+	--判定项目是否存在重名的标题
+	select count(1) into v_cnt from t_mb_prj_title where projectid = in_projectid and titlename = in_titlename;
+	if (v_cnt != 0) then
+		retcode := -1;
+		retvalue := '{"error_msg":"record already exist"}';
+		return;
+	end if;
+		
+	insert into t_mb_prj_title (
+			 	projectid,
+				titleid,
+				titlename,
+				titlelogo,
+			   createdtime,
+			   modifiedtime)
+	values (
+			in_projectid,
+			in_titleid,
+			in_titlename,
+			in_titlelogo,
+			v_createdtime,
+			 v_modifiedtime);
+
+	--	处理返回结果
+	retcode := 0;
+	retvalue := '{"error_msg":"success"}';
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_prj_title_insert(in_projectid character varying, in_titleid character varying, in_titlename character varying, in_titlelogo text, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_prj_title_query(character varying, integer, integer, integer); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_prj_title_query(in_projectid character varying, in_countflag integer, in_offset integer, in_pagesize integer, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+	--函数说明
+	--
+/*
+ * 函数说明：查询项目标题列表
+ * 参数：按要求填写参数。当所有参数为空串‘’时，查询所有记录，否则查询指定参数的记录
+ * 		in_countflag : 1 查询记录总数和分页的记录，记录总数放在retvalue中；
+ *                     2 仅查询记录总数，不查询分页记录，记录总数放在retvalue中，
+ * 					   3 仅查询分页记录，不查询记录总数。 retvalue始终=0
+ * 		in_offset:    该页记录的起始位置
+ * 		in_pagesize：     该页记录的总数
+ * 返回：
+ *     retcode： 小于0，表示失败；>=0表示成功;当大于0时，返回记录总数 
+ *     retvalue：返回关联表查询字段记录
+ * 备注：
+*/
+declare
+	--程序变量
+    v_cnt 		    int4 DEFAULT 0;
+	v_createdtime   TIMESTAMP DEFAULT Now();
+	v_modifiedtime  TIMESTAMP DEFAULT Now();
+	v_rec record;
+begin
+	
+	if ((in_countflag != 1 and in_countflag != 2 and in_countflag != 3) or 
+		in_offset < 0 OR in_pagesize < 0) THEN
+		retcode := -7; 
+		retvalue:='{"error_msg":"param is not correct"}';
+		return;
+	end if;
+	
+	--	虚拟表前缀 c_ 代表对物理表，增加了查询条件
+	with c_mb_record as 
+	(
+		 select a.projectid,
+			 a.titleid,
+			 a.titlename,
+			 a.titlelogo,
+			 a.createdtime,
+			 a.modifiedtime
+		from t_mb_prj_title a
+	     where 
+	     		(in_projectid = '' or a.projectid = in_projectid) 
+
+	),
+	--	虚拟表前缀 o_l_c 代表对前定义的虚拟表，增加了记录数限定条件
+	c_mb_record_limit as
+	(
+		select * from c_mb_record  offset in_offset limit in_pagesize
+	)
+
+	select 
+		case when (in_countflag = 1 or in_countflag = 2)  then 
+				(select count(1) from c_mb_record ) end as ret_code, 
+		case when (in_countflag = 1 or in_countflag = 3) then 
+				(select array_to_json(array_agg(row_to_json(t))) from c_mb_record_limit t ) end as ret_value
+	into v_rec;
+	
+	retcode := v_rec.ret_code;
+	retvalue := v_rec.ret_value;
+	
+	if (retcode is NULL) THEN
+		retcode := 0;
+	end if;
+	if (retvalue is NULL) then 
+		retvalue := '[]';
+	end if;
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_prj_title_query(in_projectid character varying, in_countflag integer, in_offset integer, in_pagesize integer, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_prj_title_update(character varying, character varying, character varying, text); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_prj_title_update(in_projectid character varying, in_titleid character varying, in_titlename character varying, in_titlelogo text, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+
+/*
+ * 函数说明：更新项目标题。
+ * 参数：按要求填写参数
+ *  * 返回：
+ *     retcode： 小于0，失败；==0成功
+ *     retvalue：返回成功或失败的信息
+ * 备注：外部程序调用必须判断retcode的返回值进行处理
+*/
+declare
+	--	入参说明
+	--	程序变量说明
+	v_createdtime   TIMESTAMP DEFAULT Now();
+	v_modifiedtime  TIMESTAMP DEFAULT Now();
+begin
+
+	if (trim(in_projectid) = '' or trim(in_titleid) = '' or trim(in_titlename) = '') then
+		retcode := -6;
+		retvalue := '{"error_msg":"field value is null or empty"}';
+		return;
+	end if;
+	
+	--更新
+	select now() into v_modifiedtime;
+	update t_mb_prj_title set
+			titlename = in_titlename,
+			titlelogo = in_titlelogo,
+			modifiedtime = v_modifiedtime
+		where projectid = in_projectid 
+		and titleid = in_titleid; 
+
+	--	处理返回结果
+	retcode := 0;
+	retvalue := '{"error_msg":"success"}';
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_prj_title_update(in_projectid character varying, in_titleid character varying, in_titlename character varying, in_titlelogo text, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_prj_update(character varying, character varying, text, character varying); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_prj_update(in_projectid character varying, in_projectname character varying, in_projectdesc text, in_hospcode character varying, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+
+/*
+ * 函数说明：更新项目。
+ * 参数：按要求填写参数
+ *  * 返回：
+ *     retcode： 小于0，失败；==0成功
+ *     retvalue：返回成功或失败的信息
+ * 备注：外部程序调用必须判断retcode的返回值进行处理
+*/
+declare
+	--	入参说明
+	--	程序变量说明
+	v_createdtime   TIMESTAMP DEFAULT Now();
+	v_modifiedtime  TIMESTAMP DEFAULT Now();
+begin
+
+	if (trim(in_projectid) = '' or trim(in_projectname) = '') then
+		retcode := -6;
+		retvalue := '{"error_msg":"field value is null or empty"}';
+		return;
+	end if;
+	
+	--更新
+	select now() into v_modifiedtime;
+	update t_mb_prj set
+			projectname = in_projectname,
+			projectdesc = in_projectdesc,
+			hospcode = in_hospcode,	
+			modifiedtime = v_modifiedtime
+		where projectid = in_projectid ; 
+
+	--	处理返回结果
+	retcode := 0;
+	retvalue := '{"error_msg":"success"}';
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_prj_update(in_projectid character varying, in_projectname character varying, in_projectdesc text, in_hospcode character varying, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_role_group_account_delete(character varying, character varying); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_role_group_account_delete(in_userid character varying, in_rolegrpid character varying, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+/*
+ * 函数说明：删除角色账号关联关系。
+ * 参数：按要求填写参数
+ * 返回：
+ *     retcode： 小于0，失败；==0成功
+ *     retvalue：返回成功或失败的信息
+ * 备注：外部程序调用必须判断retcode的返回值进行处理
+*/
+declare
+	--程序变量
+	v_rec record;
+begin
+	--删除组
+	delete from  t_mb_role_group_account 
+	where (userid = in_userid) and  (in_rolegrpid = '' or rolegrpid = in_rolegrpid);
+
+	retcode := 0;
+  	retvalue := '{"error_msg":"success"}';
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_role_group_account_delete(in_userid character varying, in_rolegrpid character varying, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_role_group_account_query(character varying, character varying); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_role_group_account_query(in_userid character varying, in_rolegrpid character varying, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+
+/*
+ * 函数说明：查询角色账号关联关系。
+ * 参数：按要求填写参数，当所有参数为空串''时，查询所有记录，否则查询指定参数的记录
+ * 返回：
+ *     retcode： 小于0，失败；==0成功
+ *     retvalue：返回账号和角色关联记录集,有可能为空
+ * 备注：外部程序调用必须判断retcode的返回值进行处理
+*/
+declare
+	--程序变量
+    v_cnt 		    int4 DEFAULT 0;
+	v_createdtime   TIMESTAMP DEFAULT Now();
+	v_modifiedtime  TIMESTAMP DEFAULT Now();
+begin
+
+	select array_to_json(array_agg(row_to_json(t))) into retvalue
+	from (
+		 	select 
+		 		a.rolegrpid,
+		 		a.userid,
+		 		a.sysflag,
+		 		b.rolegrpname 
+		 	from  t_mb_role_group_account a, t_mb_role_group b
+    		where (a.rolegrpid = b.rolegrpid) and  
+    		    (in_userid = '' or a.userid = in_userid) and 
+    			(in_rolegrpid = '' or a.rolegrpid = in_rolegrpid )
+    			
+	) AS t;
+		--	处理空结果集
+	if (retvalue IS NULL ) then
+		retvalue := '[]';
+ 	end if;
+	--	处理返回结果
+	retcode := 0;
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_role_group_account_query(in_userid character varying, in_rolegrpid character varying, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_role_group_account_save(character varying, text); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_role_group_account_save(in_userid character varying, in_rolegrpidarrayjson text, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+
+/*
+ * 函数说明：保存角色账号关联关系。先删除原来的角色，再插入新的角色
+ * 参数：按要求填写参数
+ *     in_rolegrpidarrayjson 以josn数组格式， 格式["0001", "0002"]
+ * 返回：
+ *     retcode： 小于0，失败；==0成功
+ *     retvalue：返回成功或失败的信息
+ * 备注：外部程序调用必须判断retcode的返回值进行处理
+*/
+declare
+	--	入参说明
+	--	程序变量说明
+    v_cnt 		    int4 DEFAULT 0;
+	v_createdtime   TIMESTAMP DEFAULT Now();
+	v_modifiedtime  TIMESTAMP DEFAULT Now();
+	v_value text DEFAULT '';
+	v_rec			RECORD;
+	v_rec_role record;
+begin
+	
+	if (trim(in_userid) = '') then
+		retcode := -6;
+		retvalue := '{"error_msg":"field value is null or empty"}';
+		return;
+	end if;
+
+	delete from t_mb_role_group_account where userid = in_userid; 
+	
+	for v_rec in 
+	(select * from json_array_elements_text(in_rolegrpidarrayjson::json))
+	loop
+	
+		--循环 角色数组
+		for v_rec_role in
+			select * from json_array_elements(v_rec.value::json)
+
+		loop 
+				raise notice '==>%',v_rec_role.value;
+				--多个角色批量插入
+				v_value := v_rec_role.value::text;
+				v_value := replace(v_value,'"','');
+				select count(1) into v_cnt from t_mb_role_group_account 
+				where  (userid = in_userid and rolegrpid = v_value );
+				if (v_cnt = 0) then
+					select now() into v_createdtime;
+					v_modifiedtime := v_createdtime;
+					insert into t_mb_role_group_account(
+							 	userid,
+								rolegrpid,
+								sysflag,
+							   createdtime,
+							   modifiedtime)
+					values (
+							 	in_userid,
+								v_value,
+								20000,
+								v_createdtime,
+								 v_modifiedtime);
+				end if;
+		end loop;
+	
+	end loop;
+
+
+	--	处理返回结果
+	retcode := 0;
+	retvalue := '{"error_msg":"success"}';
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_role_group_account_save(in_userid character varying, in_rolegrpidarrayjson text, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_role_group_delete(character varying); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_role_group_delete(in_rolegrpid character varying, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+/*
+ * 函数说明：删除角色组。sysflag = 20000为系统角色，系统角色不能删除
+ * 参数：按要求填写参数
+ * 返回：
+ *     retcode： 小于0，失败；==0成功
+ *     retvalue：返回成功或失败的信息
+ * 备注：外部程序调用必须判断retcode的返回值进行处理
+*/
+declare
+	--程序变量
+    v_cnt 		    int4 DEFAULT 0;
+	v_createdtime   TIMESTAMP DEFAULT Now();
+	v_modifiedtime  TIMESTAMP DEFAULT Now();
+	v_rec record;
+begin
+	--先删除和该角色相关的东西
+	--判断医院是否存在
+	select count(1) into v_cnt from t_mb_role_group where rolegrpid = in_rolegrpid and sysflag = 20000;
+	if (v_cnt != 0) then
+		--删除组功能
+		PERFORM f_mb_role_group_function_delete(in_rolegrpid);
+		--删除组关联的账号
+		delete from t_mb_role_group_account where rolegrpid = in_rolegrpid;
+	end if;
+	
+	--删除组
+	delete from  t_mb_role_group where (rolegrpid = in_rolegrpid and sysflag = 20000 );
+
+	retcode := 0;
+  	retvalue := '{"error_msg":"success"}';
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_role_group_delete(in_rolegrpid character varying, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_role_group_function_delete(character varying); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_role_group_function_delete(in_rolegrpid character varying, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+/*
+ * 函数说明：删除角色组相关的功能列表。该函数只操作用户定义角色，不能操作系统决橘色。sysflag = 10000为系统角色功能，不能删除
+ * 参数：按要求填写参数
+ * 返回：
+ *     retcode： 小于0，失败；==0成功
+ *     retvalue：返回成功或失败的信息
+ * 备注：外部程序调用必须判断retcode的返回值进行处理
+*/
+declare
+	--	入参说明
+	--	程序变量说明
+	v_rec record;
+begin
+
+	delete from  t_mb_role_group_function 
+	where (rolegrpid = in_rolegrpid and sysflag = 20000);
+
+	retcode := 0;
+  	retvalue := '{"error_msg":"success"}';
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_role_group_function_delete(in_rolegrpid character varying, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_role_group_function_query(character varying); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_role_group_function_query(in_rolegrpid character varying, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+declare
+
+	--	程序变量说明
+    v_cnt 		    int4 DEFAULT 0;
+	v_createdtime   TIMESTAMP DEFAULT Now();
+	v_modifiedtime  TIMESTAMP DEFAULT Now();
+begin
+
+	select array_to_json(array_agg(row_to_json(t))) into retvalue
+	from (
+		select a.rolegrpid,
+				a.functionidlist,
+				a.sysflag,
+				a.createdtime,
+				a.modifiedtime 
+		from  t_mb_role_group_function a
+    	where (in_rolegrpid = '' or a.rolegrpid = in_rolegrpid)
+    	
+	) AS t;
+	--	处理空结果集
+	if (retvalue IS NULL ) then
+		retvalue := '[]';
+ 	end if;
+	--	处理返回结果
+	retcode := 0;
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_role_group_function_query(in_rolegrpid character varying, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_role_group_function_save(character varying, text); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_role_group_function_save(in_rolegrpid character varying, in_functionidlistjosn text, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+/*
+ * 函数说明：保存角色组的功能列表。该函数只操作用户定义角色组的功能列表。sysflag = 10000为系统角色
+ * 参数：按要求填写参数
+ * --in_functionidlist 格式为JOSN数组格式，如["222","222","222"]
+ * 返回：
+ *     retcode： 小于0，失败；==0成功
+ *     retvalue：返回成功或失败的信息
+ * 备注：外部程序调用必须判断retcode的返回值进行处理
+*/
+
+declare
+
+	--	程序变量说明
+    v_cnt 		    int4 DEFAULT 0;
+	v_createdtime   TIMESTAMP DEFAULT Now();
+	v_modifiedtime  TIMESTAMP DEFAULT Now();
+begin
+
+	if (trim(in_rolegrpid) = '') then
+		retcode := -6;
+		retvalue := '{"error_msg":"field value is null or empty"}';
+		return;
+	end if;
+	
+	--判断医院编码是否存在
+  	select count(1) into v_cnt from t_mb_role_group_function  where rolegrpid = in_rolegrpid;
+  
+	if (v_cnt = 0) then --记录不存在，插入记录
+		
+		select now() into v_createdtime;
+		v_modifiedtime := v_createdtime;
+		insert into t_mb_role_group_function(
+					rolegrpid,
+					functionidlist,
+					sysflag,
+					createdtime,
+					modifiedtime)
+	 	values (
+					in_rolegrpid,
+					in_functionidlistjosn,
+				 	20000,
+				   v_createdtime,
+				   v_modifiedtime);
+	ELSE --记录已经存在，只需要修改
+		--修改医院信息
+		select now() into v_modifiedtime;
+	  	update t_mb_role_group_function set
+			functionidlist = in_functionidlistjosn,
+		    modifiedtime =  v_modifiedtime
+		where (rolegrpid = in_rolegrpid and sysflag = 20000); 		
+	
+	end if;
+
+	--	处理返回结果
+	retcode := 0;
+	retvalue := '{"error_msg":"success"}';
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_role_group_function_save(in_rolegrpid character varying, in_functionidlistjosn text, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_role_group_insert(character varying, character varying, text); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_role_group_insert(in_rolegrpid character varying, in_rolegrpname character varying, in_rolegrpicon text, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+
+/*
+ * 函数说明：插入角色组。该函数只操作用户定义角色组。sysflag = 10000为系统角色
+ * 参数：按要求填写参数
+ *  * 返回：
+ *     retcode： 小于0，失败；==0成功
+ *     retvalue：返回成功或失败的信息
+ * 备注：外部程序调用必须判断retcode的返回值进行处理
+*/
+declare
+	--	入参说明
+	--	程序变量说明
+    v_cnt 		    int4 DEFAULT 0;
+	v_createdtime   TIMESTAMP DEFAULT Now();
+	v_modifiedtime  TIMESTAMP DEFAULT Now();
+begin
+
+	if (trim(in_rolegrpid) = '') then
+		retcode := -6;
+		retvalue := '{"error_msg":"field value is null or empty"}';
+		return;
+	end if;
+
+	--判断医院编码是否存在
+  select count(1) into v_cnt from t_mb_role_group  
+  where rolegrpid = in_rolegrpid or  rolegrpname = in_rolegrpname;
+  if (v_cnt != 0) then
+		retcode := -1;
+		retvalue := '{"error_msg":"record already exist"}';
+		return;
+	end if;
+	
+	select now() into v_createdtime;
+	v_modifiedtime := v_createdtime;
+
+	insert into t_mb_role_group(
+			 	rolegrpid,
+				rolegrpname,
+				sysflag,
+				rolegrpicon,
+			   createdtime,
+			   modifiedtime)
+	values (
+			in_rolegrpid,
+			in_rolegrpname,
+			20000,
+			in_rolegrpicon,
+			v_createdtime,
+			 v_modifiedtime);
+
+	--	处理返回结果
+	retcode := 0;
+	retvalue := '{"error_msg":"success"}';
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_role_group_insert(in_rolegrpid character varying, in_rolegrpname character varying, in_rolegrpicon text, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_role_group_query(character varying); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_role_group_query(in_rolegrpid character varying, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+/*
+ * 函数说明：查询角色组。
+ * 参数：按要求填写参数，当所有参数为空串''时，查询所有记录，否则查询指定参数的记录
+ * 返回：
+ *     retcode： 小于0，失败；==0成功
+ *     retvalue：返回角色组的功能列表,有可能为空
+ * 备注：外部程序调用必须判断retcode的返回值进行处理
+*/
+declare
+	--程序变量
+    v_cnt 		    int4 DEFAULT 0;
+	v_createdtime   TIMESTAMP DEFAULT Now();
+	v_modifiedtime  TIMESTAMP DEFAULT Now();
+begin
+
+	select array_to_json(array_agg(row_to_json(t))) into retvalue
+	from (
+			select a.rolegrpid, a.rolegrpname, a.rolegrpicon,
+			(select string_agg(c.functionname||'',', ') from t_mb_function_menu c 
+			where c.functionid in (select * from json_array_elements_text(b.functionidlist::json)) and c.functionid!='000000') as functionlist
+			from  t_mb_role_group a
+			LEFT JOIN t_mb_role_group_function b ON a.rolegrpid = b.rolegrpid
+    		where (in_rolegrpid = '' or a.rolegrpid = in_rolegrpid)
+			order by a.rolegrpid
+	) AS t;
+	--	处理空结果集
+	if (retvalue IS NULL ) then
+		retvalue := '[]';
+ 	end if;
+	--	处理返回结果
+	retcode := 0;
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_role_group_query(in_rolegrpid character varying, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_role_group_update(character varying, character varying, text); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_role_group_update(in_rolegrpid character varying, in_rolegrpname character varying, in_rolegrpicon text, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+/*
+ * 函数说明：删除角色组。该函数只操作用户定义角色组。sysflag = 10000为系统角色
+ * 参数：按要求填写参数
+ *  * 返回：
+ *     retcode： 小于0，失败；==0成功
+ *     retvalue：返回成功或失败的信息
+ * 备注：外部程序调用必须判断retcode的返回值进行处理
+*/
+declare
+	--参数说明
+	--程序变量
+    v_cnt 		    int4 DEFAULT 0;
+	v_createdtime   TIMESTAMP DEFAULT Now();
+	v_modifiedtime  TIMESTAMP DEFAULT Now();
+begin
+	if (trim(in_rolegrpid) = '') then
+		retcode := -6;
+		retvalue := '{"error_msg":"field value is null or empty"}';
+		return;
+	end if;
+
+	--判断医院是否存在
+	select count(1) into v_cnt from t_mb_role_group 
+	where rolegrpid = in_rolegrpid or rolegrpname = in_rolegrpname;
+	if (v_cnt = 0) then
+		retcode := -2;
+		retvalue := '{"error_msg":"record not exist"}';
+		return;
+	end if;
+	
+	--更新
+	select now() into v_modifiedtime;
+	update t_mb_role_group set
+			rolegrpname = in_rolegrpname,
+			rolegrpicon = in_rolegrpicon,
+			modifiedtime = v_modifiedtime
+		where rolegrpid = in_rolegrpid and sysflag = 20000 ; 
+
+
+	retcode := 0;
+	retvalue := '{"error_msg":"success"}';
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_role_group_update(in_rolegrpid character varying, in_rolegrpname character varying, in_rolegrpicon text, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_user_account_check(text, text); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_user_account_check(in_acc text, in_pwd text, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$ declare r_account RECORD;
+
+ v_pwd text;
+
+ salt text;
+
+ md5Str text;
+
+ begin
+	 select * into r_account from t_mb_user_account a where a.acc = in_acc;
+
+	 if (r_account is null) then
+		retcode := -4;
+		retvalue := '{"error_msg":"account or pwd not correct"}';
+		-- 账号不存在
+		return;
+	end if;
+
+	if (r_account.pwd != md5(concat( in_pwd, r_account.salt ))) then
+		retcode := -4;
+		retvalue := '{"error_msg":"account or pwd not correct"}';
+		return;
+	end if;
+
+	retcode := 0;
+	retvalue := '{"error_msg":"success"}';
+
+end;
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_user_account_check(in_acc text, in_pwd text, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_user_account_delete(character varying, character varying); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_user_account_delete(in_userid character varying, in_acc character varying, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+/*
+ * 函数说明：删除医生开通的账号
+ * 参数：按要求填写参数
+ * 返回：
+ *     retcode： 小于0，失败；==0成功
+ *     retvalue：返回成功或失败的信息
+ * 备注：外部程序调用必须判断retcode的返回值进行处理
+*/
+declare
+	--程序变量
+	v_cnt int4;
+	v_rec record;
+begin
+	
+	if(in_acc = 'admin') then	--不能删除管理员账号
+		retcode := -11;
+		retvalue := '{"error_msg":"f_mb_user_account_delete ->> admin acc is not allowed delete"}';
+		return;
+	end if;
+	
+	if (in_userid is null or trim(in_userid) = '') then
+		retcode := -6;
+		retvalue := '{"error_msg":"f_mb_user_account_delete ->> in_userid value is null or empty"}';
+		return;
+	end if;
+	
+	if (in_acc is null or trim(in_acc) = '') then
+		retcode := -6;
+		retvalue := '{"error_msg":"f_mb_user_account_delete ->> in_acc value is null or empty"}';
+		return;
+	end if;
+
+-----------------------关闭账号， 医生开通的账号需要删除的东西 ---------------------------------
+	--	删除该用户所关联的机构权限
+	delete from t_mb_user_auth_hosp where userid = in_userid;
+
+	--	删除该用户所关联的科室权限
+	delete from t_mb_user_auth_hosp_dept where userid = in_userid;
+
+	-- 删除用户所关联的划区表
+	delete from t_mb_hosp_doctor_area where doctoruserid = in_userid;
+
+	--	删除该用户所能访问的项目数据
+	delete from t_mb_user_account_prj_tiltle where userid = in_userid;
+
+	--删除账号组关联表
+	PERFORM f_mb_role_group_account_delete(in_userid,'');
+
+	--置空t_mb_user_info的acc字段
+	update t_mb_user_info set acc = '' where userid = in_userid;	
+
+	--删除账号
+	delete from  t_mb_user_account where acc = in_acc and  userid = in_userid;
+	
+	retcode := 0;
+  	retvalue := '{"error_msg":"success"}';
+  
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_user_account_delete(in_userid character varying, in_acc character varying, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_user_account_insert(character varying, character varying, character varying, character varying, character varying, integer); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_user_account_insert(in_userid character varying, in_hospcode character varying, in_acc character varying, in_pwd character varying, in_salt character varying, in_sysflag integer, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+/*
+ * 函数说明：开通医生账号
+ * 参数：按要求填写参数
+ * 返回：
+ *     retcode： 小于0，失败；==0成功
+ *     retvalue：返回成功或失败的信息
+ * 备注：外部程序调用必须判断retcode的返回值进行处理
+*/
+declare
+	--	入参说明
+	--	程序变量说明
+    v_cnt	int4 DEFAULT 0;
+	v_createdtime	timestamp default now();
+	v_modifiedtime	timestamp default now();
+	
+	v_deptcode varchar(64) default '';
+	v_mbHospDoctorRgn  jsonb default '[]' ;		--	为新帐号默认初始化的 虚拟未知划区村组	
+begin
+	
+	-- 所有通过界面新增的账户都是普通账户
+	in_sysflag := 20000;
+	
+	if (trim(in_userid) = '' or trim(in_acc) = '') then
+		retcode := -6;
+		retvalue := '{"error_msg":"f_mb_user_account_insert ->> in_userid or in_acc value is null or empty"}';
+		return;
+	end if;
+
+	if (in_hospcode is null or trim(in_hospcode) = '') then
+		retcode := -6;
+		retvalue := '{"error_msg":"f_mb_user_account_insert ->> in_hospcode value is null or empty"}';
+		return;
+	end if;
+
+	if (in_pwd is null or trim(in_pwd) = '') then
+		retcode := -6;
+		retvalue := '{"error_msg":"f_mb_user_account_insert ->> in_pwd value is null or empty"}';
+		return;
+	end if;
+	
+	if (in_salt is null or trim(in_salt) = '') then
+		retcode := -6;
+		retvalue := '{"error_msg":"f_mb_user_account_insert ->> in_salt value is null or empty"}';
+		return;
+	end if;
+
+	if (in_sysflag is null) then
+		retcode := -6;
+		retvalue := '{"error_msg":"f_mb_user_account_insert ->> in_sysflag value is null"}';
+		return;
+	end if;
+
+	select count(1) into v_cnt from t_mb_user_account a where a.acc = in_acc;
+	if (v_cnt > 0) then
+			retcode := -1;
+			retvalue := '{"error_msg":"f_mb_user_account_insert ->> record already exist"}';
+			return;
+	end if;
+
+	insert into t_mb_user_account(
+		userid,	--用户ID
+		acc,	--帐号
+		pwd,	--密码
+		salt,	--加密因子
+		enableflag,	--使能标记
+		sysflag,	--系统标记
+		hospauthflag,	--医院权限标记
+		deptauthflag,	--科室权限标记
+		doctorauthflag,	--医生权限标记
+		areaauthflag,	--划区权限标记
+		reserveauthflag,	--保留标记
+		regtime,	--注册时间
+		modifiedtime,	--修改时间
+		createdtime	--创建时间
+	 )
+	values (
+	 	in_userid,	--用户ID
+		in_acc,	--帐号acc ID
+		in_pwd,	--密码
+		in_salt,	--加密因子
+		'10000',	--使能标记
+		in_sysflag,	--系统标记
+		1,	--医院权限标记
+		1,	--科室权限标记
+		0,	--医生权限标记
+		1,	--划区权限标记
+		0,	--保留标记
+		v_createdtime,	--注册时间
+		v_modifiedtime,	--修改时间
+		v_createdtime	--创建时间
+	);
+	 
+	--将用户所属医院默认配置到权限医院
+	perform f_mb_user_auth_hosp_insert(
+	             in_userid ,
+	             in_hospcode
+	);			 
+
+	--将doctor acc 更新到 t_mb_user_info 的 acc 字段
+	update t_mb_user_info set acc = in_acc where hospcode = in_hospcode and userid = in_userid;
+
+	--将添加医院医生时配置的科室，配置到科室权限表
+	select deptcode into v_deptcode from t_mb_user_info where userid = in_userid;
+	insert into t_mb_user_auth_hosp_dept (
+	 	userid,
+		hospcode,
+		deptcode,
+		createdtime, 
+		modifiedtime 
+	) values (
+		in_userid,
+ 		in_hospcode,
+ 		v_deptcode,
+ 		v_createdtime,
+ 		v_modifiedtime
+	);
+
+	--	为 帐号 配置 虚拟未知划区 权限 ，构造 默认参数
+		select jsonb_insert(	v_mbHospDoctorRgn, 
+										'{0}', 
+										jsonb_build_object ( 	'hospcode' , 	in_hospcode ,
+																		'doctoruserid' , 	in_userid ,
+																		'doctorusername' , 	'',
+																		'regionlevel' , 	6,		--	TODO 这里硬编码？
+																		'areacode' , 	'000000',
+																		'areaname' , 	'未知划区',
+																		'areafullname' , 	'未知划区',
+																		'arealevel' , 	0,
+																		'parentareacode' , 	'999999'
+										 ) ,
+										false ) 
+		into v_mbHospDoctorRgn ;
+
+		perform f_mb_hosp_doctor_area_insert(in_userid, v_mbHospDoctorRgn) ;
+				 
+	--	处理返回结果
+	retcode := 0;
+	retvalue := '{"error_msg":"success"}';
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_user_account_insert(in_userid character varying, in_hospcode character varying, in_acc character varying, in_pwd character varying, in_salt character varying, in_sysflag integer, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_user_account_list_query(character varying, character varying, integer, integer, integer); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_user_account_list_query(in_userid character varying, in_hospcode character varying, in_countflag integer, in_offset integer, in_pagesize integer, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+/*
+* 函数说明：查询医院机构下所有用户信息列表
+ * 参数：当所有参数为空串‘’时，默认存储过程赋值
+ * 返回：
+ *     retcode： 小于0，表示失败；>=0表示成功;当大于0时，返回记录总数 
+ *     retvalue：返回关联表查询字段记录
+ * 
+ *    data: {
+ * 			"doctorteamid":"uuid"
+ * 		}
+ *  备注：
+ * 
+*/
+
+DECLARE
+	v_rec            record;
+begin
+	
+		--	合法性校验
+		if (in_userid IS  NULL OR  trim(in_userid) = '') THEN 
+			retcode := -6;
+			retvalue := '{"error_msg":"field value is null or empty"}';
+			return;
+		end if;
+	
+		with c_mb_record as (
+						select
+							a.userid,
+						   a.acc,
+						   a.pwd,
+						   a.salt,
+						   a.enableflag,
+						   a.regtime,
+						   b.hospcode,
+						   c.hospname,
+						   b.deptcode,
+						   b.doctorlevelcode,
+						   b.workdepartment,
+						   b.idcardno,
+						   b.phone,
+						   b.workno,
+						   b.signature,
+						   b.resume,
+						   b.doctorname,
+						   b.gendercode,
+						   b.gendername,
+						   b.certtype,
+						   b.certtypename,
+						   b.doctorlevelname,
+						   b.openflag,
+						   b.birth,
+						   b.nickname,
+						   b.photo,
+						   b.areacode,
+						   b.address,
+						   b.params
+						from
+							t_mb_user_account a
+						left join t_mb_user_info b on
+							a.userid = b.userid
+						LEFT JOIN t_mb_hosp c on b.hospcode = c.hospcode 
+						where
+							a.enableflag = '10000' --10000=正常使用，20000=禁用
+							and ( in_hospcode ='' or b.hospcode = in_hospcode) 
+						ORDER BY b.createdtime  ASC 
+		),
+			--	虚拟表前缀 o_l_c 代表对前定义的虚拟表，增加了记录数限定条件
+			c_mb_record_limit as
+			(
+				select * from c_mb_record  offset in_offset limit in_pagesize
+			)		
+		
+			select 
+				case when (in_countflag = 2)  then 
+						(select count(1) from c_mb_record ) end as ret_code, 
+				case when (in_countflag = 3) then 
+						(select array_to_json(array_agg(row_to_json(t))) from c_mb_record_limit t ) end as ret_value
+			into v_rec;
+					
+			retcode := v_rec.ret_code;
+			retvalue := v_rec.ret_value;
+			
+			if (retcode is NULL) THEN
+				retcode := 0; --成功
+			end if;
+		
+			if (retvalue is NULL) then 
+				retvalue := '[]';
+			end if;
+	
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_user_account_list_query(in_userid character varying, in_hospcode character varying, in_countflag integer, in_offset integer, in_pagesize integer, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_user_account_menu_query(text, integer); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_user_account_menu_query(in_acc text, in_visibletype integer, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$  
+declare   
+
+BEGIN  
+	in_visibletype := 2;    
+		
+	--	生成查询SQL，指定角色，指定版本，包含的所有权限菜单项（虚拟子查询表）
+with c_dx_record as 
+(
+	select f.* from t_mb_function_menu f where f.functionid in 
+	(
+		select json_array_elements_text(c.functionidlist::json)
+		from t_mb_user_account a, t_mb_role_group_account b, t_mb_role_group_function c
+		where (a.userid = b.userid)  
+		and (b.rolegrpid = c.rolegrpid) 
+		and (a.acc = in_acc )		--	查询指定帐号所在角色组所能查看的功能菜单
+	) and f.visibletype = in_visibletype  --	查询指定版本所能查看的功能菜单	
+)
+select array_to_json(array_agg(row_to_json(tt))) into retvalue from (
+	select tt.* from 
+		(
+			select
+				distinct d.functionid
+			from c_dx_record a
+			inner join c_dx_record b on
+				a.functionid = b.parentfunctionid
+				or a.functionid = b.functionid
+			inner join c_dx_record c on
+				b.functionid = c.parentfunctionid
+				or b.functionid = c.functionid
+			inner join c_dx_record d on
+				c.functionid = d.parentfunctionid
+				or c.functionid = d.functionid
+			where
+				a.functionid = '000000'	--	需指定树状菜单虚拟根节点
+		) t
+		left join c_dx_record tt on
+			t.functionid = tt.functionid
+		order by tt.functionid, tt.sortid
+	) tt;
+	
+	retcode := 0;		--	返回成功
+
+	--	异常处理（暂时没考虑好如何处理）
+	EXCEPTION
+			WHEN others THEN
+			RAISE EXCEPTION '(%)', SQLERRM;
+			retcode := -1;	--	返回异常
+ 	END 
+ 	
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_user_account_menu_query(in_acc text, in_visibletype integer, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_user_account_prj_query(character varying); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_user_account_prj_query(in_userid character varying, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+
+/*
+ * 函数说明：查询账号项目关联关系。
+ * 参数：按要求填写参数，当所有参数为空串''时，查询所有记录，否则查询指定参数的记录
+ * 返回：
+ *     retcode： 小于0，失败；==0成功
+ *     retvalue：返回账号和角色关联记录集,有可能为空
+ * 备注：外部程序调用必须判断retcode的返回值进行处理
+*/
+declare
+	--程序变量
+    v_cnt 		    int4 DEFAULT 0;
+	v_createdtime   TIMESTAMP DEFAULT Now();
+	v_modifiedtime  TIMESTAMP DEFAULT Now();
+begin
+	
+	if (trim(in_userid) = '') then
+		retcode := -6;
+		retvalue := '{"error_msg":"field value is null or empty"}';
+		return;
+	end if;
+
+	select array_to_json(array_agg(row_to_json(t))) into retvalue
+	from (
+		 	select 
+				a.userid,
+				b.projectid,
+				b.projectname,
+				c.titleid,
+				c.titlename,
+				c.titlelogo
+			from t_mb_user_account_prj_tiltle a 
+			inner join t_mb_prj b on a.projectid=b.projectid
+			inner join t_mb_prj_title c on a.titleid=c.titleid
+			where a.userid=in_userid
+	) AS t;
+		--	处理空结果集
+	if (retvalue IS NULL ) then
+		retvalue := '[]';
+ 	end if;
+	--	处理返回结果
+	retcode := 0;
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_user_account_prj_query(in_userid character varying, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_user_account_prj_save(character varying, character varying, character varying); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_user_account_prj_save(in_userid character varying, in_projectid character varying, in_titleid character varying, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+
+/*
+ * 函数说明：查询账号项目关联关系。
+ * 参数：按要求填写参数，当所有参数为空串''时，查询所有记录，否则查询指定参数的记录
+ * 返回：
+ *     retcode： 小于0，失败；==0成功
+ *     retvalue：返回账号和角色关联记录集,有可能为空
+ * 备注：外部程序调用必须判断retcode的返回值进行处理
+*/
+declare
+	--程序变量
+    v_cnt 		    int4 DEFAULT 0;
+	v_createdtime   TIMESTAMP DEFAULT Now();
+	v_modifiedtime  TIMESTAMP DEFAULT Now();
+begin
+	
+	if (trim(in_userid) = '' OR trim(in_projectid) = '' OR trim(in_titleid) = '') then
+		retcode := -6;
+		retvalue := '{"error_msg":"field value is null or empty"}';
+		return;
+	end if;
+
+	delete from t_mb_user_account_prj_tiltle where userid = in_userid; 
+	
+	insert into t_mb_user_account_prj_tiltle(
+			 	userid,
+				projectid,
+				titleid,
+			    createdtime,
+			    modifiedtime)
+	values (
+			 	in_userid,
+				in_projectid,
+				in_titleid,
+				v_createdtime,
+				v_modifiedtime);
+	
+   
+		--	处理空结果集
+	if (retvalue IS NULL ) then
+		retvalue := '[]';
+ 	end if;
+	--	处理返回结果
+	retcode := 0;
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_user_account_prj_save(in_userid character varying, in_projectid character varying, in_titleid character varying, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_user_account_query(character varying, character varying, character varying, integer, integer, integer); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_user_account_query(in_acc character varying, in_userid character varying, in_hospcode character varying, in_countflag integer, in_offset integer, in_pagesize integer, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+/*
+ * 函数说明：查询用户账号和用户信息，
+ * 参数：
+ * 		in_countflag : 1 查询记录总数和分页的记录，记录总数放在retvalue中；
+ *                     2 仅查询记录总数，不查询分页记录，记录总数放在retvalue中，
+ * 					   3 仅查询分页记录，不查询记录总数。 retvalue始终=0
+ * 		in_offset:    该页记录的起始位置
+ * 		in_pagesize：     该页记录的总数
+ * 返回：
+ *     retcode： 小于0，表示失败；>=0表示成功;当大于0时，返回记录总数 
+ *     retvalue：返回关联表查询字段记录
+ * 备注：
+ * 
+*/
+declare
+	--程序变量
+    v_cnt 		    int4 DEFAULT 0;
+	v_createdtime   TIMESTAMP DEFAULT Now();
+	v_modifiedtime  TIMESTAMP DEFAULT Now();
+	v_rec record;
+begin
+	
+	if ((in_countflag != 1 and in_countflag != 2 and in_countflag != 3) or 
+		in_offset < 0 OR in_pagesize < 0) THEN
+		retcode := -7; 
+		retvalue:='{"error_msg":"param is not correct"}';
+		return;
+	end if;
+	
+	--	虚拟表前缀 c_ 代表对物理表，增加了查询条件
+	with c_dx_record as 
+	(
+		 	select a.userid,
+				   a.acc,
+				   a.pwd,
+				   a.salt,
+				   a.enableflag,
+				   a.regtime,
+				   b.hospcode,
+				   c.hospname,
+				   c.hospinternetflag,	--互联网医院开通标记：0-未开通，1-开通
+				   b.deptcode,
+				   t.deptname,
+				   b.doctorlevelcode,
+				   b.workdepartment,
+				   b.idcardno,
+				   b.phone,
+				   b.workno,
+				   b.signature,
+				   b.resume,
+				   b.doctorname,
+				   b.gendercode,
+				   b.gendername,
+				   b.certtype,
+				   b.certtypename,
+				   b.doctorlevelname,
+				   b.openflag,
+				   b.birth,
+				   b.nickname,
+				   b.photo,
+				   b.areacode,
+				   b.address,
+				   b.params,
+				   b.mail,
+				   --子查询查询该用户的权限医院
+				   (select array_to_json(array_agg( row_to_json( t )))
+						from
+							(
+								select
+									auth.hospcode,
+									hosp.hospname
+								from
+									t_mb_user_auth_hosp auth 
+								left join t_dict_hospital hosp on
+									auth.hospcode = hosp.hospcode 
+								where
+									auth.userid = a.userid
+							) t
+					) as authospcode
+
+					
+   			from  t_mb_user_account a 
+   				left join t_mb_user_info b ON (a.userid = b.userid ) 
+	    		LEFT JOIN t_mb_hosp_dept t ON b.hospcode = t.hospcode  and b.deptcode = t.deptcode
+	    		LEFT JOIN t_mb_hosp c on b.hospcode = c.hospcode 
+    		where  
+	    		(in_acc = '' or a.acc = in_acc) 
+	    		and (in_userid = '' or a.userid = in_userid) 
+	    		and (in_hospcode = '' or b.hospcode = in_hospcode)
+    		ORDER BY a.createdtime desc
+	),
+	--	虚拟表前缀 o_l_c 代表对前定义的虚拟表，增加了记录数限定条件
+	c_dx_record_limit as
+	(
+		select * from c_dx_record  offset in_offset limit in_pagesize
+	)
+
+	select 
+		case when (in_countflag = 1 or in_countflag = 2)  then 
+				(select count(1) from c_dx_record ) end as ret_code, 
+		case when (in_countflag = 1 or in_countflag = 3) then 
+				(select array_to_json(array_agg(row_to_json(t))) from c_dx_record_limit t ) end as ret_value
+	into v_rec;
+	
+	retcode := v_rec.ret_code;
+	retvalue := v_rec.ret_value;
+	
+	if (retcode is NULL) THEN
+		retcode := 0;
+	end if;
+	if (retvalue is NULL) then 
+		retvalue := '[]';
+	end if;
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_user_account_query(in_acc character varying, in_userid character varying, in_hospcode character varying, in_countflag integer, in_offset integer, in_pagesize integer, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_user_account_reset_pwd(character varying, character varying, character varying, character varying); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_user_account_reset_pwd(in_userid character varying, in_acc character varying, in_pwd character varying, in_salt character varying, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+/*
+ * 函数说明：重置医生开通的账号密码
+ * 参数：按要求填写参数
+ * 返回：
+ *     retcode： 小于0，失败；==0成功
+ *     retvalue：返回成功或失败的信息
+ * 备注：外部程序调用必须判断retcode的返回值进行处理
+*/
+declare
+	--参数说明
+	--程序变量
+	v_modifiedtime  timestamp default now();
+begin
+
+	if (trim(in_userid) = '' or trim(in_acc) = '') then
+		retcode := -6;
+		retvalue := '{"error_msg":"f_mb_user_account_reset_pwd ->> in_userid or in_acc value is null or empty"}';
+		return;
+	end if;
+	
+	update t_mb_user_account set
+				   pwd = in_pwd,
+				   salt = in_salt,
+				   modifiedtime = v_modifiedtime
+	where userid = in_userid AND acc = in_acc;
+		
+	retcode := 0;
+	retvalue := '{"error_msg":"success"}';
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_user_account_reset_pwd(in_userid character varying, in_acc character varying, in_pwd character varying, in_salt character varying, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_user_account_role_query(character varying, character varying, character varying); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_user_account_role_query(in_userid character varying, in_roleid character varying, in_rolename character varying, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+/*
+ * 函数说明：查询角色组。
+ * 参数：按要求填写参数，当所有参数为空串''时，查询所有记录，否则查询指定参数的记录
+ * 返回：
+ *     retcode： 小于0，失败；==0成功
+ *     retvalue：返回角色组的功能列表,有可能为空
+ * 备注：外部程序调用必须判断retcode的返回值进行处理
+*/
+declare
+	--程序变量
+    v_cnt 		    int4 DEFAULT 0;
+	v_createdtime   TIMESTAMP DEFAULT Now();
+	v_modifiedtime  TIMESTAMP DEFAULT Now();
+begin
+
+	select array_to_json(array_agg(row_to_json(t))) into retvalue
+	from (
+			select a.rolegrpid, a.rolegrpname, 
+				(select string_agg(c.functionname||'',', ') from t_mb_function_menu c 
+				where c.functionid in (select * from json_array_elements_text(b.functionidlist::json)) and c.functionid!='000000') as functionlist
+			from  t_mb_role_group a
+			LEFT JOIN t_mb_role_group_function b ON a.rolegrpid = b.rolegrpid
+			inner join t_mb_role_group_account d on d.rolegrpid=a.rolegrpid
+			where (d.userid = in_userid or in_userid = '')
+				and (in_roleid = '' or a.rolegrpid = in_roleid)
+				and (in_rolename = '' or a.rolegrpname ~* in_rolename)
+	) AS t;
+	--	处理空结果集
+	if (retvalue IS NULL ) then
+		retvalue := '[]';
+ 	end if;
+	--	处理返回结果
+	retcode := 0;
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_user_account_role_query(in_userid character varying, in_roleid character varying, in_rolename character varying, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_user_account_update(character varying, character varying, character varying, character varying, integer, character varying, character varying, character varying, character varying, character varying, character varying, character varying, character varying, text, text, character varying, character varying, character varying, character varying, character varying, text, character varying, character varying, character varying, integer, text, text, character varying); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_user_account_update(in_userid character varying, in_acc character varying, in_pwd character varying, in_salt character varying, in_enableflag integer, in_hospcode character varying, in_deptcode character varying, in_doctorlevelcode character varying, in_doctorlevelname character varying, in_workdepartment character varying, in_idcardno character varying, in_phone character varying, in_workno character varying, in_signature text, in_resume text, in_doctorname character varying, in_gendercode character varying, in_gendername character varying, in_birth character varying, in_nickname character varying, in_photo text, in_certtype character varying, in_certtypename character varying, in_areacode character varying, in_openflag integer, in_address text, in_params text, in_mail character varying, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+/*
+ * 函数说明：更新医生的账号（修改或重置医生账号密码）
+ * 参数：按要求填写参数
+ * 返回：
+ *     retcode： 小于0，失败；==0成功
+ *     retvalue：返回成功或失败的信息
+ * 备注：外部程序调用必须判断retcode的返回值进行处理
+*/
+declare
+	--参数说明
+	--程序变量
+    v_cnt 		    int4 DEFAULT 0;
+    v_phone 		    int4 DEFAULT 0;
+	v_createdtime   TIMESTAMP DEFAULT Now();
+	v_modifiedtime  TIMESTAMP DEFAULT Now();
+	v_birth date;
+begin
+
+	if (trim(in_userid) = '' or trim(in_acc) = '') then
+		retcode := -6;
+		retvalue := '{"error_msg":"field value is null or empty"}';
+		return;
+	end if;
+
+	if(in_birth = null or in_birth = '') then
+		v_birth := null;
+	end if;
+		v_birth := to_date(in_birth,'yyyy-MM-dd');
+
+	--判断手机号码是否存在
+	if (trim(in_phone) != '') then
+		select count(1) into v_phone from t_mb_user_info tt where tt.phone=in_phone
+		and tt.userid != in_userid;
+	
+		if (v_phone > 0) then
+			retcode := -3;
+			retvalue := '{"error_msg":"phone exist"}';
+			return;
+		end if;	
+	end if;
+	
+	--判断用户名称是否重复
+	select count(1) into v_cnt from t_mb_user_account 
+	where acc = in_acc AND userid != in_userid;
+	if (v_cnt != 0) then
+		retcode := -2;
+		retvalue := '{"error_msg":"record not exist"}';
+		return;
+	end if;
+	
+	--更新
+	select now() into v_modifiedtime;
+	
+	if (trim(in_pwd) = '') then
+		update t_mb_user_account set
+				   userid = in_userid,
+				   acc = in_acc,
+				   enableflag = in_enableflag,
+				   modifiedtime = v_modifiedtime
+		where userid = in_userid;
+	else 
+		update t_mb_user_account set
+						 userid = in_userid,
+						 acc = in_acc,
+						 pwd = in_pwd,
+						 salt = in_salt,
+						 enableflag = in_enableflag,
+						 modifiedtime = v_modifiedtime
+		where userid = in_userid;
+	end if;
+	
+
+	update t_mb_user_info set
+				   hospcode = in_hospcode,
+				   deptcode = in_deptcode,
+				   doctorlevelcode = in_doctorlevelcode,
+				   doctorlevelname = in_doctorlevelname,
+				   workdepartment = in_workdepartment,
+				   idcardno = in_idcardno,
+				   phone = in_phone,
+				   workno = in_workno,
+				   signature = in_signature,
+				   resume = in_resume,
+				   doctorname = in_doctorname,
+				   gendercode = in_gendercode,
+				   gendername = in_gendername,
+				   certtype = in_certtype,
+				   certtypename = in_certtypename,
+				   certnum = in_idcardno,
+				   openflag = in_openflag,
+				   birth = v_birth,
+				   nickname = in_nickname,
+				   photo = in_photo,
+				   areacode = in_areacode,
+				   address = in_address,
+				   params = in_params,
+				   mail = in_mail,
+				   modifiedtime = v_modifiedtime
+	where userid = in_userid;
+	
+	--将用户所属医院默认配置到权限医院
+	perform f_mb_user_auth_hosp_insert(
+	             in_userid ,
+	             in_hospcode
+	);			 
+		
+		
+	retcode := 0;
+	retvalue := '{"error_msg":"success"}';
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_user_account_update(in_userid character varying, in_acc character varying, in_pwd character varying, in_salt character varying, in_enableflag integer, in_hospcode character varying, in_deptcode character varying, in_doctorlevelcode character varying, in_doctorlevelname character varying, in_workdepartment character varying, in_idcardno character varying, in_phone character varying, in_workno character varying, in_signature text, in_resume text, in_doctorname character varying, in_gendercode character varying, in_gendername character varying, in_birth character varying, in_nickname character varying, in_photo text, in_certtype character varying, in_certtypename character varying, in_areacode character varying, in_openflag integer, in_address text, in_params text, in_mail character varying, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_user_auth_hosp_delete(character varying, character varying); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_user_auth_hosp_delete(in_userid character varying, in_hospcodelistjosn character varying, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+/*
+ * 函数说明：批量删除账号关联的医院表。
+ * 参数：in_hospcodelistjosn为空串''时，删除该userid下的所有医院
+ *    in_hospcodelistjosn  格式为json数组，格式为：【"0001","0002","0003"】
+ * 返回：
+ *     retcode： 小于0，失败；==0成功
+ *     retvalue：返回成功或失败的信息
+ * 备注：外部程序调用必须判断retcode的返回值进行处理
+*/
+
+declare
+	--程序变量
+	v_rec record;
+begin
+	--删除组
+	delete from  t_mb_user_auth_hosp 
+	where (userid = in_userid) and  (in_hospcodelistjosn = '' or substring(in_hospcodelistjosn, hospcode) != '');
+
+	retcode := 0;
+  	retvalue := '{"error_msg":"success"}';
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_user_auth_hosp_delete(in_userid character varying, in_hospcodelistjosn character varying, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_user_auth_hosp_insert(character varying, character varying); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_user_auth_hosp_insert(in_userid character varying, in_hospcode character varying, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+/*
+ * 函数说明：插入账号的医院。
+ * 参数：按要求填写参数
+ * 返回：
+ *     retcode： 小于0，失败；==0成功
+ *     retvalue：返回成功或失败的信息
+ * 备注：外部程序调用必须判断retcode的返回值进行处理
+*/
+declare
+	--	入参说明
+	--	程序变量说明
+    v_cnt 		    int4 DEFAULT 0;
+	v_createdtime   TIMESTAMP DEFAULT Now();
+	v_modifiedtime  TIMESTAMP DEFAULT Now();
+begin
+	
+	if (trim(in_userid) = '' or trim(in_hospcode) = '') then
+		retcode := -6;
+		retvalue := '{"error_msg":"field value is null or empty"}';
+		return;
+	end if;
+	
+	--判断医院编码是否存在
+  select count(1) into v_cnt from t_mb_user_auth_hosp  
+  where userid = in_userid and hospcode = in_hospcode;
+  if (v_cnt != 0) then
+		retcode := -1;
+		retvalue := '{"error_msg":"record already exist"}';
+		return;
+	end if;
+	
+	select now() into v_createdtime;
+	v_modifiedtime := v_createdtime;
+
+	insert into t_mb_user_auth_hosp(
+			 	userid,
+				hospcode,
+			   createdtime,
+			   modifiedtime)
+	values (
+			 	in_userid,
+				in_hospcode,
+				v_createdtime,
+				 v_modifiedtime);
+
+	--	处理返回结果
+	retcode := 0;
+	retvalue := '{"error_msg":"success"}';
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_user_auth_hosp_insert(in_userid character varying, in_hospcode character varying, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_user_auth_hosp_modal_query(character varying, character varying, character varying, character varying, character varying, character varying, integer, integer, integer); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_user_auth_hosp_modal_query(in_userid character varying, in_hospcode character varying, in_hospname character varying, in_hospalias character varying, in_address character varying, in_hosplevelname character varying, in_countflag integer, in_offset integer, in_pagesize integer, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+/*
+ * 函数说明：查询账号的权限医院列表。权限医院modal
+ * 参数：按要求填写参数，当所有参数为空串''时，查询所有记录，否则查询指定参数的记录
+ * 		in_countflag : 1 查询记录总数和分页的记录，记录总数放在retvalue中；
+ *                     2 仅查询记录总数，不查询分页记录，记录总数放在retvalue中，
+ * 					   3 仅查询分页记录，不查询记录总数。 retvalue始终=0
+ * 		in_offset:    该页记录的起始位置
+ * 		in_pagesize：     该页记录的总数
+ * 返回：
+ *     retcode： 小于0，表示失败；>=0表示成功;当大于0时，返回记录总数 
+ *     retvalue：返回关联表查询字段记录
+ * 备注：外部程序调用必须判断retcode的返回值进行处理
+*/
+declare
+	--程序变量
+    v_cnt 		    int4 DEFAULT 0;
+	v_createdtime   TIMESTAMP DEFAULT Now();
+	v_modifiedtime  TIMESTAMP DEFAULT Now();
+	v_rec record;
+begin
+	
+	if ((in_countflag != 1 and in_countflag != 2 and in_countflag != 3) or 
+		in_offset < 0 OR in_pagesize < 0) THEN
+		retcode := -7; 
+		retvalue:='{"error_msg":"param is not correct"}';
+		return;
+	end if;
+	
+	--	虚拟表前缀 c_ 代表对物理表，增加了查询条件
+	with c_dx_record as 
+	(
+		 	select  a.userid,
+				 	a.hospcode, 
+				 	b.hospname, 
+				 	b.hospalias,
+				 	b.address,
+				 	c.hosplevelcode,
+				 	c.lang,
+				 	c.hosplevelname,
+				 	a.createdtime,
+				 	a.modifiedtime
+		 	from  t_mb_user_auth_hosp a left join t_dict_hospital b 
+    		ON (a.hospcode = b.hospcode) 
+    		 left join t_dict_hospital_level c 
+    		 on c.hosplevelcode = b.hosplevelcode 
+			where (a.userid = in_userid) and (in_hospcode = '' or a.hospcode = in_hospcode )
+			and (in_hospname = '' or b.hospname ~* in_hospname) 
+			and (in_hospalias = '' or b.hospalias ~* in_hospalias)
+			and (in_address = '' or b.address ~* in_address)
+			and (in_hosplevelname = '' or c.hosplevelname ~* in_hosplevelname)
+    		order by a.createdtime ASC
+	),
+	--	虚拟表前缀 o_l_c 代表对前定义的虚拟表，增加了记录数限定条件
+	c_dx_record_limit as
+	(
+		select * from c_dx_record  offset in_offset limit in_pagesize
+	)
+
+	select 
+		case when (in_countflag = 1 or in_countflag = 2)  then 
+				(select count(1) from c_dx_record ) end as ret_code, 
+		case when (in_countflag = 1 or in_countflag = 3) then 
+				(select array_to_json(array_agg(row_to_json(t))) from c_dx_record_limit t ) end as ret_value
+	into v_rec;
+	
+	retcode := v_rec.ret_code;
+	retvalue := v_rec.ret_value;
+	
+	if (retcode is NULL) THEN
+		retcode := 0;
+	end if;
+	if (retvalue is NULL) then 
+		retvalue := '[]';
+	end if;
+
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_user_auth_hosp_modal_query(in_userid character varying, in_hospcode character varying, in_hospname character varying, in_hospalias character varying, in_address character varying, in_hosplevelname character varying, in_countflag integer, in_offset integer, in_pagesize integer, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_user_auth_hosp_query(character varying, character varying, integer, integer, integer); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_user_auth_hosp_query(in_userid character varying, in_hospcode character varying, in_countflag integer, in_offset integer, in_pagesize integer, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+/*
+ * 函数说明：查询账号的医院列表。
+ * 参数：按要求填写参数，当所有参数为空串''时，查询所有记录，否则查询指定参数的记录
+ * 		in_countflag : 1 查询记录总数和分页的记录，记录总数放在retvalue中；
+ *                     2 仅查询记录总数，不查询分页记录，记录总数放在retvalue中，
+ * 					   3 仅查询分页记录，不查询记录总数。 retvalue始终=0
+ * 		in_offset:    该页记录的起始位置
+ * 		in_pagesize：     该页记录的总数
+ * 返回：
+ *     retcode： 小于0，表示失败；>=0表示成功;当大于0时，返回记录总数 
+ *     retvalue：返回关联表查询字段记录
+ * 备注：外部程序调用必须判断retcode的返回值进行处理
+*/
+declare
+	--程序变量
+    v_cnt 		    int4 DEFAULT 0;
+	v_createdtime   TIMESTAMP DEFAULT Now();
+	v_modifiedtime  TIMESTAMP DEFAULT Now();
+	v_rec record;
+begin
+	
+	if ((in_countflag != 1 and in_countflag != 2 and in_countflag != 3) or 
+		in_offset < 0 OR in_pagesize < 0) THEN
+		retcode := -7; 
+		retvalue:='{"error_msg":"param is not correct"}';
+		return;
+	end if;
+	
+	--	虚拟表前缀 c_ 代表对物理表，增加了查询条件
+	with c_dx_record as 
+	(
+		 	select  a.userid,
+				 	a.hospcode, 
+				 	b.hospname, 
+				 	b.hospalias,
+				 	a.createdtime,
+				 	a.modifiedtime
+		 	from  t_mb_user_auth_hosp a left join t_dict_hospital b
+    		ON (a.hospcode = b.hospcode) 
+			where (a.userid = in_userid) and (in_hospcode = '' or a.hospcode = in_hospcode )
+    		order by a.createdtime ASC
+	),
+	--	虚拟表前缀 o_l_c 代表对前定义的虚拟表，增加了记录数限定条件
+	c_dx_record_limit as
+	(
+		select * from c_dx_record  offset in_offset limit in_pagesize
+	)
+
+	select 
+		case when (in_countflag = 1 or in_countflag = 2)  then 
+				(select count(1) from c_dx_record ) end as ret_code, 
+		case when (in_countflag = 1 or in_countflag = 3) then 
+				(select array_to_json(array_agg(row_to_json(t))) from c_dx_record_limit t ) end as ret_value
+	into v_rec;
+	
+	retcode := v_rec.ret_code;
+	retvalue := v_rec.ret_value;
+	
+	if (retcode is NULL) THEN
+		retcode := 0;
+	end if;
+	if (retvalue is NULL) then 
+		retvalue := '[]';
+	end if;
+
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_user_auth_hosp_query(in_userid character varying, in_hospcode character varying, in_countflag integer, in_offset integer, in_pagesize integer, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_user_auth_hosp_query_ex(character varying); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_user_auth_hosp_query_ex(in_userid character varying, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+/*
+ * 函数说明：查询账号的具有权限的医院。
+ * 返回：
+ *     retcode： 小于0，表示失败；>=0表示成功;
+ *     retvalue：返回关联表查询字段记录
+ * 备注：外部程序调用必须判断retcode的返回值进行处理
+*/
+declare
+	v_rec record;
+begin
+	
+	select array_to_json(array_agg(row_to_json(t.*)))  into retvalue from (
+		select distinct a.userid,
+				 	a.hospcode, 
+				 	b.hospname, 
+				 	b.hospalias
+		 	from  t_mb_user_auth_hosp_dept a left join t_dict_hospital b
+    		ON a.hospcode = b.hospcode 
+			where a.userid = in_userid
+	) t;
+	
+	
+	if (retcode is NULL) THEN
+		retcode := 0;
+	end if;
+	if (retvalue is NULL) then 
+		retvalue := '[]';
+	end if;
+
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_user_auth_hosp_query_ex(in_userid character varying, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_user_auth_hosp_query_nopage(character varying, character varying); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_user_auth_hosp_query_nopage(in_userid character varying, in_hospcode character varying, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+/*
+ * 函数说明：查询账号的医院列表。
+ * 参数：按要求填写参数，当所有参数为空串''时，查询所有记录，否则查询指定参数的记录
+ * 返回：
+ *     retcode： 小于0，表示失败；>=0表示成功;当大于0时，返回记录总数 
+ *     retvalue：返回关联表查询字段记录
+ * 备注：外部程序调用必须判断retcode的返回值进行处理
+*/
+declare
+	--程序变量
+    v_cnt 		    int4 DEFAULT 0;
+	v_createdtime   TIMESTAMP DEFAULT Now();
+	v_modifiedtime  TIMESTAMP DEFAULT Now();
+	v_rec record;
+begin
+	
+	select array_to_json(array_agg(row_to_json(t))) into retvalue
+	from (
+		select  a.userid,
+				a.hospcode, 
+				b.hospname, 
+				b.hospalias,
+				a.createdtime,
+				a.modifiedtime
+		from  t_mb_user_auth_hosp a left join t_dict_hospital b
+		ON (a.hospcode = b.hospcode) 
+		where (a.userid = in_userid) and (in_hospcode = '' or a.hospcode = in_hospcode )
+		order by a.createdtime ASC
+    	
+	) AS t;
+	--	处理空结果集
+	if (retvalue IS NULL ) then
+		retvalue := '[]';
+ 	end if;
+	--	处理返回结果
+	retcode := 0;
+
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_user_auth_hosp_query_nopage(in_userid character varying, in_hospcode character varying, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_mb_user_auth_hosp_save(character varying, character varying); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_mb_user_auth_hosp_save(in_userid character varying, in_hospcodearrayjson character varying, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+
+/*
+ * 函数说明：保存账号医院关联关系。先删除原来的医院，再插入新的医院
+ * 参数：按要求填写参数
+ *     in_hospcodearrayjson 以josn数组格式， 格式["0001", "0002"]
+ * 返回：
+ *     retcode： 小于0，失败；==0成功
+ *     retvalue：返回成功或失败的信息
+ * 备注：外部程序调用必须判断retcode的返回值进行处理
+*/
+declare
+	--	入参说明
+	--	程序变量说明
+    v_cnt 		    int4 DEFAULT 0;
+	v_createdtime   TIMESTAMP DEFAULT Now();
+	v_modifiedtime  TIMESTAMP DEFAULT Now();
+	v_value text DEFAULT '';
+	v_rec			RECORD;
+begin
+	
+	if (trim(in_userid) = '') then
+		retcode := -6;
+		retvalue := '{"error_msg":"field value is null or empty"}';
+		return;
+	end if;
+	
+    delete from t_mb_user_auth_hosp where userid = in_userid; 
+   
+   for v_rec in 
+	(select * from json_array_elements_text(in_hospcodearrayjson::json))
+	loop
+		v_value := v_rec.value;
+		select count(1) into v_cnt from t_mb_user_auth_hosp 
+		where  (userid = in_userid and hospcode = v_value );
+	
+		if (v_cnt = 0) then
+			select now() into v_createdtime;
+			v_modifiedtime := v_createdtime;
+			insert into t_mb_user_auth_hosp(
+					 	userid,
+						hospcode,
+					   createdtime,
+					   modifiedtime)
+			values (
+					 	in_userid,
+						v_value,
+						v_createdtime,
+						v_modifiedtime);
+		end if;
+	
+	end loop;
+	
+	--	处理返回结果
+	retcode := 0;
+	retvalue := '{"error_msg":"success"}';
+
+end
+
+ $$;
+
+
+ALTER FUNCTION aix.f_mb_user_auth_hosp_save(in_userid character varying, in_hospcodearrayjson character varying, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_test_pg_notify(character varying); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_test_pg_notify(in_id character varying, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+
+declare 
+v_cnt numeric default 0;
+v_rec record ;
+begin 
+	select * into v_rec from f_aix_notification_model('f_test_pg_notify','alert_notification','{"notifyno":"cmd_4060001", "notifytype" :"update","notifyparam":{"disecode":"xxx","disename":"xxxx"}}');
+	-- 处理返回结果
+	retcode := v_rec.retcode;
+	retvalue := v_rec.retvalue;
+
+	if (retvalue is NULL) then
+		retvalue := '[]';
+	end if;
+
+end
+$$;
+
+
+ALTER FUNCTION aix.f_test_pg_notify(in_id character varying, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+--
+-- Name: f_test_pg_notify1(character varying); Type: FUNCTION; Schema: aix; Owner: postgres
+--
+
+CREATE FUNCTION aix.f_test_pg_notify1(in_id character varying, OUT retcode integer, OUT retvalue text) RETURNS record
+    LANGUAGE plpgsql
+    AS $$
+
+declare 
+v_cnt numeric default 0;
+v_rec record ;
+begin 
+	select * into v_rec from f_aix_notification_model('f_test_pg_notify1','ssinfo_notification','{"notifyno":"cmd_4060002", "notifytype" :"update","notifyparam":{"disecode":"xxx","disename":"xxxx"}}');
+	-- 处理返回结果
+	retcode := v_rec.retcode;
+	retvalue := v_rec.retvalue;
+
+	if (retvalue is NULL) then
+		retvalue := '[]';
+	end if;
+
+end
+$$;
+
+
+ALTER FUNCTION aix.f_test_pg_notify1(in_id character varying, OUT retcode integer, OUT retvalue text) OWNER TO postgres;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: ofconversation; Type: TABLE; Schema: aix; Owner: postgres
+--
+
+CREATE TABLE aix.ofconversation (
+    id character varying(64)
+);
+
+
+ALTER TABLE aix.ofconversation OWNER TO postgres;
+
+--
+-- Name: t_dict_area; Type: TABLE; Schema: aix; Owner: postgres
+--
+
+CREATE TABLE aix.t_dict_area (
+    regionlevel integer DEFAULT 6 NOT NULL,
+    areacode character varying(64) NOT NULL,
+    areaname character varying(64) NOT NULL,
+    areafullname character varying(1000),
+    arealevel integer NOT NULL,
+    parentareacode character varying(64) DEFAULT ''::character varying NOT NULL,
+    lang character varying(64) NOT NULL
+);
+
+
+ALTER TABLE aix.t_dict_area OWNER TO postgres;
+
+--
+-- Name: TABLE t_dict_area; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON TABLE aix.t_dict_area IS '行政区划代码参考《中华人民共和国县以上行政区划代码》';
+
+
+--
+-- Name: COLUMN t_dict_area.regionlevel; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_area.regionlevel IS '机构配置参数 默认6，可以配置为5级';
+
+
+--
+-- Name: COLUMN t_dict_area.areacode; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_area.areacode IS '区划编码';
+
+
+--
+-- Name: COLUMN t_dict_area.areaname; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_area.areaname IS '区划名称';
+
+
+--
+-- Name: COLUMN t_dict_area.areafullname; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_area.areafullname IS '区划全称';
+
+
+--
+-- Name: COLUMN t_dict_area.arealevel; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_area.arealevel IS '-1=国家(默认节点)；0=省；1=市；2=区/县；3=街道办/乡镇；4=村；5=村组';
+
+
+--
+-- Name: COLUMN t_dict_area.parentareacode; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_area.parentareacode IS '上级编码';
+
+
+--
+-- Name: COLUMN t_dict_area.lang; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_area.lang IS '语言代码参考ISO 639-1';
+
+
+--
+-- Name: t_dict_area_code; Type: TABLE; Schema: aix; Owner: postgres
+--
+
+CREATE TABLE aix.t_dict_area_code (
+    areacode character varying(64) NOT NULL,
+    lang character varying(64) NOT NULL,
+    areaname character varying(64) NOT NULL,
+    parentareacode character varying(64) DEFAULT ''::character varying NOT NULL
+);
+
+
+ALTER TABLE aix.t_dict_area_code OWNER TO postgres;
+
+--
+-- Name: TABLE t_dict_area_code; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON TABLE aix.t_dict_area_code IS '行政区划代码参考《中华人民共和国县以上行政区划代码》';
+
+
+--
+-- Name: COLUMN t_dict_area_code.areacode; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_area_code.areacode IS '区划编码';
+
+
+--
+-- Name: COLUMN t_dict_area_code.lang; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_area_code.lang IS '语言代码参考ISO 639-1';
+
+
+--
+-- Name: COLUMN t_dict_area_code.areaname; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_area_code.areaname IS '区划名称';
+
+
+--
+-- Name: COLUMN t_dict_area_code.parentareacode; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_area_code.parentareacode IS '上级编码';
+
+
+--
+-- Name: t_dict_ask_item; Type: TABLE; Schema: aix; Owner: postgres
+--
+
+CREATE TABLE aix.t_dict_ask_item (
+    qcatetitle character varying(64) NOT NULL,
+    qcatesubtitle character varying(64) NOT NULL,
+    qcode character varying(64) NOT NULL,
+    qname character varying(1000),
+    statisticalname character varying(1000),
+    qparentcode character varying(64),
+    qtypecode character varying(64) NOT NULL,
+    qtypename character varying(64),
+    qitemcode character varying(64) NOT NULL,
+    qitemname character varying(1000),
+    qfiltercode jsonb,
+    qitemsortflag integer,
+    optmutexflag integer DEFAULT 0,
+    optmemoflag integer DEFAULT 0,
+    optsortflag integer,
+    optdefaultflag integer DEFAULT 0,
+    qpage integer,
+    vuecomponentname character varying(64),
+    vuecomponenttype integer
+);
+
+
+ALTER TABLE aix.t_dict_ask_item OWNER TO postgres;
+
+--
+-- Name: TABLE t_dict_ask_item; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON TABLE aix.t_dict_ask_item IS '调查问卷字典';
+
+
+--
+-- Name: COLUMN t_dict_ask_item.qcatetitle; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_ask_item.qcatetitle IS '分类标题';
+
+
+--
+-- Name: COLUMN t_dict_ask_item.qcatesubtitle; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_ask_item.qcatesubtitle IS '分类子标题';
+
+
+--
+-- Name: COLUMN t_dict_ask_item.qcode; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_ask_item.qcode IS '问题编码';
+
+
+--
+-- Name: COLUMN t_dict_ask_item.qname; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_ask_item.qname IS '问题名称';
+
+
+--
+-- Name: COLUMN t_dict_ask_item.statisticalname; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_ask_item.statisticalname IS '统计名称';
+
+
+--
+-- Name: COLUMN t_dict_ask_item.qparentcode; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_ask_item.qparentcode IS '父问题编码';
+
+
+--
+-- Name: COLUMN t_dict_ask_item.qtypecode; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_ask_item.qtypecode IS '问题类型编码';
+
+
+--
+-- Name: COLUMN t_dict_ask_item.qtypename; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_ask_item.qtypename IS '问题类型名称';
+
+
+--
+-- Name: COLUMN t_dict_ask_item.qitemcode; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_ask_item.qitemcode IS '问题选项编码';
+
+
+--
+-- Name: COLUMN t_dict_ask_item.qitemname; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_ask_item.qitemname IS '问题选项名称';
+
+
+--
+-- Name: COLUMN t_dict_ask_item.qfiltercode; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_ask_item.qfiltercode IS '问题过滤标记';
+
+
+--
+-- Name: COLUMN t_dict_ask_item.qitemsortflag; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_ask_item.qitemsortflag IS '问题选项排序标记';
+
+
+--
+-- Name: COLUMN t_dict_ask_item.optmutexflag; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_ask_item.optmutexflag IS '0=不互斥；非零=与其它不同值的选项互斥；';
+
+
+--
+-- Name: COLUMN t_dict_ask_item.optmemoflag; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_ask_item.optmemoflag IS '1=该字典编码允许填写描述；0=不允许填写描述';
+
+
+--
+-- Name: COLUMN t_dict_ask_item.optsortflag; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_ask_item.optsortflag IS '答案选项排序标记';
+
+
+--
+-- Name: COLUMN t_dict_ask_item.optdefaultflag; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_ask_item.optdefaultflag IS '0=不显示；1=显示';
+
+
+--
+-- Name: COLUMN t_dict_ask_item.qpage; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_ask_item.qpage IS '问题所属页码';
+
+
+--
+-- Name: COLUMN t_dict_ask_item.vuecomponentname; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_ask_item.vuecomponentname IS '业务项目VUE组件名称';
+
+
+--
+-- Name: COLUMN t_dict_ask_item.vuecomponenttype; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_ask_item.vuecomponenttype IS '-1=未定义；
+1=简单输入，如文本
+2=三元组输入，如：code, name, memo
+3=JSON数组输入，如：[{,,,},,,]
+';
+
+
+--
+-- Name: t_dict_common_code; Type: TABLE; Schema: aix; Owner: postgres
+--
+
+CREATE TABLE aix.t_dict_common_code (
+    dicttype character varying(64) NOT NULL,
+    dicttypename character varying(64),
+    dictid character varying(64),
+    dictcode character varying(64) NOT NULL,
+    dictcodename character varying(255) NOT NULL,
+    mutexflag integer DEFAULT 0 NOT NULL,
+    memoflag integer DEFAULT 0 NOT NULL
+);
+
+
+ALTER TABLE aix.t_dict_common_code OWNER TO postgres;
+
+--
+-- Name: TABLE t_dict_common_code; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON TABLE aix.t_dict_common_code IS '类别字符串格式为  dict_xxxx';
+
+
+--
+-- Name: COLUMN t_dict_common_code.dicttype; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_common_code.dicttype IS '字典类型';
+
+
+--
+-- Name: COLUMN t_dict_common_code.dicttypename; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_common_code.dicttypename IS '字典类型名称';
+
+
+--
+-- Name: COLUMN t_dict_common_code.dictid; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_common_code.dictid IS 'dictid=dicttype+dictcode';
+
+
+--
+-- Name: COLUMN t_dict_common_code.dictcode; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_common_code.dictcode IS '字典编码';
+
+
+--
+-- Name: COLUMN t_dict_common_code.dictcodename; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_common_code.dictcodename IS '字典编码名称';
+
+
+--
+-- Name: COLUMN t_dict_common_code.mutexflag; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_common_code.mutexflag IS '0=不互斥；非零=与其它不同值的选项互斥；';
+
+
+--
+-- Name: COLUMN t_dict_common_code.memoflag; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_common_code.memoflag IS '1=该字典编码允许填写描述；0=不允许填写描述';
+
+
+--
+-- Name: t_dict_hospital; Type: TABLE; Schema: aix; Owner: postgres
+--
+
+CREATE TABLE aix.t_dict_hospital (
+    hospid character varying(64),
+    hospcode character varying(64) NOT NULL,
+    hospname character varying(255) NOT NULL,
+    hospalias character varying(255) DEFAULT ''::character varying,
+    areacode character varying(64) NOT NULL,
+    areaname character varying(64),
+    hosplevelcode character varying(64) NOT NULL,
+    hosplevelname character varying(64),
+    hosptypecode character varying(64),
+    hosptypename character varying(64),
+    address character varying(255) DEFAULT ''::character varying,
+    hospweb character varying(255) DEFAULT ''::character varying,
+    resume text DEFAULT ''::text,
+    contactphone character varying(64),
+    contactname character varying(64),
+    postcode character varying(64),
+    enableflag integer DEFAULT 10000 NOT NULL,
+    createdtime timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    modifiedtime timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE aix.t_dict_hospital OWNER TO postgres;
+
+--
+-- Name: TABLE t_dict_hospital; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON TABLE aix.t_dict_hospital IS '所有医疗机构在该字典表统一编码';
+
+
+--
+-- Name: COLUMN t_dict_hospital.hospid; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_hospital.hospid IS '机构ID';
+
+
+--
+-- Name: COLUMN t_dict_hospital.hospcode; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_hospital.hospcode IS '医院编码';
+
+
+--
+-- Name: COLUMN t_dict_hospital.hospname; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_hospital.hospname IS '医院名称';
+
+
+--
+-- Name: COLUMN t_dict_hospital.hospalias; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_hospital.hospalias IS '医院别名';
+
+
+--
+-- Name: COLUMN t_dict_hospital.areacode; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_hospital.areacode IS '划区编码';
+
+
+--
+-- Name: COLUMN t_dict_hospital.areaname; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_hospital.areaname IS '区划名称';
+
+
+--
+-- Name: COLUMN t_dict_hospital.hosplevelcode; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_hospital.hosplevelcode IS '等级编码';
+
+
+--
+-- Name: COLUMN t_dict_hospital.hosplevelname; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_hospital.hosplevelname IS '等级名称';
+
+
+--
+-- Name: COLUMN t_dict_hospital.hosptypecode; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_hospital.hosptypecode IS '机构类别（ 1医院、妇幼保健机构、专科疾病防治机构、疗养院、护理院, 2乡镇卫生院, 3诊所、医务室、卫生所, 4村卫生室 5急救中心、急救站, 6疾病预防控制中心、卫生防疫站、预防保健中心 7卫生监督机构, 8采供血机构、健康教育机构, 9卫生行政机构, 10社区卫生服务站, 11社区卫生服务中心, 12街道卫生院 ）';
+
+
+--
+-- Name: COLUMN t_dict_hospital.hosptypename; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_hospital.hosptypename IS '类型名称';
+
+
+--
+-- Name: COLUMN t_dict_hospital.address; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_hospital.address IS '医院地址';
+
+
+--
+-- Name: COLUMN t_dict_hospital.hospweb; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_hospital.hospweb IS '门户';
+
+
+--
+-- Name: COLUMN t_dict_hospital.resume; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_hospital.resume IS '简介';
+
+
+--
+-- Name: COLUMN t_dict_hospital.contactphone; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_hospital.contactphone IS '联系电话';
+
+
+--
+-- Name: COLUMN t_dict_hospital.contactname; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_hospital.contactname IS '联系人';
+
+
+--
+-- Name: COLUMN t_dict_hospital.postcode; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_hospital.postcode IS '邮政编码';
+
+
+--
+-- Name: COLUMN t_dict_hospital.enableflag; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_hospital.enableflag IS '10000=正常使用，20000=禁用';
+
+
+--
+-- Name: COLUMN t_dict_hospital.createdtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_hospital.createdtime IS '创建时间';
+
+
+--
+-- Name: COLUMN t_dict_hospital.modifiedtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_dict_hospital.modifiedtime IS '修改时间';
+
+
+--
+-- Name: t_mb_function_menu; Type: TABLE; Schema: aix; Owner: postgres
+--
+
+CREATE TABLE aix.t_mb_function_menu (
+    functionid character varying(64) NOT NULL,
+    lang character varying(6) NOT NULL,
+    functionname character varying(64) NOT NULL,
+    memo character varying(64) DEFAULT ''::character varying NOT NULL,
+    parentfunctionid character varying(64) NOT NULL,
+    sortid integer DEFAULT 1 NOT NULL,
+    functionpage character varying(255) DEFAULT '‘’'::character varying NOT NULL,
+    functionicon character varying(255) DEFAULT ''::character varying NOT NULL,
+    visibletype integer DEFAULT 2 NOT NULL,
+    functionlevel integer DEFAULT 0 NOT NULL,
+    pcsystype integer,
+    modifiedtime timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    createdtime timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE aix.t_mb_function_menu OWNER TO postgres;
+
+--
+-- Name: TABLE t_mb_function_menu; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON TABLE aix.t_mb_function_menu IS '功能菜单表';
+
+
+--
+-- Name: COLUMN t_mb_function_menu.functionid; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_function_menu.functionid IS '功能ID';
+
+
+--
+-- Name: COLUMN t_mb_function_menu.lang; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_function_menu.lang IS '语言编码';
+
+
+--
+-- Name: COLUMN t_mb_function_menu.functionname; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_function_menu.functionname IS '功能名称';
+
+
+--
+-- Name: COLUMN t_mb_function_menu.memo; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_function_menu.memo IS '描述';
+
+
+--
+-- Name: COLUMN t_mb_function_menu.parentfunctionid; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_function_menu.parentfunctionid IS '父功能ID';
+
+
+--
+-- Name: COLUMN t_mb_function_menu.sortid; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_function_menu.sortid IS '排序ID';
+
+
+--
+-- Name: COLUMN t_mb_function_menu.functionpage; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_function_menu.functionpage IS '功能页面';
+
+
+--
+-- Name: COLUMN t_mb_function_menu.functionicon; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_function_menu.functionicon IS '功能图标';
+
+
+--
+-- Name: COLUMN t_mb_function_menu.visibletype; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_function_menu.visibletype IS '功能显示类型';
+
+
+--
+-- Name: COLUMN t_mb_function_menu.functionlevel; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_function_menu.functionlevel IS '默认=0';
+
+
+--
+-- Name: COLUMN t_mb_function_menu.pcsystype; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_function_menu.pcsystype IS '0,公共卫生系统，1专科慢病系统';
+
+
+--
+-- Name: COLUMN t_mb_function_menu.modifiedtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_function_menu.modifiedtime IS '修改时间';
+
+
+--
+-- Name: COLUMN t_mb_function_menu.createdtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_function_menu.createdtime IS '创建时间';
+
+
+--
+-- Name: t_mb_hosp; Type: TABLE; Schema: aix; Owner: postgres
+--
+
+CREATE TABLE aix.t_mb_hosp (
+    hospcode character varying(64) NOT NULL,
+    hospname character varying(64) NOT NULL,
+    hospalias character varying(64) DEFAULT ''::character varying,
+    hosplevelcode character varying(64) NOT NULL,
+    enableflag character varying(64) DEFAULT '1'::character varying NOT NULL,
+    hospflag integer DEFAULT 0,
+    hospinternetflag integer DEFAULT 0,
+    hospregisterflag integer DEFAULT 0,
+    pcsystype integer,
+    reserveflag integer DEFAULT 0,
+    createdtime timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    modifiedtime timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE aix.t_mb_hosp OWNER TO postgres;
+
+--
+-- Name: TABLE t_mb_hosp; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON TABLE aix.t_mb_hosp IS '15-2-1 医院表';
+
+
+--
+-- Name: COLUMN t_mb_hosp.hospcode; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_hosp.hospcode IS '医院编码';
+
+
+--
+-- Name: COLUMN t_mb_hosp.hospname; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_hosp.hospname IS '医院名称';
+
+
+--
+-- Name: COLUMN t_mb_hosp.hospalias; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_hosp.hospalias IS '医院别名';
+
+
+--
+-- Name: COLUMN t_mb_hosp.hosplevelcode; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_hosp.hosplevelcode IS '医院等级编码';
+
+
+--
+-- Name: COLUMN t_mb_hosp.enableflag; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_hosp.enableflag IS '参考 dict_enableflag 字典表定义 
+1=正常 2=禁用 3=删除';
+
+
+--
+-- Name: COLUMN t_mb_hosp.hospflag; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_hosp.hospflag IS '0 未开通， 1开通';
+
+
+--
+-- Name: COLUMN t_mb_hosp.hospinternetflag; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_hosp.hospinternetflag IS '0 未开通， 1开通';
+
+
+--
+-- Name: COLUMN t_mb_hosp.hospregisterflag; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_hosp.hospregisterflag IS '0 未开通， 1开通';
+
+
+--
+-- Name: COLUMN t_mb_hosp.pcsystype; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_hosp.pcsystype IS '0,公共卫生系统，1专科慢病系统';
+
+
+--
+-- Name: COLUMN t_mb_hosp.reserveflag; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_hosp.reserveflag IS '保留标记位';
+
+
+--
+-- Name: COLUMN t_mb_hosp.createdtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_hosp.createdtime IS '创建时间';
+
+
+--
+-- Name: COLUMN t_mb_hosp.modifiedtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_hosp.modifiedtime IS '修改时间';
+
+
+--
+-- Name: t_mb_hosp_cfg; Type: TABLE; Schema: aix; Owner: postgres
+--
+
+CREATE TABLE aix.t_mb_hosp_cfg (
+    hospcode character varying(64) NOT NULL,
+    cfgtype character varying(64) NOT NULL,
+    cfgtypename character varying(256),
+    cfgname text NOT NULL,
+    cfgparam text,
+    cfgmemo text,
+    createdtime timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    modifiedtime timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE aix.t_mb_hosp_cfg OWNER TO postgres;
+
+--
+-- Name: TABLE t_mb_hosp_cfg; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON TABLE aix.t_mb_hosp_cfg IS '医院相关个性化配置参数采用json格式保存在cfgparam字段，具体配置类型定义参考医院配置类型定义文档。
+';
+
+
+--
+-- Name: COLUMN t_mb_hosp_cfg.hospcode; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_hosp_cfg.hospcode IS '医院编码';
+
+
+--
+-- Name: COLUMN t_mb_hosp_cfg.cfgtype; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_hosp_cfg.cfgtype IS '101	病种管理
+201	签约合同模版
+202	确诊报告模版
+203	治疗方案模版
+204	随访报告模版
+205	个人健康报告模版
+';
+
+
+--
+-- Name: COLUMN t_mb_hosp_cfg.cfgtypename; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_hosp_cfg.cfgtypename IS '配置类型名称';
+
+
+--
+-- Name: COLUMN t_mb_hosp_cfg.cfgname; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_hosp_cfg.cfgname IS '配置名称';
+
+
+--
+-- Name: COLUMN t_mb_hosp_cfg.cfgparam; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_hosp_cfg.cfgparam IS '配置参数';
+
+
+--
+-- Name: COLUMN t_mb_hosp_cfg.cfgmemo; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_hosp_cfg.cfgmemo IS '配置备注';
+
+
+--
+-- Name: COLUMN t_mb_hosp_cfg.createdtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_hosp_cfg.createdtime IS '创建时间';
+
+
+--
+-- Name: COLUMN t_mb_hosp_cfg.modifiedtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_hosp_cfg.modifiedtime IS '修改时间';
+
+
+--
+-- Name: t_mb_hosp_dept; Type: TABLE; Schema: aix; Owner: postgres
+--
+
+CREATE TABLE aix.t_mb_hosp_dept (
+    hospcode character varying(64) NOT NULL,
+    deptcode character varying(64) NOT NULL,
+    deptname character varying(255) NOT NULL,
+    deptspeciality text,
+    deptkeyword jsonb DEFAULT '[]'::jsonb,
+    modifiedtime timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    createdtime timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE aix.t_mb_hosp_dept OWNER TO postgres;
+
+--
+-- Name: TABLE t_mb_hosp_dept; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON TABLE aix.t_mb_hosp_dept IS '医院科室表，每个医院都有自己的科室编码表';
+
+
+--
+-- Name: COLUMN t_mb_hosp_dept.hospcode; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_hosp_dept.hospcode IS '医院编码';
+
+
+--
+-- Name: COLUMN t_mb_hosp_dept.deptcode; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_hosp_dept.deptcode IS '科室编码';
+
+
+--
+-- Name: COLUMN t_mb_hosp_dept.deptname; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_hosp_dept.deptname IS '科室名称';
+
+
+--
+-- Name: COLUMN t_mb_hosp_dept.deptspeciality; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_hosp_dept.deptspeciality IS '科室专长';
+
+
+--
+-- Name: COLUMN t_mb_hosp_dept.deptkeyword; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_hosp_dept.deptkeyword IS '科室关键字';
+
+
+--
+-- Name: COLUMN t_mb_hosp_dept.modifiedtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_hosp_dept.modifiedtime IS '修改时间';
+
+
+--
+-- Name: COLUMN t_mb_hosp_dept.createdtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_hosp_dept.createdtime IS '创建时间';
+
+
+--
+-- Name: t_mb_prj; Type: TABLE; Schema: aix; Owner: postgres
+--
+
+CREATE TABLE aix.t_mb_prj (
+    projectid character varying(64) NOT NULL,
+    hospcode character varying(64) NOT NULL,
+    projectname character varying(64) NOT NULL,
+    projectdesc character varying(255),
+    modifiedtime timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    createdtime timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE aix.t_mb_prj OWNER TO postgres;
+
+--
+-- Name: TABLE t_mb_prj; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON TABLE aix.t_mb_prj IS '15-6-1 项目表';
+
+
+--
+-- Name: COLUMN t_mb_prj.projectid; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_prj.projectid IS '项目ID';
+
+
+--
+-- Name: COLUMN t_mb_prj.hospcode; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_prj.hospcode IS '医院编码';
+
+
+--
+-- Name: COLUMN t_mb_prj.projectname; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_prj.projectname IS '项目名称';
+
+
+--
+-- Name: COLUMN t_mb_prj.projectdesc; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_prj.projectdesc IS '项目描述';
+
+
+--
+-- Name: COLUMN t_mb_prj.modifiedtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_prj.modifiedtime IS '修改时间';
+
+
+--
+-- Name: COLUMN t_mb_prj.createdtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_prj.createdtime IS '创建时间';
+
+
+--
+-- Name: t_mb_prj_title; Type: TABLE; Schema: aix; Owner: postgres
+--
+
+CREATE TABLE aix.t_mb_prj_title (
+    projectid character varying(64) NOT NULL,
+    titleid character varying(64) NOT NULL,
+    titlename character varying(255) NOT NULL,
+    titlelogo text,
+    modifiedtime timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    createdtime timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE aix.t_mb_prj_title OWNER TO postgres;
+
+--
+-- Name: TABLE t_mb_prj_title; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON TABLE aix.t_mb_prj_title IS '15-6-2 项目标题表';
+
+
+--
+-- Name: COLUMN t_mb_prj_title.projectid; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_prj_title.projectid IS '项目ID';
+
+
+--
+-- Name: COLUMN t_mb_prj_title.titleid; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_prj_title.titleid IS '标题ID';
+
+
+--
+-- Name: COLUMN t_mb_prj_title.titlename; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_prj_title.titlename IS '标题名称';
+
+
+--
+-- Name: COLUMN t_mb_prj_title.titlelogo; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_prj_title.titlelogo IS '图片使用base64编码';
+
+
+--
+-- Name: COLUMN t_mb_prj_title.modifiedtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_prj_title.modifiedtime IS '修改时间';
+
+
+--
+-- Name: COLUMN t_mb_prj_title.createdtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_prj_title.createdtime IS '创建时间';
+
+
+--
+-- Name: t_mb_role_group; Type: TABLE; Schema: aix; Owner: postgres
+--
+
+CREATE TABLE aix.t_mb_role_group (
+    rolegrpid character varying(64) NOT NULL,
+    rolegrpname character varying(64) NOT NULL,
+    sysflag integer DEFAULT 20000 NOT NULL,
+    rolegrpicon text,
+    modifiedtime timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    createdtime timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE aix.t_mb_role_group OWNER TO postgres;
+
+--
+-- Name: TABLE t_mb_role_group; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON TABLE aix.t_mb_role_group IS '15-4-1  角色表';
+
+
+--
+-- Name: COLUMN t_mb_role_group.rolegrpid; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_role_group.rolegrpid IS '角色ID';
+
+
+--
+-- Name: COLUMN t_mb_role_group.rolegrpname; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_role_group.rolegrpname IS '角色名称';
+
+
+--
+-- Name: COLUMN t_mb_role_group.sysflag; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_role_group.sysflag IS '10000=系统管理员 20000=用户';
+
+
+--
+-- Name: COLUMN t_mb_role_group.rolegrpicon; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_role_group.rolegrpicon IS '角色图标';
+
+
+--
+-- Name: COLUMN t_mb_role_group.modifiedtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_role_group.modifiedtime IS '修改时间';
+
+
+--
+-- Name: COLUMN t_mb_role_group.createdtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_role_group.createdtime IS '创建时间';
+
+
+--
+-- Name: t_mb_role_group_account; Type: TABLE; Schema: aix; Owner: postgres
+--
+
+CREATE TABLE aix.t_mb_role_group_account (
+    userid character varying(64) NOT NULL,
+    rolegrpid character varying(64) NOT NULL,
+    sysflag integer DEFAULT 20000 NOT NULL,
+    modifiedtime timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    createdtime timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE aix.t_mb_role_group_account OWNER TO postgres;
+
+--
+-- Name: TABLE t_mb_role_group_account; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON TABLE aix.t_mb_role_group_account IS '如果一个帐号存在多个角色，帐号登录成功后把角色名称列出来让用户选择';
+
+
+--
+-- Name: COLUMN t_mb_role_group_account.userid; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_role_group_account.userid IS '用户ID';
+
+
+--
+-- Name: COLUMN t_mb_role_group_account.rolegrpid; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_role_group_account.rolegrpid IS '角色ID';
+
+
+--
+-- Name: COLUMN t_mb_role_group_account.sysflag; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_role_group_account.sysflag IS '10000=系统管理员 20000=用户';
+
+
+--
+-- Name: COLUMN t_mb_role_group_account.modifiedtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_role_group_account.modifiedtime IS '修改时间';
+
+
+--
+-- Name: COLUMN t_mb_role_group_account.createdtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_role_group_account.createdtime IS '创建时间';
+
+
+--
+-- Name: t_mb_role_group_function; Type: TABLE; Schema: aix; Owner: postgres
+--
+
+CREATE TABLE aix.t_mb_role_group_function (
+    rolegrpid character varying(64) NOT NULL,
+    functionidlist text,
+    sysflag integer DEFAULT 20000 NOT NULL,
+    modifiedtime timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    createdtime timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE aix.t_mb_role_group_function OWNER TO postgres;
+
+--
+-- Name: TABLE t_mb_role_group_function; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON TABLE aix.t_mb_role_group_function IS '15-4-2  角色功能关联表';
+
+
+--
+-- Name: COLUMN t_mb_role_group_function.rolegrpid; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_role_group_function.rolegrpid IS '角色ID';
+
+
+--
+-- Name: COLUMN t_mb_role_group_function.functionidlist; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_role_group_function.functionidlist IS '多个功能ID间用逗号分隔';
+
+
+--
+-- Name: COLUMN t_mb_role_group_function.sysflag; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_role_group_function.sysflag IS '10000=系统管理员 20000=用户';
+
+
+--
+-- Name: COLUMN t_mb_role_group_function.modifiedtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_role_group_function.modifiedtime IS '修改时间';
+
+
+--
+-- Name: COLUMN t_mb_role_group_function.createdtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_role_group_function.createdtime IS '创建时间';
+
+
+--
+-- Name: t_mb_user_account; Type: TABLE; Schema: aix; Owner: postgres
+--
+
+CREATE TABLE aix.t_mb_user_account (
+    userid character varying(64) NOT NULL,
+    acc character varying(64) DEFAULT ''::character varying NOT NULL,
+    pwd character varying(64) NOT NULL,
+    salt character varying(64) NOT NULL,
+    enableflag character varying(64) DEFAULT '1'::character varying NOT NULL,
+    sysflag integer DEFAULT 20000 NOT NULL,
+    hospauthflag integer DEFAULT 1,
+    deptauthflag integer DEFAULT 0,
+    doctorauthflag integer DEFAULT 0,
+    areaauthflag integer DEFAULT 1,
+    reserveauthflag integer DEFAULT 0,
+    regtime timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    modifiedtime timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    createdtime timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE aix.t_mb_user_account OWNER TO postgres;
+
+--
+-- Name: TABLE t_mb_user_account; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON TABLE aix.t_mb_user_account IS '帐号不允许修改，只能逻辑删除';
+
+
+--
+-- Name: COLUMN t_mb_user_account.userid; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_account.userid IS '用户ID';
+
+
+--
+-- Name: COLUMN t_mb_user_account.acc; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_account.acc IS '帐号';
+
+
+--
+-- Name: COLUMN t_mb_user_account.pwd; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_account.pwd IS '密码';
+
+
+--
+-- Name: COLUMN t_mb_user_account.salt; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_account.salt IS '加密因子';
+
+
+--
+-- Name: COLUMN t_mb_user_account.enableflag; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_account.enableflag IS '10000=正常 20000=禁用';
+
+
+--
+-- Name: COLUMN t_mb_user_account.sysflag; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_account.sysflag IS '10000=系统管理员 20000=用户';
+
+
+--
+-- Name: COLUMN t_mb_user_account.hospauthflag; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_account.hospauthflag IS '0,查看所有医院， 1查看指定机构';
+
+
+--
+-- Name: COLUMN t_mb_user_account.deptauthflag; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_account.deptauthflag IS '0,查看所有科室， 1查看指定科室';
+
+
+--
+-- Name: COLUMN t_mb_user_account.doctorauthflag; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_account.doctorauthflag IS '0,查看所有医生患者 1仅查看责任医生患者';
+
+
+--
+-- Name: COLUMN t_mb_user_account.areaauthflag; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_account.areaauthflag IS '0 查看所有划区，1查看指定划区';
+
+
+--
+-- Name: COLUMN t_mb_user_account.reserveauthflag; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_account.reserveauthflag IS '保留标记';
+
+
+--
+-- Name: COLUMN t_mb_user_account.regtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_account.regtime IS '注册时间';
+
+
+--
+-- Name: COLUMN t_mb_user_account.modifiedtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_account.modifiedtime IS '修改时间';
+
+
+--
+-- Name: COLUMN t_mb_user_account.createdtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_account.createdtime IS '创建时间';
+
+
+--
+-- Name: t_mb_user_account_prj_tiltle; Type: TABLE; Schema: aix; Owner: postgres
+--
+
+CREATE TABLE aix.t_mb_user_account_prj_tiltle (
+    userid character varying(64) NOT NULL,
+    projectid character varying(64) NOT NULL,
+    titleid character varying(64) NOT NULL,
+    modifiedtime timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    createdtime timestamp without time zone DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+
+
+ALTER TABLE aix.t_mb_user_account_prj_tiltle OWNER TO postgres;
+
+--
+-- Name: TABLE t_mb_user_account_prj_tiltle; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON TABLE aix.t_mb_user_account_prj_tiltle IS '15-5-3 帐号项目标题表';
+
+
+--
+-- Name: COLUMN t_mb_user_account_prj_tiltle.userid; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_account_prj_tiltle.userid IS '用户ID';
+
+
+--
+-- Name: COLUMN t_mb_user_account_prj_tiltle.projectid; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_account_prj_tiltle.projectid IS '项目ID';
+
+
+--
+-- Name: COLUMN t_mb_user_account_prj_tiltle.titleid; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_account_prj_tiltle.titleid IS '标题ID';
+
+
+--
+-- Name: COLUMN t_mb_user_account_prj_tiltle.modifiedtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_account_prj_tiltle.modifiedtime IS '修改时间';
+
+
+--
+-- Name: COLUMN t_mb_user_account_prj_tiltle.createdtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_account_prj_tiltle.createdtime IS '创建时间';
+
+
+--
+-- Name: t_mb_user_auth_hosp; Type: TABLE; Schema: aix; Owner: postgres
+--
+
+CREATE TABLE aix.t_mb_user_auth_hosp (
+    userid character varying(64) NOT NULL,
+    hospcode character varying(64) NOT NULL,
+    modifiedtime timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    createdtime timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE aix.t_mb_user_auth_hosp OWNER TO postgres;
+
+--
+-- Name: TABLE t_mb_user_auth_hosp; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON TABLE aix.t_mb_user_auth_hosp IS '15-5-5 帐号医院权限';
+
+
+--
+-- Name: COLUMN t_mb_user_auth_hosp.userid; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_auth_hosp.userid IS '用户ID';
+
+
+--
+-- Name: COLUMN t_mb_user_auth_hosp.hospcode; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_auth_hosp.hospcode IS '医院编码';
+
+
+--
+-- Name: COLUMN t_mb_user_auth_hosp.modifiedtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_auth_hosp.modifiedtime IS '修改时间';
+
+
+--
+-- Name: COLUMN t_mb_user_auth_hosp.createdtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_auth_hosp.createdtime IS '创建时间';
+
+
+--
+-- Name: t_mb_user_auth_hosp_dept; Type: TABLE; Schema: aix; Owner: postgres
+--
+
+CREATE TABLE aix.t_mb_user_auth_hosp_dept (
+    userid character varying(64) NOT NULL,
+    hospcode character varying(64) NOT NULL,
+    deptcode character varying(64) NOT NULL,
+    modifiedtime timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    createdtime timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE aix.t_mb_user_auth_hosp_dept OWNER TO postgres;
+
+--
+-- Name: TABLE t_mb_user_auth_hosp_dept; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON TABLE aix.t_mb_user_auth_hosp_dept IS '同科室帐号不同角色的数据如何查看？
+默认情况下帐号只能看到自己建立的档案，对帐号授医院、科室权限（一对多），先查询帐号赋予院科权限档案列表A，再查询该帐号居民档案列表B，A合并B的集合才是该帐号的居民档案权限集合
+';
+
+
+--
+-- Name: COLUMN t_mb_user_auth_hosp_dept.userid; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_auth_hosp_dept.userid IS '用户ID';
+
+
+--
+-- Name: COLUMN t_mb_user_auth_hosp_dept.hospcode; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_auth_hosp_dept.hospcode IS '医院编码';
+
+
+--
+-- Name: COLUMN t_mb_user_auth_hosp_dept.deptcode; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_auth_hosp_dept.deptcode IS '科室编码';
+
+
+--
+-- Name: COLUMN t_mb_user_auth_hosp_dept.modifiedtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_auth_hosp_dept.modifiedtime IS '修改时间';
+
+
+--
+-- Name: COLUMN t_mb_user_auth_hosp_dept.createdtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_auth_hosp_dept.createdtime IS '创建时间';
+
+
+--
+-- Name: t_mb_user_info; Type: TABLE; Schema: aix; Owner: postgres
+--
+
+CREATE TABLE aix.t_mb_user_info (
+    userid character varying(64) NOT NULL,
+    acc character varying(64),
+    hospcode character varying(64) NOT NULL,
+    deptcode character varying(64),
+    doctorno character varying(64),
+    doctorlevelcode character varying(64),
+    doctorlevelname character varying(64),
+    workdepartment character varying(256),
+    workno character varying(64),
+    idcardno character varying(64) DEFAULT ''::character varying,
+    phone character varying(64),
+    openflag integer DEFAULT 0,
+    certtype character varying(64),
+    certtypename character varying(64),
+    certnum character varying(64),
+    signature text DEFAULT ''::text,
+    resume text,
+    doctorname character varying(64),
+    gendercode character varying(64),
+    gendername character varying(64),
+    birth date,
+    mail character varying(128),
+    nickname character varying(64),
+    photo text,
+    areacode character varying(64),
+    address text,
+    params text,
+    createdtime timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    modifiedtime timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE aix.t_mb_user_info OWNER TO postgres;
+
+--
+-- Name: TABLE t_mb_user_info; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON TABLE aix.t_mb_user_info IS '帐号资料表';
+
+
+--
+-- Name: COLUMN t_mb_user_info.userid; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_info.userid IS '用户ID';
+
+
+--
+-- Name: COLUMN t_mb_user_info.acc; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_info.acc IS '帐号';
+
+
+--
+-- Name: COLUMN t_mb_user_info.hospcode; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_info.hospcode IS '医院编码';
+
+
+--
+-- Name: COLUMN t_mb_user_info.deptcode; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_info.deptcode IS '科室编码';
+
+
+--
+-- Name: COLUMN t_mb_user_info.doctorno; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_info.doctorno IS '执医证号';
+
+
+--
+-- Name: COLUMN t_mb_user_info.doctorlevelcode; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_info.doctorlevelcode IS '职级编码';
+
+
+--
+-- Name: COLUMN t_mb_user_info.doctorlevelname; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_info.doctorlevelname IS '职级名称';
+
+
+--
+-- Name: COLUMN t_mb_user_info.workdepartment; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_info.workdepartment IS '工作单位';
+
+
+--
+-- Name: COLUMN t_mb_user_info.workno; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_info.workno IS '医生工号';
+
+
+--
+-- Name: COLUMN t_mb_user_info.idcardno; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_info.idcardno IS '身份证号';
+
+
+--
+-- Name: COLUMN t_mb_user_info.phone; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_info.phone IS '手机号';
+
+
+--
+-- Name: COLUMN t_mb_user_info.openflag; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_info.openflag IS '0=不公开 1=公开';
+
+
+--
+-- Name: COLUMN t_mb_user_info.certtype; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_info.certtype IS 'CV02.01.101 身份证件类别编码字典表 dict_certtype';
+
+
+--
+-- Name: COLUMN t_mb_user_info.certtypename; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_info.certtypename IS '证件类型名称';
+
+
+--
+-- Name: COLUMN t_mb_user_info.certnum; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_info.certnum IS '证件号码';
+
+
+--
+-- Name: COLUMN t_mb_user_info.signature; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_info.signature IS '签名';
+
+
+--
+-- Name: COLUMN t_mb_user_info.resume; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_info.resume IS '个人简介';
+
+
+--
+-- Name: COLUMN t_mb_user_info.doctorname; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_info.doctorname IS '医生姓名';
+
+
+--
+-- Name: COLUMN t_mb_user_info.gendercode; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_info.gendercode IS '性别字典表 dict_gender';
+
+
+--
+-- Name: COLUMN t_mb_user_info.gendername; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_info.gendername IS '性别名称';
+
+
+--
+-- Name: COLUMN t_mb_user_info.birth; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_info.birth IS '出生日期';
+
+
+--
+-- Name: COLUMN t_mb_user_info.mail; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_info.mail IS '邮箱';
+
+
+--
+-- Name: COLUMN t_mb_user_info.nickname; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_info.nickname IS '昵称';
+
+
+--
+-- Name: COLUMN t_mb_user_info.photo; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_info.photo IS '头像';
+
+
+--
+-- Name: COLUMN t_mb_user_info.areacode; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_info.areacode IS '区域编码';
+
+
+--
+-- Name: COLUMN t_mb_user_info.address; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_info.address IS '详细地址';
+
+
+--
+-- Name: COLUMN t_mb_user_info.params; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_info.params IS '个性化参数';
+
+
+--
+-- Name: COLUMN t_mb_user_info.createdtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_info.createdtime IS '创建时间';
+
+
+--
+-- Name: COLUMN t_mb_user_info.modifiedtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_mb_user_info.modifiedtime IS '修改时间';
+
+
+--
+-- Name: t_nethosp_app_init_cfg; Type: TABLE; Schema: aix; Owner: postgres
+--
+
+CREATE TABLE aix.t_nethosp_app_init_cfg (
+    applicationid character varying(64) NOT NULL,
+    apptypecode character varying(64),
+    apptypename character varying(64),
+    appname character varying(255),
+    applogo text,
+    apploginurl text,
+    appstarturpimageurl text,
+    appstarturpimage text,
+    regsiterprotourl text,
+    regsiterproto text,
+    appmaincolor character varying(255),
+    appselectedcolor character varying(255),
+    remark text,
+    createdtime timestamp without time zone,
+    modifiedtime timestamp without time zone
+);
+
+
+ALTER TABLE aix.t_nethosp_app_init_cfg OWNER TO postgres;
+
+--
+-- Name: TABLE t_nethosp_app_init_cfg; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON TABLE aix.t_nethosp_app_init_cfg IS '界面上做成列表。增删改查';
+
+
+--
+-- Name: COLUMN t_nethosp_app_init_cfg.applicationid; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_nethosp_app_init_cfg.applicationid IS 'applicationid';
+
+
+--
+-- Name: COLUMN t_nethosp_app_init_cfg.apptypecode; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_nethosp_app_init_cfg.apptypecode IS '1 = 互联网医院用户app
+2 = 互联网医院医生app';
+
+
+--
+-- Name: COLUMN t_nethosp_app_init_cfg.apptypename; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_nethosp_app_init_cfg.apptypename IS 'app类型名称';
+
+
+--
+-- Name: COLUMN t_nethosp_app_init_cfg.appname; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_nethosp_app_init_cfg.appname IS 'app名称';
+
+
+--
+-- Name: COLUMN t_nethosp_app_init_cfg.applogo; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_nethosp_app_init_cfg.applogo IS 'base64编码';
+
+
+--
+-- Name: COLUMN t_nethosp_app_init_cfg.apploginurl; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_nethosp_app_init_cfg.apploginurl IS 'APP登录地址';
+
+
+--
+-- Name: COLUMN t_nethosp_app_init_cfg.appstarturpimageurl; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_nethosp_app_init_cfg.appstarturpimageurl IS 'app启动页图像地址';
+
+
+--
+-- Name: COLUMN t_nethosp_app_init_cfg.appstarturpimage; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_nethosp_app_init_cfg.appstarturpimage IS '图片采用base64编码';
+
+
+--
+-- Name: COLUMN t_nethosp_app_init_cfg.regsiterprotourl; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_nethosp_app_init_cfg.regsiterprotourl IS '注册协议url';
+
+
+--
+-- Name: COLUMN t_nethosp_app_init_cfg.regsiterproto; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_nethosp_app_init_cfg.regsiterproto IS 'Html文件';
+
+
+--
+-- Name: COLUMN t_nethosp_app_init_cfg.appmaincolor; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_nethosp_app_init_cfg.appmaincolor IS 'app主题颜色';
+
+
+--
+-- Name: COLUMN t_nethosp_app_init_cfg.appselectedcolor; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_nethosp_app_init_cfg.appselectedcolor IS '按钮选中颜色';
+
+
+--
+-- Name: COLUMN t_nethosp_app_init_cfg.remark; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_nethosp_app_init_cfg.remark IS '备注';
+
+
+--
+-- Name: COLUMN t_nethosp_app_init_cfg.createdtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_nethosp_app_init_cfg.createdtime IS '创建时间';
+
+
+--
+-- Name: COLUMN t_nethosp_app_init_cfg.modifiedtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_nethosp_app_init_cfg.modifiedtime IS '修改时间';
+
+
+--
+-- Name: t_pg_notification_send_log; Type: TABLE; Schema: aix; Owner: postgres
+--
+
+CREATE TABLE aix.t_pg_notification_send_log (
+    serialid character varying(64) NOT NULL,
+    commercianunit character varying(64),
+    destination character varying(64),
+    params jsonb,
+    createdtime timestamp without time zone
+);
+
+
+ALTER TABLE aix.t_pg_notification_send_log OWNER TO postgres;
+
+--
+-- Name: TABLE t_pg_notification_send_log; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON TABLE aix.t_pg_notification_send_log IS '通知发送日志表  
+1.记录通知发送的业务单元  存储发送消息的存储过程名称
+2.记录通知发送目标
+3.记录通知发送参数';
+
+
+--
+-- Name: COLUMN t_pg_notification_send_log.serialid; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_pg_notification_send_log.serialid IS '唯一id';
+
+
+--
+-- Name: COLUMN t_pg_notification_send_log.commercianunit; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_pg_notification_send_log.commercianunit IS '发送消息存储过程名称';
+
+
+--
+-- Name: COLUMN t_pg_notification_send_log.destination; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_pg_notification_send_log.destination IS '目标';
+
+
+--
+-- Name: COLUMN t_pg_notification_send_log.params; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_pg_notification_send_log.params IS '发送参数';
+
+
+--
+-- Name: COLUMN t_pg_notification_send_log.createdtime; Type: COMMENT; Schema: aix; Owner: postgres
+--
+
+COMMENT ON COLUMN aix.t_pg_notification_send_log.createdtime IS '创建时间';
+
+
+--
+-- Data for Name: ofconversation; Type: TABLE DATA; Schema: aix; Owner: postgres
+--
+
+COPY aix.ofconversation (id) FROM stdin;
+123
+\.
+
+
+--
+-- Data for Name: t_dict_area; Type: TABLE DATA; Schema: aix; Owner: postgres
+--
+
+COPY aix.t_dict_area (regionlevel, areacode, areaname, areafullname, arealevel, parentareacode, lang) FROM stdin;
+\.
+
+
+--
+-- Data for Name: t_dict_area_code; Type: TABLE DATA; Schema: aix; Owner: postgres
+--
+
+COPY aix.t_dict_area_code (areacode, lang, areaname, parentareacode) FROM stdin;
+\.
+
+
+--
+-- Data for Name: t_dict_ask_item; Type: TABLE DATA; Schema: aix; Owner: postgres
+--
+
+COPY aix.t_dict_ask_item (qcatetitle, qcatesubtitle, qcode, qname, statisticalname, qparentcode, qtypecode, qtypename, qitemcode, qitemname, qfiltercode, qitemsortflag, optmutexflag, optmemoflag, optsortflag, optdefaultflag, qpage, vuecomponentname, vuecomponenttype) FROM stdin;
+\.
+
+
+--
+-- Data for Name: t_dict_common_code; Type: TABLE DATA; Schema: aix; Owner: postgres
+--
+
+COPY aix.t_dict_common_code (dicttype, dicttypename, dictid, dictcode, dictcodename, mutexflag, memoflag) FROM stdin;
+\.
+
+
+--
+-- Data for Name: t_dict_hospital; Type: TABLE DATA; Schema: aix; Owner: postgres
+--
+
+COPY aix.t_dict_hospital (hospid, hospcode, hospname, hospalias, areacode, areaname, hosplevelcode, hosplevelname, hosptypecode, hosptypename, address, hospweb, resume, contactphone, contactname, postcode, enableflag, createdtime, modifiedtime) FROM stdin;
+\.
+
+
+--
+-- Data for Name: t_mb_function_menu; Type: TABLE DATA; Schema: aix; Owner: postgres
+--
+
+COPY aix.t_mb_function_menu (functionid, lang, functionname, memo, parentfunctionid, sortid, functionpage, functionicon, visibletype, functionlevel, pcsystype, modifiedtime, createdtime) FROM stdin;
+000000	zh	ROOT			1			2	0	-1	2021-09-29 09:29:28.1394	2021-09-29 09:29:28.1394
+990000	zh	竹信管理		000000	1	ZXGL	home	2	1	1	2021-09-29 09:29:28.1394	2021-09-29 09:29:28.1394
+990100	zh	竹信配置		990000	1	ZXGL	home	2	2	1	2021-09-29 09:29:28.1394	2021-09-29 09:29:28.1394
+990102	zh	竹信APP服务配置		990100	3	RoleCfgPage	network	2	3	1	2021-09-29 09:29:28.1394	2021-09-29 09:29:28.1394
+\.
+
+
+--
+-- Data for Name: t_mb_hosp; Type: TABLE DATA; Schema: aix; Owner: postgres
+--
+
+COPY aix.t_mb_hosp (hospcode, hospname, hospalias, hosplevelcode, enableflag, hospflag, hospinternetflag, hospregisterflag, pcsystype, reserveflag, createdtime, modifiedtime) FROM stdin;
+4403050000001	竹信科技	竹信科技	301	10000	0	0	0	\N	0	2021-09-29 09:28:56.586279	2021-09-29 09:28:56.586279
+\.
+
+
+--
+-- Data for Name: t_mb_hosp_cfg; Type: TABLE DATA; Schema: aix; Owner: postgres
+--
+
+COPY aix.t_mb_hosp_cfg (hospcode, cfgtype, cfgtypename, cfgname, cfgparam, cfgmemo, createdtime, modifiedtime) FROM stdin;
+\.
+
+
+--
+-- Data for Name: t_mb_hosp_dept; Type: TABLE DATA; Schema: aix; Owner: postgres
+--
+
+COPY aix.t_mb_hosp_dept (hospcode, deptcode, deptname, deptspeciality, deptkeyword, modifiedtime, createdtime) FROM stdin;
+4403050000001	0000000000000000000000000	未知科室	\N	[]	2021-09-29 09:28:56.674527	2021-09-29 09:28:56.674527
+\.
+
+
+--
+-- Data for Name: t_mb_prj; Type: TABLE DATA; Schema: aix; Owner: postgres
+--
+
+COPY aix.t_mb_prj (projectid, hospcode, projectname, projectdesc, modifiedtime, createdtime) FROM stdin;
+c0d74582676d440d8d5faed1879bdd81	4403050000001	竹信科技	竹信服务配置中心	2021-09-29 09:28:56.744598	2021-09-29 09:28:56.744598
+\.
+
+
+--
+-- Data for Name: t_mb_prj_title; Type: TABLE DATA; Schema: aix; Owner: postgres
+--
+
+COPY aix.t_mb_prj_title (projectid, titleid, titlename, titlelogo, modifiedtime, createdtime) FROM stdin;
+c0d74582676d440d8d5faed1879bdd81	c0d74582676d440d8d5faed1879bdd81	竹信服务配置中心	data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGwAAAAtCAYAAABLYo4EAAAACXBIWXMAAAsTAAALEwEAmpwYAAA4/GlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS41LWMwMjEgNzkuMTU1NzcyLCAyMDE0LzAxLzEzLTE5OjQ0OjAwICAgICAgICAiPgogICA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPgogICAgICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgICAgICAgICB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iCiAgICAgICAgICAgIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIKICAgICAgICAgICAgeG1sbnM6cGhvdG9zaG9wPSJodHRwOi8vbnMuYWRvYmUuY29tL3Bob3Rvc2hvcC8xLjAvIgogICAgICAgICAgICB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIKICAgICAgICAgICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgICAgICAgICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iCiAgICAgICAgICAgIHhtbG5zOmV4aWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20vZXhpZi8xLjAvIj4KICAgICAgICAgPHhtcDpDcmVhdG9yVG9vbD5BZG9iZSBQaG90b3Nob3AgQ0MgMjAxNCAoV2luZG93cyk8L3htcDpDcmVhdG9yVG9vbD4KICAgICAgICAgPHhtcDpDcmVhdGVEYXRlPjIwMTYtMDctMjVUMTA6NTE6NTMrMDg6MDA8L3htcDpDcmVhdGVEYXRlPgogICAgICAgICA8eG1wOk1vZGlmeURhdGU+MjAxNi0wNy0yNVQxMDo1MzozMSswODowMDwveG1wOk1vZGlmeURhdGU+CiAgICAgICAgIDx4bXA6TWV0YWRhdGFEYXRlPjIwMTYtMDctMjVUMTA6NTM6MzErMDg6MDA8L3htcDpNZXRhZGF0YURhdGU+CiAgICAgICAgIDxkYzpmb3JtYXQ+aW1hZ2UvcG5nPC9kYzpmb3JtYXQ+CiAgICAgICAgIDxwaG90b3Nob3A6Q29sb3JNb2RlPjM8L3Bob3Rvc2hvcDpDb2xvck1vZGU+CiAgICAgICAgIDxwaG90b3Nob3A6RG9jdW1lbnRBbmNlc3RvcnM+CiAgICAgICAgICAgIDxyZGY6QmFnPgogICAgICAgICAgICAgICA8cmRmOmxpPmFkb2JlOmRvY2lkOnBob3Rvc2hvcDoyZDY2OWEwZi01Nzk2LTExZTUtYjQ5MC05ZDcxYmM4OWEyMGQ8L3JkZjpsaT4KICAgICAgICAgICAgPC9yZGY6QmFnPgogICAgICAgICA8L3Bob3Rvc2hvcDpEb2N1bWVudEFuY2VzdG9ycz4KICAgICAgICAgPHhtcE1NOkluc3RhbmNlSUQ+eG1wLmlpZDo1YmM5Mzg1Ni04ZWI3LWZlNGMtODg1MS1mNmE2OGE3YTExNjM8L3htcE1NOkluc3RhbmNlSUQ+CiAgICAgICAgIDx4bXBNTTpEb2N1bWVudElEPnhtcC5kaWQ6NWJjOTM4NTYtOGViNy1mZTRjLTg4NTEtZjZhNjhhN2ExMTYzPC94bXBNTTpEb2N1bWVudElEPgogICAgICAgICA8eG1wTU06T3JpZ2luYWxEb2N1bWVudElEPnhtcC5kaWQ6NWJjOTM4NTYtOGViNy1mZTRjLTg4NTEtZjZhNjhhN2ExMTYzPC94bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ+CiAgICAgICAgIDx4bXBNTTpIaXN0b3J5PgogICAgICAgICAgICA8cmRmOlNlcT4KICAgICAgICAgICAgICAgPHJkZjpsaSByZGY6cGFyc2VUeXBlPSJSZXNvdXJjZSI+CiAgICAgICAgICAgICAgICAgIDxzdEV2dDphY3Rpb24+Y3JlYXRlZDwvc3RFdnQ6YWN0aW9uPgogICAgICAgICAgICAgICAgICA8c3RFdnQ6aW5zdGFuY2VJRD54bXAuaWlkOjViYzkzODU2LThlYjctZmU0Yy04ODUxLWY2YTY4YTdhMTE2Mzwvc3RFdnQ6aW5zdGFuY2VJRD4KICAgICAgICAgICAgICAgICAgPHN0RXZ0OndoZW4+MjAxNi0wNy0yNVQxMDo1MTo1MyswODowMDwvc3RFdnQ6d2hlbj4KICAgICAgICAgICAgICAgICAgPHN0RXZ0OnNvZnR3YXJlQWdlbnQ+QWRvYmUgUGhvdG9zaG9wIENDIDIwMTQgKFdpbmRvd3MpPC9zdEV2dDpzb2Z0d2FyZUFnZW50PgogICAgICAgICAgICAgICA8L3JkZjpsaT4KICAgICAgICAgICAgPC9yZGY6U2VxPgogICAgICAgICA8L3htcE1NOkhpc3Rvcnk+CiAgICAgICAgIDx0aWZmOk9yaWVudGF0aW9uPjE8L3RpZmY6T3JpZW50YXRpb24+CiAgICAgICAgIDx0aWZmOlhSZXNvbHV0aW9uPjcyMDAwMC8xMDAwMDwvdGlmZjpYUmVzb2x1dGlvbj4KICAgICAgICAgPHRpZmY6WVJlc29sdXRpb24+NzIwMDAwLzEwMDAwPC90aWZmOllSZXNvbHV0aW9uPgogICAgICAgICA8dGlmZjpSZXNvbHV0aW9uVW5pdD4yPC90aWZmOlJlc29sdXRpb25Vbml0PgogICAgICAgICA8ZXhpZjpDb2xvclNwYWNlPjY1NTM1PC9leGlmOkNvbG9yU3BhY2U+CiAgICAgICAgIDxleGlmOlBpeGVsWERpbWVuc2lvbj4xMDg8L2V4aWY6UGl4ZWxYRGltZW5zaW9uPgogICAgICAgICA8ZXhpZjpQaXhlbFlEaW1lbnNpb24+NDU8L2V4aWY6UGl4ZWxZRGltZW5zaW9uPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAgPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAKPD94cGFja2V0IGVuZD0idyI/PgbXJlMAAAAgY0hSTQAAeiUAAICDAAD5/wAAgOkAAHUwAADqYAAAOpgAABdvkl/FRgAADn9JREFUeNrsm3mUFdWdxz+36m290d10gwu0KCgIREWjUcloorjFhcQlMRgXBEnEidEJyczEeMKMnmSOk5BRJ5tb1CNKEDQGI+MKKjGJZiBEByUgsiPQ+/b6bVV3/qjf675d1NuaBk1O/85553VX3ap77+/723/3Ka01Q/S3QyGA+f9+JwqN4sCDp1E0hkegUYH3u60Kbt1zNyd2rQGrxJe78GLN+bxYfT7DnI5cu4kB44GNQE/A/XFyfVeB2WLAqcBqoMu4vgAYBnwjx/sHTPPnzy+ZJR9vUnB04n1qMm2kVSjXqAuBl4DDA+4NBxYDs4uYbQbwBFDnu/474DLgyRxz7L+G/T0BNjaxiVlND/JQ/Q04yg6yGp8WDbgS2A7UA1FgG7AOOAo4Xu6ngQRQBUSA9cCf5D2zgBbRRFPwfw00AQ8BxwK7g23BwQcsDNiABpIfG9AsODy5ixktT/DQiBuIuQn/iGmy3q8LWDsEmPXC7FrgU8BkuV8tTE8DKwSwMcBo4G7gPuCLQGef2NAi3wvlWxtmdAtwlcx3QAEbDpwkGzkKOEQW4ACtwE6R0P8D3vuoNS2qA2XodGACcA1wBPCvwFmiJWngDeB14HqgGfgucAtwiWhNm7xnNtAAPAd0y9i4b66U8Nfy+b1uoP1AatgxwEzgPGAiUFFg/AfA/wK/Eon9SEhLGOWj7wB7gaeA28U0JQWsy4CpwEXAZhnfKgL5IdBoBCVzBQgbeBD4B2AkkOkvNv3scUgE448HyodVA/8M3CjaVSyNlc8XRFq/B/zhYGvYqORO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	2021-09-29 09:28:56.938649	2021-09-29 09:28:56.938649
+\.
+
+
+--
+-- Data for Name: t_mb_role_group; Type: TABLE DATA; Schema: aix; Owner: postgres
+--
+
+COPY aix.t_mb_role_group (rolegrpid, rolegrpname, sysflag, rolegrpicon, modifiedtime, createdtime) FROM stdin;
+10001	管理员	10000	data:image/png;base64,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	2021-09-29 09:29:41.722112	2021-09-29 09:29:41.722112
+10008	公卫管理	10000	data:image/png;base64,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	2021-09-29 09:29:41.874597	2021-09-29 09:29:41.874597
+10009	慢病管理	10000	data:image/png;base64,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	2021-09-29 09:29:41.952849	2021-09-29 09:29:41.952849
+10010	科室医生	10000	data:image/png;base64,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	2021-09-29 09:29:42.037748	2021-09-29 09:29:42.037748
+10011	科室主任	10000	data:image/png;base64,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	2021-09-29 09:29:42.115795	2021-09-29 09:29:42.115795
+10012	互联网医院	10000	data:image/png;base64,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	2021-09-29 09:29:42.20374	2021-09-29 09:29:42.20374
+10013	居家养老	10000	data:image/png;base64,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	2021-09-29 09:29:42.278725	2021-09-29 09:29:42.278725
+10014	签约医生	10000	data:image/png;base64,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	2021-09-29 09:29:42.358801	2021-09-29 09:29:42.358801
+10015	公共卫生管理	10000	data:image/png;base64,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	2021-09-29 09:29:42.449688	2021-09-29 09:29:42.449688
+\.
+
+
+--
+-- Data for Name: t_mb_role_group_account; Type: TABLE DATA; Schema: aix; Owner: postgres
+--
+
+COPY aix.t_mb_role_group_account (userid, rolegrpid, sysflag, modifiedtime, createdtime) FROM stdin;
+admin	10001	10000	2021-09-29 09:28:57.110585	2021-09-29 09:28:57.110585
+\.
+
+
+--
+-- Data for Name: t_mb_role_group_function; Type: TABLE DATA; Schema: aix; Owner: postgres
+--
+
+COPY aix.t_mb_role_group_function (rolegrpid, functionidlist, sysflag, modifiedtime, createdtime) FROM stdin;
+10001	["000000","990000","990100","990102"]	10000	2021-09-29 09:29:33.973673	2021-09-29 09:29:33.973673
+10015	["000000","990102","990100","990000"]	20000	2021-09-29 10:46:25.182817	2021-09-29 10:46:25.182817
+\.
+
+
+--
+-- Data for Name: t_mb_user_account; Type: TABLE DATA; Schema: aix; Owner: postgres
+--
+
+COPY aix.t_mb_user_account (userid, acc, pwd, salt, enableflag, sysflag, hospauthflag, deptauthflag, doctorauthflag, areaauthflag, reserveauthflag, regtime, modifiedtime, createdtime) FROM stdin;
+admin	admin	cd1b0dab7147ec309f02272d9f22823e	8dddf02643d34d098086eaeeba0e1db0	10000	10000	0	0	0	0	0	2021-09-29 09:28:57.195791	2021-09-29 09:28:57.195791	2021-09-29 09:28:57.195791
+\.
+
+
+--
+-- Data for Name: t_mb_user_account_prj_tiltle; Type: TABLE DATA; Schema: aix; Owner: postgres
+--
+
+COPY aix.t_mb_user_account_prj_tiltle (userid, projectid, titleid, modifiedtime, createdtime) FROM stdin;
+admin	c0d74582676d440d8d5faed1879bdd81	c0d74582676d440d8d5faed1879bdd81	2021-09-29 09:28:57.255687	2021-09-29 09:28:57.255687
+\.
+
+
+--
+-- Data for Name: t_mb_user_auth_hosp; Type: TABLE DATA; Schema: aix; Owner: postgres
+--
+
+COPY aix.t_mb_user_auth_hosp (userid, hospcode, modifiedtime, createdtime) FROM stdin;
+admin	4403050000001	2021-09-29 09:28:57.331751	2021-09-29 09:28:57.331751
+\.
+
+
+--
+-- Data for Name: t_mb_user_auth_hosp_dept; Type: TABLE DATA; Schema: aix; Owner: postgres
+--
+
+COPY aix.t_mb_user_auth_hosp_dept (userid, hospcode, deptcode, modifiedtime, createdtime) FROM stdin;
+\.
+
+
+--
+-- Data for Name: t_mb_user_info; Type: TABLE DATA; Schema: aix; Owner: postgres
+--
+
+COPY aix.t_mb_user_info (userid, acc, hospcode, deptcode, doctorno, doctorlevelcode, doctorlevelname, workdepartment, workno, idcardno, phone, openflag, certtype, certtypename, certnum, signature, resume, doctorname, gendercode, gendername, birth, mail, nickname, photo, areacode, address, params, createdtime, modifiedtime) FROM stdin;
+admin	admin	4403050000001	0000000000000000000000000								0						管理员			\N	\N						2021-09-29 09:28:57.404725	2021-09-29 09:28:57.404725
+\.
+
+
+--
+-- Data for Name: t_nethosp_app_init_cfg; Type: TABLE DATA; Schema: aix; Owner: postgres
+--
+
+COPY aix.t_nethosp_app_init_cfg (applicationid, apptypecode, apptypename, appname, applogo, apploginurl, appstarturpimageurl, appstarturpimage, regsiterprotourl, regsiterproto, appmaincolor, appselectedcolor, remark, createdtime, modifiedtime) FROM stdin;
+\.
+
+
+--
+-- Data for Name: t_pg_notification_send_log; Type: TABLE DATA; Schema: aix; Owner: postgres
+--
+
+COPY aix.t_pg_notification_send_log (serialid, commercianunit, destination, params, createdtime) FROM stdin;
+dpjvtebbsluwwqlzde5itmk9kddptvno	f_test_pg_notify	alert_notification	{"notifyno": "cmd_4060001", "notifytype": "update", "notifyparam": {"disecode": "xxx", "disename": "xxxx"}}	2021-09-29 09:43:35.602273
+6m39rrcllbiywogxhebhrmynzxq4syzy	f_test_pg_notify1	ssinfo_notification	{"notifyno": "cmd_4060002", "notifytype": "update", "notifyparam": {"disecode": "xxx", "disename": "xxxx"}}	2021-09-29 09:43:36.105249
+\.
+
+
+--
+-- Name: t_dict_area pk_t_dict_area; Type: CONSTRAINT; Schema: aix; Owner: postgres
+--
+
+ALTER TABLE ONLY aix.t_dict_area
+    ADD CONSTRAINT pk_t_dict_area PRIMARY KEY (lang, areacode);
+
+
+--
+-- Name: t_dict_area_code pk_t_dict_area_code; Type: CONSTRAINT; Schema: aix; Owner: postgres
+--
+
+ALTER TABLE ONLY aix.t_dict_area_code
+    ADD CONSTRAINT pk_t_dict_area_code PRIMARY KEY (areacode, lang);
+
+
+--
+-- Name: t_dict_ask_item pk_t_dict_ask_item; Type: CONSTRAINT; Schema: aix; Owner: postgres
+--
+
+ALTER TABLE ONLY aix.t_dict_ask_item
+    ADD CONSTRAINT pk_t_dict_ask_item PRIMARY KEY (qcode, qcatetitle, qcatesubtitle, qtypecode, qitemcode);
+
+
+--
+-- Name: t_dict_common_code pk_t_dict_common_code; Type: CONSTRAINT; Schema: aix; Owner: postgres
+--
+
+ALTER TABLE ONLY aix.t_dict_common_code
+    ADD CONSTRAINT pk_t_dict_common_code PRIMARY KEY (dictcode, dicttype);
+
+
+--
+-- Name: t_dict_hospital pk_t_dict_hospital; Type: CONSTRAINT; Schema: aix; Owner: postgres
+--
+
+ALTER TABLE ONLY aix.t_dict_hospital
+    ADD CONSTRAINT pk_t_dict_hospital PRIMARY KEY (hospcode);
+
+
+--
+-- Name: t_mb_function_menu pk_t_mb_function_menu; Type: CONSTRAINT; Schema: aix; Owner: postgres
+--
+
+ALTER TABLE ONLY aix.t_mb_function_menu
+    ADD CONSTRAINT pk_t_mb_function_menu PRIMARY KEY (functionid, lang);
+
+
+--
+-- Name: t_mb_hosp pk_t_mb_hosp; Type: CONSTRAINT; Schema: aix; Owner: postgres
+--
+
+ALTER TABLE ONLY aix.t_mb_hosp
+    ADD CONSTRAINT pk_t_mb_hosp PRIMARY KEY (hospcode);
+
+
+--
+-- Name: t_mb_hosp_cfg pk_t_mb_hosp_cfg; Type: CONSTRAINT; Schema: aix; Owner: postgres
+--
+
+ALTER TABLE ONLY aix.t_mb_hosp_cfg
+    ADD CONSTRAINT pk_t_mb_hosp_cfg PRIMARY KEY (hospcode, cfgtype, cfgname);
+
+
+--
+-- Name: t_mb_hosp_dept pk_t_mb_hosp_dept; Type: CONSTRAINT; Schema: aix; Owner: postgres
+--
+
+ALTER TABLE ONLY aix.t_mb_hosp_dept
+    ADD CONSTRAINT pk_t_mb_hosp_dept PRIMARY KEY (hospcode, deptcode);
+
+
+--
+-- Name: t_mb_prj pk_t_mb_prj; Type: CONSTRAINT; Schema: aix; Owner: postgres
+--
+
+ALTER TABLE ONLY aix.t_mb_prj
+    ADD CONSTRAINT pk_t_mb_prj PRIMARY KEY (projectid);
+
+
+--
+-- Name: t_mb_prj_title pk_t_mb_prj_title; Type: CONSTRAINT; Schema: aix; Owner: postgres
+--
+
+ALTER TABLE ONLY aix.t_mb_prj_title
+    ADD CONSTRAINT pk_t_mb_prj_title PRIMARY KEY (projectid, titleid);
+
+
+--
+-- Name: t_mb_role_group pk_t_mb_role_group; Type: CONSTRAINT; Schema: aix; Owner: postgres
+--
+
+ALTER TABLE ONLY aix.t_mb_role_group
+    ADD CONSTRAINT pk_t_mb_role_group PRIMARY KEY (rolegrpid);
+
+
+--
+-- Name: t_mb_role_group_account pk_t_mb_role_group_account; Type: CONSTRAINT; Schema: aix; Owner: postgres
+--
+
+ALTER TABLE ONLY aix.t_mb_role_group_account
+    ADD CONSTRAINT pk_t_mb_role_group_account PRIMARY KEY (userid, rolegrpid);
+
+
+--
+-- Name: t_mb_role_group_function pk_t_mb_role_group_function; Type: CONSTRAINT; Schema: aix; Owner: postgres
+--
+
+ALTER TABLE ONLY aix.t_mb_role_group_function
+    ADD CONSTRAINT pk_t_mb_role_group_function PRIMARY KEY (rolegrpid);
+
+
+--
+-- Name: t_mb_user_account pk_t_mb_user_account; Type: CONSTRAINT; Schema: aix; Owner: postgres
+--
+
+ALTER TABLE ONLY aix.t_mb_user_account
+    ADD CONSTRAINT pk_t_mb_user_account PRIMARY KEY (userid);
+
+
+--
+-- Name: t_mb_user_account_prj_tiltle pk_t_mb_user_account_prj_tiltl; Type: CONSTRAINT; Schema: aix; Owner: postgres
+--
+
+ALTER TABLE ONLY aix.t_mb_user_account_prj_tiltle
+    ADD CONSTRAINT pk_t_mb_user_account_prj_tiltl PRIMARY KEY (userid, projectid, titleid);
+
+
+--
+-- Name: t_mb_user_auth_hosp pk_t_mb_user_auth_hosp; Type: CONSTRAINT; Schema: aix; Owner: postgres
+--
+
+ALTER TABLE ONLY aix.t_mb_user_auth_hosp
+    ADD CONSTRAINT pk_t_mb_user_auth_hosp PRIMARY KEY (hospcode, userid);
+
+
+--
+-- Name: t_mb_user_auth_hosp_dept pk_t_mb_user_auth_hosp_dept; Type: CONSTRAINT; Schema: aix; Owner: postgres
+--
+
+ALTER TABLE ONLY aix.t_mb_user_auth_hosp_dept
+    ADD CONSTRAINT pk_t_mb_user_auth_hosp_dept PRIMARY KEY (userid, hospcode, deptcode);
+
+
+--
+-- Name: t_mb_user_info pk_t_mb_user_info; Type: CONSTRAINT; Schema: aix; Owner: postgres
+--
+
+ALTER TABLE ONLY aix.t_mb_user_info
+    ADD CONSTRAINT pk_t_mb_user_info PRIMARY KEY (userid);
+
+
+--
+-- Name: t_nethosp_app_init_cfg pk_t_nethosp_app_init_cfg; Type: CONSTRAINT; Schema: aix; Owner: postgres
+--
+
+ALTER TABLE ONLY aix.t_nethosp_app_init_cfg
+    ADD CONSTRAINT pk_t_nethosp_app_init_cfg PRIMARY KEY (applicationid);
+
+
+--
+-- Name: t_pg_notification_send_log pk_t_pg_notification_send_log; Type: CONSTRAINT; Schema: aix; Owner: postgres
+--
+
+ALTER TABLE ONLY aix.t_pg_notification_send_log
+    ADD CONSTRAINT pk_t_pg_notification_send_log PRIMARY KEY (serialid);
+
+
+--
+-- Name: t_app_cfg_resist_hosp_pk3; Type: INDEX; Schema: aix; Owner: postgres
+--
+
+CREATE UNIQUE INDEX t_app_cfg_resist_hosp_pk3 ON aix.t_nethosp_app_init_cfg USING btree (applicationid);
+
+
+--
+-- Name: t_dict_area_areacode_idx; Type: INDEX; Schema: aix; Owner: postgres
+--
+
+CREATE INDEX t_dict_area_areacode_idx ON aix.t_dict_area USING btree (areacode);
+
+
+--
+-- Name: t_dict_area_arealevel_idx; Type: INDEX; Schema: aix; Owner: postgres
+--
+
+CREATE INDEX t_dict_area_arealevel_idx ON aix.t_dict_area USING btree (arealevel);
+
+
+--
+-- Name: t_dict_area_code_pk; Type: INDEX; Schema: aix; Owner: postgres
+--
+
+CREATE UNIQUE INDEX t_dict_area_code_pk ON aix.t_dict_area_code USING btree (areacode, lang);
+
+
+--
+-- Name: t_dict_area_parentareacode_idx; Type: INDEX; Schema: aix; Owner: postgres
+--
+
+CREATE INDEX t_dict_area_parentareacode_idx ON aix.t_dict_area USING btree (parentareacode);
+
+
+--
+-- Name: t_dict_area_pk; Type: INDEX; Schema: aix; Owner: postgres
+--
+
+CREATE UNIQUE INDEX t_dict_area_pk ON aix.t_dict_area USING btree (lang, areacode);
+
+
+--
+-- Name: t_dict_ask_item_pk; Type: INDEX; Schema: aix; Owner: postgres
+--
+
+CREATE UNIQUE INDEX t_dict_ask_item_pk ON aix.t_dict_ask_item USING btree (qcode, qcatetitle, qcatesubtitle, qtypecode, qitemcode);
+
+
+--
+-- Name: t_dict_common_code_pk; Type: INDEX; Schema: aix; Owner: postgres
+--
+
+CREATE UNIQUE INDEX t_dict_common_code_pk ON aix.t_dict_common_code USING btree (dictcode, dicttype);
+
+
+--
+-- Name: t_dict_hospital_pk; Type: INDEX; Schema: aix; Owner: postgres
+--
+
+CREATE UNIQUE INDEX t_dict_hospital_pk ON aix.t_dict_hospital USING btree (hospcode);
+
+
+--
+-- Name: t_mb_function_menu_idx1; Type: INDEX; Schema: aix; Owner: postgres
+--
+
+CREATE INDEX t_mb_function_menu_idx1 ON aix.t_mb_function_menu USING btree (functionid, parentfunctionid, sortid);
+
+
+--
+-- Name: t_mb_hosp_cfg_pk; Type: INDEX; Schema: aix; Owner: postgres
+--
+
+CREATE UNIQUE INDEX t_mb_hosp_cfg_pk ON aix.t_mb_hosp_cfg USING btree (hospcode, cfgtype, cfgname);
+
+
+--
+-- Name: t_mb_user_account_idx1; Type: INDEX; Schema: aix; Owner: postgres
+--
+
+CREATE INDEX t_mb_user_account_idx1 ON aix.t_mb_user_account USING btree (acc);
+
+
+--
+-- Name: t_mb_user_account_pk; Type: INDEX; Schema: aix; Owner: postgres
+--
+
+CREATE UNIQUE INDEX t_mb_user_account_pk ON aix.t_mb_user_account USING btree (userid);
+
+
+--
+-- Name: t_mb_user_info_idx1; Type: INDEX; Schema: aix; Owner: postgres
+--
+
+CREATE INDEX t_mb_user_info_idx1 ON aix.t_mb_user_info USING btree (acc);
+
+
+--
+-- Name: t_mb_user_info_idx2; Type: INDEX; Schema: aix; Owner: postgres
+--
+
+CREATE INDEX t_mb_user_info_idx2 ON aix.t_mb_user_info USING btree (hospcode, userid);
+
+
+--
+-- Name: ofconversation conversation_notify; Type: TRIGGER; Schema: aix; Owner: postgres
+--
+
+CREATE TRIGGER conversation_notify AFTER INSERT OR UPDATE ON aix.ofconversation FOR EACH ROW EXECUTE FUNCTION aix.conversation_notify();
+
+
+--
+-- PostgreSQL database dump complete
+--
+

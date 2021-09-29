@@ -4,7 +4,7 @@ import com.platform.aix.cmd.bean.request.BaseCommonRequest;
 import lombok.Data;
 
 /**
- * @author: fyw
+ * @author: Advance
  * @date: 2018/8/5
  * @description:
  */

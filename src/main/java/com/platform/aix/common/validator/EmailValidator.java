@@ -9,7 +9,7 @@ import static java.util.regex.Pattern.CASE_INSENSITIVE;
  * 邮箱验证器，参考hibernate-validator
  *
  * @ClassName        : EmailValidator
- * @author            : Alfred
+ * @author            : Advance
  * @date : 2017年4月27日 上午9:58:13
  */
 public class EmailValidator {

@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
  * 需要解密数据注解
  *
  * @ClassName        : Decryption
- * @author            : Alfred
+ * @author            : Advance
  * @date : 2017年4月26日 下午1:49:38
  */
 @Retention(RetentionPolicy.RUNTIME)

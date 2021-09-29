@@ -1,5 +1,6 @@
-package com.platform.aix.cmd.bean.response;
+package com.platform.aix.cmd.biz.cmd31020;
 
+import com.platform.aix.cmd.bean.request.BaseCommonRequest;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,9 +13,7 @@ import lombok.ToString;
 @Setter
 @Getter
 @ToString
-public class PrjInfo {
+public class Cmd31020Req extends BaseCommonRequest {
 
-    private String prjtitle;
 
-    private String prjlogo;
 }

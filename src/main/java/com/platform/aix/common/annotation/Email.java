@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
  * 邮箱验证注解
  *
  * @ClassName        : Email
- * @author            : Alfred
+ * @author            : Advance
  * @date : 2017年4月27日 上午9:56:40
  */
 @Retention(RetentionPolicy.RUNTIME)

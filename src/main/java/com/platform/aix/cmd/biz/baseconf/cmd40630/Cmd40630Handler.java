@@ -1,5 +1,6 @@
 package com.platform.aix.cmd.biz.baseconf.cmd40630;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.platform.aix.cmd.bean.request.BaseRequest;
 import com.platform.aix.common.constants.Constants;
 import com.platform.aix.common.exception.BIZException;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
 
@@ -27,10 +29,14 @@ import java.util.List;
  */
 @Slf4j
 @Controller(Constants.CLIENT_REQ_URL + "/cmd_40630")
+@DS("master")
 public class Cmd40630Handler extends CommandBaseHandler {
 
     @Autowired
     RoleGroupService roleGroupService;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Override
     public Class<? extends BaseRequest> getRequestClass() {
@@ -39,6 +45,8 @@ public class Cmd40630Handler extends CommandBaseHandler {
 
     @Override
     public APIResponse execute(BaseRequest request) throws BIZException, IOException {
+        MysqlDataTest mysql= new MysqlDataTest(jdbcTemplate);
+        log.info("mysql查询结果：{}",mysql.selectAll());
         Cmd40630Req req = (Cmd40630Req) request;
         Page<Cmd40630Resp> cmd40630Resps = this.roleGroupService.queryDxRoleGroup(req);
         List<Cmd40630Resp> content = cmd40630Resps.getContent();

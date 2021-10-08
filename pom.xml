@@ -160,16 +160,33 @@
             <artifactId>platform-repo-pg</artifactId>
             <version>0.1-SNAPSHOT</version>
         </dependency>
+        <!--postgresql-->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>42.2.14</version>
+        </dependency>
+        <!--mysql-->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>6.0.2</version>
         </dependency>
         <!--<dependency>
             <groupId>com.oracle</groupId>
             <artifactId>ojdbc6</artifactId>
             <version>11.2.0.1.0</version>
         </dependency>-->
+        <!--dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成多数据源的启动器。-->
+        <!--https://github.com/baomidou/dynamic-datasource-spring-boot-starter-->
+        <!-- https://mvnrepository.com/artifact/com.baomidou/dynamic-datasource-spring-boot-starter -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+            <version>3.4.1</version>
+        </dependency>
+
+
 
     </dependencies>
 

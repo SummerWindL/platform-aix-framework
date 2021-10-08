@@ -22,4 +22,4 @@ spring:
     allow-bean-definition-overriding: true # 存在repo相同的情况 原phis的存储过程与aigw重名
   profiles:
     active:
-      - dev
+      - test

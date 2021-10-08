@@ -5,11 +5,13 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 @Setter
 @Getter
 @ToString
 @Configuration
+@PropertySource(value = "classpath:aixconfig.properties",encoding = "utf-8")
 @ConfigurationProperties(prefix = "platform.aix")
 public class ApisPorperties {
 

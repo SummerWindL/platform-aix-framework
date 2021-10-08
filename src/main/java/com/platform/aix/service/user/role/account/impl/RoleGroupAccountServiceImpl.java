@@ -36,7 +36,7 @@ public class RoleGroupAccountServiceImpl extends AbstractServiceImpl implements 
             throw new BIZException(ResponseResult.DB_ERROR);
         }
 
-        BasePlpgsqlModel bpmTree = this.mbRoleGroupRepository.queryDxRoleGroup("");
+        BasePlpgsqlModel bpmTree = this.mbRoleGroupRepository.queryDxRoleGroup("",0,1,1);
         if (bpmTree.getRetcode() < 0) {
             throw new BIZException(ResponseResult.DB_ERROR);
         }

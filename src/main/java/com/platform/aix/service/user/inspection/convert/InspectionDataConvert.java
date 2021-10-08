@@ -59,7 +59,7 @@ public class InspectionDataConvert extends MemberService {
         List<InspectionDatas> r = convertLung(req.getLung());
         List<InspectionDatas> s = convertUrinalysis(req.getUrinalysis());
 //        List<InspectionDatas> t = convertArteryAve(req.getArteryAve());
-        List<InspectionDatas> list = CollectionUtils.arrayToList(concatAll(a.toArray(),b.toArray(),
+        List<InspectionDatas> list = (List<InspectionDatas>) CollectionUtils.arrayToList(concatAll(a.toArray(),b.toArray(),
 //                c.toArray(),
                 d.toArray(),e.toArray(),f.toArray(),g.toArray(),
                 h.toArray(),i.toArray(),j.toArray(),k.toArray(),
@@ -782,7 +782,7 @@ public class InspectionDataConvert extends MemberService {
         list3.add(inspectionDatas4);
 
 
-        List<InspectionDatas> list = CollectionUtils.arrayToList(concatAll(list1.toArray(), list2.toArray(),list3.toArray()));
+        List<InspectionDatas> list = (List<InspectionDatas>) CollectionUtils.arrayToList(concatAll(list1.toArray(), list2.toArray(),list3.toArray()));
         System.out.println(JSONArray.fromObject(list).toString());
     }
 }

@@ -40,19 +40,9 @@ public class Cmd40630Handler extends CommandBaseHandler {
     @Override
     public APIResponse execute(BaseRequest request) throws BIZException, IOException {
         Cmd40630Req req = (Cmd40630Req) request;
-        BasePlpgsqlModel basePlpgsqlModel = this.roleGroupService.queryDxRoleGroup(req);
-
-        Cmd40630Resp[] cmd40630Resps = null;
-        try {
-            if (0 > basePlpgsqlModel.getRetcode()) {
-                throw new BIZException(ResponseResult.COMMON_ERROR_UNKNOWN);
-            }
-            cmd40630Resps = basePlpgsqlModel.getModel(Cmd40630Resp[].class);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        List<Cmd40630Resp> tlist = CollectionUtils.arrayToList(cmd40630Resps);
-        Page<Cmd40630Resp> cmd40630RespsPage = new PageImpl<Cmd40630Resp>(tlist,PageRequest.of(0,1),tlist.size());
+        Page<Cmd40630Resp> cmd40630Resps = this.roleGroupService.queryDxRoleGroup(req);
+        List<Cmd40630Resp> content = cmd40630Resps.getContent();
+        Page<Cmd40630Resp> cmd40630RespsPage = new PageImpl<Cmd40630Resp>(content,PageRequest.of(0,20),cmd40630Resps.getTotalElements());
         return new APIResponse(cmd40630RespsPage);
     }
 }

@@ -137,7 +137,7 @@ public class UserAccountServiceImpl extends AbstractServiceImpl implements UserA
         List<TUserAccount> list = new ArrayList<>();
         TUserAccount[] userAccountArray = basePlpgsqlModel2Clz(basePlpgsqlModel, TUserAccount[].class);
         if (null != userAccountArray) {
-            return CollectionUtils.arrayToList(userAccountArray);
+            return (List<TUserAccount>) CollectionUtils.arrayToList(userAccountArray);
         }
 
         return Collections.EMPTY_LIST;
@@ -171,7 +171,7 @@ public class UserAccountServiceImpl extends AbstractServiceImpl implements UserA
 
         TUserAccount[] mbUserInfoArray = basePlpgsqlModel2Clz(basePlpgsqlModel, TUserAccount[].class);
         if (null != mbUserInfoArray) {
-            return CollectionUtils.arrayToList(mbUserInfoArray);
+            return (List<TUserAccount>) CollectionUtils.arrayToList(mbUserInfoArray);
         }
 
         return Collections.EMPTY_LIST;
@@ -232,7 +232,7 @@ public class UserAccountServiceImpl extends AbstractServiceImpl implements UserA
         TUserAccount[] userAccountArray = basePlpgsqlModel2Clz(basePlpgsqlModel, TUserAccount[].class);
 
         if (null != userAccountArray) {
-            List<TUserAccount> tUserAccounts = CollectionUtils.arrayToList(userAccountArray);
+            List<TUserAccount> tUserAccounts = (List<TUserAccount>) CollectionUtils.arrayToList(userAccountArray);
             Page<TUserAccount> pageList = new PageImpl<TUserAccount>(tUserAccounts, null, (long) basePlpgsqlModel.getRetcode());
             return pageList;
         }
@@ -431,7 +431,7 @@ public class UserAccountServiceImpl extends AbstractServiceImpl implements UserA
         Cmd44110Resp[] userAccountArray = basePlpgsqlModel2Clz(basePlpgsqlModel, Cmd44110Resp[].class);
 
         if (null != userAccountArray) {
-            List<Cmd44110Resp> tUserAccounts = CollectionUtils.arrayToList(userAccountArray);
+            List<Cmd44110Resp> tUserAccounts = (List<Cmd44110Resp>) CollectionUtils.arrayToList(userAccountArray);
             Page<Cmd44110Resp> pageList = new PageImpl<Cmd44110Resp>(tUserAccounts, null, (long) basePlpgsqlModel.getRetcode());
             return pageList;
         }

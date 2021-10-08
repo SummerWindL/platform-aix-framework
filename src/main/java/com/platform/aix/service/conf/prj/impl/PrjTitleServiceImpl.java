@@ -89,7 +89,7 @@ public class PrjTitleServiceImpl extends AbstractServiceImpl implements PrjTitle
         }
 
         TPrjTitle[] tPrjTitles = basePlpgsqlModel2Clz(basePlpgsqlModel, TPrjTitle[].class);
-        List<TPrjTitle> tPrjTitleList = CollectionUtils.arrayToList(tPrjTitles);
+        List<TPrjTitle> tPrjTitleList = (List<TPrjTitle>) CollectionUtils.arrayToList(tPrjTitles);
         Page<TPrjTitle> tDxPrjTitlePage = new PageImpl<TPrjTitle>(tPrjTitleList, null, (long) basePlpgsqlModel.getRetcode());
         return tDxPrjTitlePage;
     }
@@ -108,7 +108,7 @@ public class PrjTitleServiceImpl extends AbstractServiceImpl implements PrjTitle
         }
 
         TPrj[] tPrjs = basePlpgsqlModel2Clz(basePlpgsqlModel, TPrj[].class);
-        List<TPrj> tDxPrjList = CollectionUtils.arrayToList(tPrjs);
+        List<TPrj> tDxPrjList = (List<TPrj>) CollectionUtils.arrayToList(tPrjs);
 
 
         basePlpgsqlModel = mbPrjTitleRepository.queryPrjTitle("",
@@ -122,7 +122,7 @@ public class PrjTitleServiceImpl extends AbstractServiceImpl implements PrjTitle
         }
 
         TPrjTitle[] tPrjTitles = basePlpgsqlModel2Clz(basePlpgsqlModel, TPrjTitle[].class);
-        List<TPrjTitle> tPrjTitleList = CollectionUtils.arrayToList(tPrjTitles);
+        List<TPrjTitle> tPrjTitleList = (List<TPrjTitle>) CollectionUtils.arrayToList(tPrjTitles);
 
         JSONArray json = new JSONArray();
         for (TPrj tDxPrj : tDxPrjList) {

@@ -68,7 +68,7 @@ public class RequestAuthHeaderCheckor {
             TLoginCacheBase loginCache = iCache.get(id);
             if (loginCache != null) {
                 String token = loginCache.getToken();
-                if (!StringUtils.isEmpty(token) && token.equals(authHeader.getToken())) {
+                if (StringUtils.hasLength(token) && token.equals(authHeader.getToken())) {
                     // 更新登录信息过期时间
                     iCache.setExpire(id, loginCache, apisPorperties.getTokenExpire());
                     return true;

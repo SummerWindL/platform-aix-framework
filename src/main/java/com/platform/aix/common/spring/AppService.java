@@ -54,4 +54,11 @@ public class AppService implements ApplicationContextAware {
         ServiceBeanConfig.dataSource = AppService.getBean("dataSource");
     }
 
+    /**
+     * @return ApplicationContext返回给其它模块使用
+     */
+    public static ApplicationContext getApplicationContext() {
+        return context;
+    }
+
 }

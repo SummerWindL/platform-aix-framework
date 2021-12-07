@@ -2,13 +2,19 @@ package com.platform.aix.common.notify.impl;
 
 import com.platform.aix.common.notify.IPgNotifyHandler;
 import com.platform.aix.common.notify.PostgresNotificationRunner;
+import com.platform.aix.common.notify.bean.CallableResult;
 import com.platform.aix.config.ServiceBeanConfig;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.postgresql.PGConnection;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 
 
 /**
@@ -18,6 +24,8 @@ import java.sql.SQLException;
  **/
 @Slf4j
 public class PostgresNotificationListener {
+
+    private Logger logger = LogManager.getLogger(getClass());
 
     private PostgresNotificationRunner runner;
     /**
@@ -65,7 +73,7 @@ public class PostgresNotificationListener {
         notifyImpl= new PostgresNotificationImpl(dataSource,conn,pgConn,target);
         //2.启动任务
         PostgresNotificationRunner runner = new PostgresNotifyTask();
-        runner.run(notifyImpl);
+        Future<CallableResult> run = runner.run(notifyImpl);
         return true;
     }
 

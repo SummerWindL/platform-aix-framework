@@ -119,3 +119,31 @@ $function$;
 
 select * from f_test_pg_notify('1');
 select * from f_test_pg_notify1('2');
+
+
+
+-----带serialid 的 test
+create or replace function f_test_pg_notify(
+in in_id varchar(64),
+
+out retcode integer,
+out retvalue text
+)
+language plpgsql
+as $function$
+
+declare
+v_cnt numeric default 0;
+v_rec record ;
+begin
+	select * into v_rec from f_aix_notification_model('f_test_pg_notify','alert_notification','{"notifyno":"cmd_4060001", "notifytype" :"update","notifyparam":{"serialid":"'|| aixuuid() ||'","disecode":"xxx","disename":"xxxx"}}');
+	-- 处理返回结果
+	retcode := v_rec.retcode;
+	retvalue := v_rec.retvalue;
+
+	if (retvalue is NULL) then
+		retvalue := '[]';
+	end if;
+
+end
+$function$;

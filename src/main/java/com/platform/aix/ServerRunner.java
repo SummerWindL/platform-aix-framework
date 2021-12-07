@@ -5,14 +5,16 @@ import com.platform.aix.common.handler.HttpHandler;
 import com.platform.aix.config.ApisPorperties;
 import com.platform.aix.config.ApisServer;
 import com.platform.aix.service.base.ServiceThreadManagerRunner;
+import org.apache.logging.log4j.LogManager;
 import org.eclipse.jetty.server.Server;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.apache.logging.log4j.Logger;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -21,7 +23,8 @@ import java.util.concurrent.Executors;
 @Order(value = 1)
 public class ServerRunner implements ApplicationRunner {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(ServerRunner.class);
+    //private final static Logger LOGGER = LoggerFactory.getLogger(ServerRunner.class);
+    private final Logger LOGGER = LogManager.getLogger(getClass());
 
     @Autowired
     private ApisPorperties apisPorperties;

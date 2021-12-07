@@ -1,4 +1,4 @@
-package com.platform.aix;
+package com.platform.aix.demo;
 
 /**
  * @author Advance

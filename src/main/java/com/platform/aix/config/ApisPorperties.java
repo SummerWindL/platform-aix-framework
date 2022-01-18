@@ -11,7 +11,7 @@ import org.springframework.context.annotation.PropertySource;
 @Getter
 @ToString
 @Configuration
-@PropertySource(value = "classpath:aixconfig.properties",encoding = "utf-8")
+//@PropertySource(value = "classpath:aixconfig.properties",encoding = "utf-8")
 @ConfigurationProperties(prefix = "platform.aix")
 public class ApisPorperties {
 

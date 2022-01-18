@@ -1,19 +1,13 @@
 server:
   port: 8069
 spring:
-  boot:
-    admin:
+  security:
+    oauth2:
       client:
-        url: http://localhost:9001
-  application:
-    name: aix-framework
-  #  security:
-#    oauth2:
-#      client:
-#        registration:
-#          google:
-#            client-id: google-client-id
-#            client-secret: google-client-secret
+        registration:
+          google:
+            client-id: google-client-id
+            client-secret: google-client-secret
   jpa:
     show-sql: true
     # 格式化输出sql
@@ -96,10 +90,3 @@ dataloader:
       fileoutputdir: E:\\
       enginefiletype: HTML  # value: HTML MD WORD
       filename: XX系统表结构
-
-# 开启监控所有项
-management:
-  endpoints:
-    web:
-      exposure:
-        include: '*'

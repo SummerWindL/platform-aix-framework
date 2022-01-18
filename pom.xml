@@ -6,7 +6,7 @@
 
     <groupId>com.platform.aix.framework</groupId>
     <artifactId>platform-aix-framework</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -19,13 +19,19 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
+        <scripts_packageName>${project.artifactId}-${project.version}</scripts_packageName>
+        <!--启动类-->
+        <scripts_bootMain>com.platform.aix.PlatformAixApplication</scripts_bootMain>
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
         </dependency>
-
+        <!--<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>-->
         <!--<dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -72,10 +78,16 @@
             <version>5.3.6.Final</version>
         </dependency>-->
         <!--如果使用2.2.6.RELEASE版本的springboot 需要打开以下依赖-->
-        <dependency>
+        <!--<dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
             <version>6.0.18.Final</version>
+        </dependency>-->
+        <!--如果使用2.4.5版本的springboot 需要打开以下依赖-->
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>6.2.0.Final</version>
         </dependency>
 
         <dependency>
@@ -86,16 +98,16 @@
         </dependency>
 
         <!--内部依赖-->
-        <!--<dependency>
+        <dependency>
             <groupId>com.lemon</groupId>
             <artifactId>platform-common-util</artifactId>
             <version>0.1</version>
-        </dependency>-->
-        <dependency>
+        </dependency>
+        <!--<dependency>
             <groupId>com.lemon</groupId>
             <artifactId>platform-common</artifactId>
             <version>0.1-SNAPSHOT</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>com.cluster</groupId>
             <artifactId>redis-platform</artifactId>
@@ -218,8 +230,19 @@
             <artifactId>mybatis</artifactId>
             <version>3.5.6</version>
         </dependency>
+        <!--sba-->
+        <dependency>
+            <groupId>de.codecentric</groupId>
+            <artifactId>spring-boot-admin-starter-client</artifactId>
+            <version>2.6.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
     </dependencies>
 
+    <!--原始打包方法-->
     <build>
         <plugins>
             <plugin>
@@ -228,5 +251,141 @@
             </plugin>
         </plugins>
     </build>
+
+    <!--Spring Boot 项目打包 + Shell 脚本部署 改造-->
+    <!--<build>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/main/profiles/${activeProfile}</directory>
+            </resource>
+            <resource>
+                <directory>${project.basedir}/src/main/resources</directory>
+                <includes>
+                    <include>static/**</include>
+                    <include>sql/**</include>
+                    <include>templates/**</include>
+                </includes>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <includes>
+                        <include>
+                            <groupId>non-exists</groupId>
+                            <artifactId>non-exists</artifactId>
+                        </include>
+                    </includes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            &lt;!&ndash;<plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.0.2</version>
+            </plugin>&ndash;&gt;
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <archive>
+                        <addMavenDescriptor>false</addMavenDescriptor>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>${scripts_bootMain}</mainClass>
+                        </manifest>
+                    </archive>
+                    &lt;!&ndash;打包排除项&ndash;&gt;
+                    <excludes>
+                        &lt;!&ndash;<exclude>**/*.yml</exclude>&ndash;&gt;
+                        <exclude>**/*.properties</exclude>
+                        &lt;!&ndash;<exclude>**/*.xml</exclude>&ndash;&gt;
+                        <exclude>**/*.sh</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-a-jar</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.4</version>
+                &lt;!&ndash; The configuration of the plugin &ndash;&gt;
+                <configuration>
+                    &lt;!&ndash; Specifies the configuration file of the assembly plugin &ndash;&gt;
+                    <descriptors>
+                        <descriptor>${project.basedir}/src/main/assembly/assembly.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>node</id>
+            <properties>
+                &lt;!&ndash;传递给脚本的参数值&ndash;&gt;
+                <activeProfile>node</activeProfile>
+                <package-name>${scripts_packageName}</package-name>
+                <boot-main>${scripts_bootMain}</boot-main>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>node1</id>
+            <properties>
+                <activeProfile>node1</activeProfile>
+                <package-name>${scripts_packageName}</package-name>
+                <boot-main>${scripts_bootMain}</boot-main>
+            </properties>
+        </profile>
+        <profile>
+            <id>node2</id>
+            <properties>
+                <activeProfile>node2</activeProfile>
+                <package-name>${scripts_packageName}</package-name>
+                <boot-main>${scripts_bootMain}</boot-main>
+            </properties>
+        </profile>
+    </profiles>-->
 
 </project>

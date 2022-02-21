@@ -57,7 +57,7 @@ public class WebSocketListener extends StartupConfiguration {
         StompHeaders connectHeaders = new StompHeaders();
         connectHeaders.add("token", clientToken);
 
-        String url = "http://localhost:8070/demo-zx-websocket-midserver?token=" + clientToken;
+        String url = "http://localhost:8069/demo-zx-websocket-midserver?token=" + clientToken;
         stompClient.connect(url, handshakeHeaders, connectHeaders, new TestConnectHandler());
 
         return stompClient;

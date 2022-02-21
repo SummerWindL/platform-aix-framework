@@ -2,6 +2,7 @@ package com.platform.aix.service.task;
 
 import com.alibaba.fastjson.JSONObject;
 import com.platform.websocket.manager.PlatformWebsocketManager;
+import com.platform.websocket.service.IWebSocketService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -16,7 +17,7 @@ import javax.annotation.Resource;
  */
 @Component
 @Slf4j
-public class FixContainerTask {
+public class FixContainerTask implements IWebSocketService {
     private long sendCount = 0 ;     // 自启动以来，累计总发送topic的数量
 
     @Resource
@@ -33,5 +34,11 @@ public class FixContainerTask {
         jsonObjectTopic.put("sendCount", sendCount);
         platformWebsocketManager.sendTopicToSs("ssid123","/cmd123", jsonObjectTopic.toJSONString());
         log.info("第 {} 次发送消息：{}",this.sendCount,jsonObjectTopic.toJSONString());
+    }
+
+    @Override
+    public void invokeCloseSocket(String... token) {
+        log.info("websocket关闭！");
+
     }
 }

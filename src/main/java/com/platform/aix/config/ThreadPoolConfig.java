@@ -27,6 +27,8 @@ public class ThreadPoolConfig {
         executor.setKeepAliveSeconds(3);//除核心线程外的线程存活时间
         executor.setQueueCapacity(40);//如果传入值大于0，底层队列使用的是LinkedBlockingQueue,否则默认使用SynchronousQueue
         executor.setThreadNamePrefix("thread-execute");//线程名称前缀
+        executor.setWaitForTasksToCompleteOnShutdown(true);
+        executor.setAwaitTerminationSeconds(60);
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());//设置拒绝策略
         return executor;
     }

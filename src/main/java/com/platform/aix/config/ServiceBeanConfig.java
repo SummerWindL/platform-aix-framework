@@ -1,5 +1,7 @@
 package com.platform.aix.config;
 
+import org.springframework.jdbc.core.JdbcTemplate;
+
 import javax.sql.DataSource;
 
 /**
@@ -11,4 +13,5 @@ import javax.sql.DataSource;
  **/
 public class ServiceBeanConfig {
     public static DataSource dataSource = null;
+    public static JdbcTemplate jdbcTemplate = null;
 }

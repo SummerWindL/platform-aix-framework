@@ -20,6 +20,8 @@ public class ServiceThreadManagerRunner {
     private PgNotifyMessageAccepter pgNotifyMessageAccepter;
 
     public void submit(){
+        //1、注册当前线程池，shutdown时回收处理
+        ThreadPoolExecutorShutdownDefinition.registryExecutor(executor);
         executor.execute(pgNotifyMessageAccepter);
     }
 }

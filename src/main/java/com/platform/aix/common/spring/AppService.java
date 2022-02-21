@@ -6,6 +6,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -52,6 +53,7 @@ public class AppService implements ApplicationContextAware {
         AppService.context = applicationContext;
         //启动时就获取 直接获取可能存在问题
         ServiceBeanConfig.dataSource = AppService.getBean("dataSource");
+        ServiceBeanConfig.jdbcTemplate = AppService.getBean("jdbcTemplate"); //为jdbcTemplate 赋值
     }
 
     /**

@@ -26,6 +26,8 @@ public class Cmd30030Handler extends CommandBaseHandler {
     @Override
     public APIResponse execute(BaseRequest request) throws BIZException {
         Cmd30030Req req = (Cmd30030Req) request;
+        //切面校验方法 特殊校验，校验请求参数是否合法等
+        checkBussinessFunc(Cmd30030Req.class,null); //调用校验方法统一校验
         String userid = req.getUserid();
 
         // todo:  判断用户是否存在

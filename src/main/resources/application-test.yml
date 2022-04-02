@@ -1,5 +1,8 @@
 server:
   port: 8069
+# mapper.xml文件位置
+mybatis:
+  mapper-locations: classpath:mapper/*Mapper.xml
 spring:
   boot:
     admin:
@@ -109,3 +112,19 @@ management:
     web:
       exposure:
         include: '*'
+
+custom:
+  thread-pool:
+    core-pool-size: 8 # 线程池长期维持的线程数 默认 8
+    maximum-pool-size: 10 # 线程数的上限 默认 10
+    capacity: 512 # 任务的排队队列 默认 512
+
+
+#配置文件加密解密
+jasypt:
+  encryptor:
+    bean: stringEncryptor
+
+application:
+  cache:
+    file: classpath:aix-ehcache.xml

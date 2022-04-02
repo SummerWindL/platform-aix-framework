@@ -3,12 +3,14 @@ package com.platform.aix;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.platform.aix.PlatformAixApplication;
 
-import com.platform.aix.common.util.JsonAdaptor;
+import com.platform.common.util.JsonAdaptor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import javax.annotation.Resource;
 
 /**
  * @author Advance
@@ -18,7 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = PlatformAixApplication.class)
 public class PlatformAixApplicationTests {
-    @Autowired
+    @Resource(name = "jsonAdaptor")
     public JsonAdaptor jsonAdaptor;
 
 

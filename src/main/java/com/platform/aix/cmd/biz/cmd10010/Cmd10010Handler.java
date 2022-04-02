@@ -7,7 +7,7 @@ import com.platform.aix.common.annotation.DisableAccess;
 import com.platform.aix.common.annotation.DisableCheckAuthHeader;
 import com.platform.aix.common.constants.Constants;
 import com.platform.aix.common.exception.BIZException;
-import com.platform.aix.common.handler.base.CommandBaseHandler;
+import com.platform.aix.common.handler.CommandBaseHandler;
 import com.platform.aix.common.response.APIResponse;
 import com.platform.aix.service.user.inspection.UserInspectionDataService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import java.io.IOException;
  * @author: fuyl
  * @create: 2020-08-24 15:26
  **/
-@DisableAccess
+//@DisableAccess
 @Access
 @Controller(Constants.CLIENT_REQ_URL+"/cmd_10010")
 @DisableCheckAuthHeader

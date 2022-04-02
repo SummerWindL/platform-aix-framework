@@ -12,6 +12,7 @@ import com.platform.aix.common.validator.AccountValidator;
 import com.platform.aix.common.validator.EmailValidator;
 import com.platform.aix.config.ApisPorperties;
 import com.platform.common.util.security.RSACoder;
+import com.platform.comservice.check.CommonCheckHelper;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 
-public abstract class CommandBaseHandler implements CommandHandler{
+public abstract class CommandBaseHandler extends CommonCheckHelper implements CommandHandler{
 
     private static Map<Class<?>, List<Field>> CLZ_FIELDS = new HashMap<Class<?>, List<Field>>();
 

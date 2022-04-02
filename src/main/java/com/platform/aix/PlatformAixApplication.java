@@ -1,6 +1,8 @@
 package com.platform.aix;
 
 import com.platform.aix.service.base.ThreadPoolExecutorShutdownDefinition;
+import com.platform.common.util.BeanUtil;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -18,13 +20,16 @@ import java.util.concurrent.*;
  * @create: 2020-08-24 14:25
  **/
 @EnableScheduling
-@SpringBootApplication(scanBasePackages = {"com.platform"})
+@SpringBootApplication(scanBasePackages = {"com.platform", "com.lemon"})
+@MapperScan("com.platform.aix.common.datacommon.db.dao")
 public class PlatformAixApplication implements CommandLineRunner {
 
     @Resource
     private TaskExecutor taskExecutor;
     @Autowired
     private ThreadPoolTaskExecutor threadPoolTaskExecutor; // 注入线程池
+    @Resource(name = "aixDrawExecutor")
+    private ExecutorService aixDrawExecutor;
 
     public static void main(String[] args) {
         SpringApplication.run(PlatformAixApplication.class);
@@ -32,7 +37,8 @@ public class PlatformAixApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        //测试创建一个线程池
+        //================测试线程池1 start================//
+        // 测试创建一个线程池
         ExecutorService executorService = Executors.newFixedThreadPool(10);
         executorService.submit(new Runnable() {
 
@@ -49,7 +55,9 @@ public class PlatformAixApplication implements CommandLineRunner {
                 doRequest();
             }
         });
+        //================测试线程池1 end================//
 
+        //================测试线程池2 start===============//
         //注册线程池
         ThreadPoolExecutorShutdownDefinition.registryExecutor(threadPoolTaskExecutor);
         // 注入线程池
@@ -62,7 +70,18 @@ public class PlatformAixApplication implements CommandLineRunner {
                 return "开始执行";
             }
         });
+        //================测试线程池2 end===============//
 
+        //================测试线程池3 start===============//
+        //注册线程池
+        ThreadPoolExecutorShutdownDefinition.registryExecutor(aixDrawExecutor);
+        aixDrawExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                doRequest();
+            }
+        });
+        //================测试线程池3 end===============//
 
     }
 

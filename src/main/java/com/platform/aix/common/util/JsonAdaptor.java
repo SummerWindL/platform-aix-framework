@@ -16,7 +16,6 @@ import java.text.SimpleDateFormat;
  * @author: fuyl
  * @create: 2020-08-24 14:36
  **/
-
 public class JsonAdaptor extends ObjectMapper {
     /**
      *

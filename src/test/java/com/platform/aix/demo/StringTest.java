@@ -61,14 +61,20 @@ public class StringTest {
 
 
 
-        String s = "[[\"1\",\"lcxxpl\",\"oracle.jdbc.driver.OracleDriver\",\"jdbc:oracle:thin:@//localhost:1521/orcl\",\"tams0509\",\"tams0509\",\"127.0.0.1\",21,\"ftpuser\",\"Admin1234\",\"F:\\\\localftp\\\\download\",\"/rep\",\"GBK\",\"0\",\"|\",\"|$|\",\"1\",\"1\",\"1\",\"finish.flag\",1633881600000,\"0\",\".dat\",null]]";
+        /*String s = "[[\"1\",\"lcxxpl\",\"oracle.jdbc.driver.OracleDriver\",\"jdbc:oracle:thin:@//localhost:1521/orcl\",\"tams0509\",\"tams0509\",\"127.0.0.1\",21,\"ftpuser\",\"Admin1234\",\"F:\\\\localftp\\\\download\",\"/rep\",\"GBK\",\"0\",\"|\",\"|$|\",\"1\",\"1\",\"1\",\"finish.flag\",1633881600000,\"0\",\".dat\",null]]";
         JSONArray json = JSONArray.parseArray(s);
         List<String> a = new ArrayList<>();
         json.forEach(item -> {
             //log.info(item.toString().replace("[","{").replace("]","}"));
             a.add(item.toString().replace("[","{").replace("]","}"));
         });
-        System.out.println(a.toString());
+        System.out.println(a.toString());*/
+
+
+        String modulePath = "\\/tams\\/public\\/js\\/modules\\";
+        String path = modulePath.lastIndexOf('/') != modulePath.length() ? modulePath + '/' : modulePath;
+
+        System.out.println(path);
 
     }
 }

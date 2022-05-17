@@ -85,3 +85,25 @@ notifyno的value一定时addHandler的第一个参数，否则Java将无法收�
 登录用户密码：
 admin
 123456
+
+------------------------------分割线-------------------------------
+<br>2022年5月17日21:19:31 <br>
+1、新增Disruptor模块，代码路径```src/main/java/com/platform/aix/service/processor/disruptor```
+
+使用
+```java
+@Autowired
+    private SeriesDataEventQueueHelper seriesDataEventQueueHelper;
+    @GetMapping("demo")
+    public void demo(){
+        ConcurrentMap<Object, Object> objectObjectConcurrentMap = Maps.newConcurrentMap();
+        objectObjectConcurrentMap.putIfAbsent("1","hello word");
+        objectObjectConcurrentMap.putIfAbsent("2",123456);
+        objectObjectConcurrentMap.putIfAbsent("3",new Date());
+        objectObjectConcurrentMap.putIfAbsent("4",new Account());
+        seriesDataEventQueueHelper.publishEvent(new SeriesData(JSONObject.toJSONString(objectObjectConcurrentMap)));
+    }
+```
+
+2、新增异步代码数据库、redis插入逻辑 代码路径：
+src/main/java/com/platform/aix/common/datacommon

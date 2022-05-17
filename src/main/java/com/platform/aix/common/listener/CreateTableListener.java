@@ -32,8 +32,12 @@ public class CreateTableListener  extends StartupConfiguration {
 
     @Override
     public void afterStartup(ApplicationContext applicationContext) {
-        log.info("服务启动成功，开始启动建表监听...");
-        initCreateTable();
+        log.info("服务启动成功，开始启动建表监听... ");
+        if(dlc.isExecuteCreateTableFlag()){
+            initCreateTable();
+        }else{
+            log.info("executeCreateTableFlag {} , don't execute create table listener",dlc.isExecuteCreateTableFlag());
+        }
     }
 
     private void initCreateTable() {

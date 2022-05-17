@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
+         updateCheck="false">
+
+    <diskStore path="java.io.tmpdir" />
+
+    <!--
+                指定CacheManagerEventListenerFactory，这个对象在缓存添加的时候会得到相应的通知。
+     CacheManagerEventListenerFactory的属性：
+     *class ：CacheManagerEventListenerFactory的一个实现类。
+     *properties ：CacheManagerEventListenerFactory的属性值，以逗号(,)分割多个属性。
+      如果没有实现类被指定，则系统不创建CacheManager的监听器，没有默认值
+    -->
+    <!-- <cacheManagerEventListenerFactory class="" properties="" /> -->
+
+    <!--在进行分布式缓存的应用时需要指定CacheManagerPeerProviderFactory，用来生成CacheManagerPeerProvider的实例，以便和集群中的其他CacheManager通信。
+    CacheManagerPeerProvider的属性：
+    *class ：CacheManagerPeerProviderFactory的一个实现类。
+    *properties ：CacheManagerPeerProviderFactory的属性值，以逗号(,)分割多个属性。
+    Ehcache内建了2种基于RMI分布系统的通信策略：
+    *automatic ：使用多播组。在一个节点加入或者推出集群的时候自动感应。
+    *manual ：硬编码方式
+    -->
+    <!-- <cacheManagerPeerListenerFactory class="" properties="" /> -->
+
+    <!-- 默认缓存配置 -->
+    <defaultCache
+            eternal="true"
+            maxElementsInMemory="1000"
+            overflowToDisk="false"
+            diskPersistent="false"
+            timeToIdleSeconds="0"
+            timeToLiveSeconds="600"
+            memoryStoreEvictionPolicy="LRU" />
+
+    <!-- shiro sessioncache -->
+    <cache name="shiro-activeSessionCache"
+           maxEntriesLocalHeap="10000"
+           overflowToDisk="true"
+           eternal="false"
+           diskPersistent="false"
+           timeToLiveSeconds="0"
+           timeToIdleSeconds="0"
+           statistics="true"/>
+
+    <!-- 系统缓存 -->
+    <cache
+            name="appCache"
+            eternal="true"
+            maxElementsInMemory="2000"
+            maxElementsOnDisk="0"
+            overflowToDisk="true"
+            diskPersistent="false"
+            timeToIdleSeconds="0"
+            timeToLiveSeconds="3000"
+            memoryStoreEvictionPolicy="LRU" />
+
+    <!--  画面缓存 -->
+    <cache
+            name="pageCache"
+            eternal="true"
+            maxElementsInMemory="2000"
+            maxElementsOnDisk="0"
+            overflowToDisk="true"
+            diskPersistent="false"
+            timeToIdleSeconds="0"
+            timeToLiveSeconds="3000"
+            memoryStoreEvictionPolicy="LRU" />
+
+    <!--  菜单缓存 -->
+    <cache
+            name="menuCache"
+            eternal="true"
+            maxElementsInMemory="2000"
+            maxElementsOnDisk="0"
+            overflowToDisk="true"
+            diskPersistent="false"
+            timeToIdleSeconds="0"
+            timeToLiveSeconds="3000"
+            memoryStoreEvictionPolicy="LRU" />
+
+    <!-- 数据字典缓存 -->
+    <cache
+            name="dictCache"
+            eternal="true"
+            maxElementsInMemory="2000"
+            maxElementsOnDisk="0"
+            overflowToDisk="true"
+            diskPersistent="false"
+            timeToIdleSeconds="0"
+            timeToLiveSeconds="3000"
+            memoryStoreEvictionPolicy="LRU" />
+
+    <!-- 密码错误次数缓存 -->
+    <cache name="passwordRetryCache" maxElementsInMemory="3000"/>
+
+    <!-- 锁用户时间缓存 -->
+    <cache name="userLockCache" maxElementsInMemory="3000"/>
+
+    <cache name="adapterMicroSerCache"
+           eternal="false"
+           maxEntriesLocalHeap="1000"
+           overflowToDisk="false"
+           diskPersistent="false"
+           timeToIdleSeconds="20"
+           timeToLiveSeconds="20"/>
+
+    <!-- cache name="user"
+       maxElementsInMemory="1000"
+       eternal="false"
+       timeToIdleSeconds="100000"
+       timeToLiveSeconds="100000"
+       overflowToDisk="false">
+    <cacheEventListenerFactory
+            class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"/-->
+
+
+    <!--
+        eternal="false"   // 元素是否永恒,如果是就永不过期(必须设置)
+        maxElementsInMemory="1000" // 缓存容量的内存最大值(必须设置)
+        overflowToDisk="false"  // 当缓存达到maxElementsInMemory值是,是否允许溢出到磁盘(必须设置)
+        diskPersistent="false"  // 磁盘缓存在VM重新启动时是否保持(默认为false)
+        timeToIdleSeconds="0" // 导致元素过期的访问间隔(秒为单位). 0表示可以永远空闲,默认为0
+        timeToLiveSeconds="600" // 元素在缓存里存在的时间(秒为单位). 0 表示永远存在不过期
+        statistics="true"		//是否收集统计信息。如果需要监控缓存使用情况，应该打开这个选项。 默认为关闭（统计会影响性能）。设置statistics="true"开启统计
+        memoryStoreEvictionPolicy="LFU" // 当达到maxElementsInMemory时,如何强制进行驱逐默认使用"最近使用(LRU)"策略,其它还有先入先出FIFO,最少使用LFU,较少使用LRU
+    -->
+
+    <!-- cacheManagerPeerProviderFactory class= "net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory"
+              properties="peerDiscovery=manual,rmiUrls=//localhost:40000/user"/-->
+
+    <!-- xcacheManagerPeerListenerFactory
+            class="net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory"
+            properties="hostName=localhost,port=40001, socketTimeoutMillis=120000"/-->
+</ehcache>

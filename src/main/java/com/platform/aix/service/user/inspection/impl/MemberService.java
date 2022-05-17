@@ -4,9 +4,9 @@ import com.alibaba.fastjson.JSONObject;
 
 import com.platform.aix.common.exception.BIZException;
 import com.platform.aix.common.response.enums.ResponseResult;
-import com.platform.aix.common.util.JsonAdaptor;
 import com.platform.aix.service.base.AbstractServiceImpl;
 import com.platform.aix.service.user.inspection.bean.Member;
+import com.platform.common.util.JsonAdaptor;
 import com.platform.repo.pg.model.base.BasePlpgsqlModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +22,7 @@ import java.util.List;
  **/
 @Service
 public class MemberService extends AbstractServiceImpl {
+
     @Autowired
     private JsonAdaptor jsonAdaptor ;
 //    @Autowired

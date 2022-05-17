@@ -18,6 +18,9 @@ import java.util.List;
 @ToString
 public class UserInfo {
 
+    private String code;
+    private String info;
+
     private String username;
 
     private Date regtime;

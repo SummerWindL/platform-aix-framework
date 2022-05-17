@@ -1,4 +1,4 @@
-package com.platform.aix.cmd.biz.Cmd30040;
+package com.platform.aix.cmd.biz.cmd30040;
 
 import com.platform.aix.cmd.bean.request.BaseRequest;
 import com.platform.aix.common.constants.Constants;

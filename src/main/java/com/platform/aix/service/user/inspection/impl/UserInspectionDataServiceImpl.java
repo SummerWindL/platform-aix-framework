@@ -17,6 +17,7 @@ import java.util.List;
 public class UserInspectionDataServiceImpl extends AbstractServiceImpl implements UserInspectionDataService {
 //    @Autowired
 //    private FZxapigatewayInspectionDataQaDataBatchInsertRepository fZxapigatewayInspectionDataQaDataBatchInsertRepository;
+
     /**
      * 批量插入检测数据
      *

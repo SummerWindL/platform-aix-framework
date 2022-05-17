@@ -10,6 +10,8 @@ import java.io.File;
 public class Constants {
 
 
+    public static final String TRACE_ID ="";
+
     /**
      * HTTP contentType
      */

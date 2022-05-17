@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "dataloader.main")
 public class DataLoaderConfiguration {
 
+    private boolean executeCreateTableFlag = false; //是否执行建表动作
     private String url;       //数据库驱动地址
     private String drive;     //数据库驱动
     private String userName;  //数据库用户

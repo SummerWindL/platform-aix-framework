@@ -16,5 +16,13 @@ import lombok.ToString;
 @ToString
 public class Cmd30030Req extends BaseCommonRequest {
 
+    /**
+     * 校验方法
+     * @author Advance
+     * @date 2022/3/19 11:45
+     */
+    public void check(){
+        System.out.println("调用校验方法！");
+    }
 
 }

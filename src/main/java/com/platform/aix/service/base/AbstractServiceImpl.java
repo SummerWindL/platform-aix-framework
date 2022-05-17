@@ -3,6 +3,7 @@ package com.platform.aix.service.base;
 import com.platform.aix.common.exception.BIZException;
 import com.platform.aix.common.response.enums.ResponseResult;
 import com.platform.aix.common.util.JsonAdaptor;
+import com.platform.comservice.check.CommonCheckHelper;
 import com.platform.repo.pg.model.base.BasePlpgsqlModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -16,7 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 @Slf4j
-public class AbstractServiceImpl {
+public class AbstractServiceImpl extends CommonCheckHelper {
 
     private static JsonAdaptor jsonAdaptor = getJsonAdaptor();
 

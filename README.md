@@ -104,6 +104,28 @@ admin
         seriesDataEventQueueHelper.publishEvent(new SeriesData(JSONObject.toJSONString(objectObjectConcurrentMap)));
     }
 ```
+第二种消息队列发送方式
+```java
+    @GetMapping("demo3")
+    @ResponseBody
+    public APIResponse demo3(){
+        ConcurrentMap<Object, Object> objectObjectConcurrentMap = Maps.newConcurrentMap();
+        objectObjectConcurrentMap.putIfAbsent("userName","1");
+        objectObjectConcurrentMap.putIfAbsent("age","18");
+        TradeMsgReceiver tradeMsgReceiver = msgReceiverManager.getMsgReceiverByUserId("1");
+        List<User> users = userService.findAll();
+        //第二种形式的发送
+        tradeMsgReceiver.addMsg(MsgType.HOST_REGIST_INFO,users);
+
+        seriesDataEventQueueHelper.publishEvent(new SeriesData(JSONObject.toJSONString(objectObjectConcurrentMap),
+                users));
+
+        List<User> userList = userService.queryAllUsers();
+        //分组
+        Map<String, List<User>> collect = userList.stream().collect(Collectors.groupingBy(user -> user.getId() + "_" + user.getUsername()));
+        return new APIResponse(collect);
+    }
+```
 
 2、新增异步代码数据库、redis插入逻辑 代码路径：
 src/main/java/com/platform/aix/common/datacommon

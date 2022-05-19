@@ -1,7 +1,9 @@
 package com.platform.aix.service.processor.disruptor;
 
 import com.alibaba.druid.util.StringUtils;
+import com.alibaba.fastjson.JSONObject;
 import com.lmax.disruptor.WorkHandler;
+import com.platform.aix.common.datacommon.db.domain.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -20,6 +22,7 @@ public class SeriesDataEventHandler implements WorkHandler<SeriesDataEvent> {
         if (event.getValue() == null || StringUtils.isEmpty(event.getValue().getDeviceInfoStr())) {
             logger.warn("receiver series data is empty!");
         }
-        logger.info(event.getValue().getDeviceInfoStr());
+
+        logger.info("deviceInfoStr : {},data : {}",event.getValue().getDeviceInfoStr(), JSONObject.toJSONString(event.getValue().getData()));
     }
 }

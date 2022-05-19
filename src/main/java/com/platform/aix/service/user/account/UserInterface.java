@@ -10,7 +10,7 @@ public interface UserInterface {
 
     void setId(String id);
 
-    String getUserName();
+    String getUsername();
 
-    void setUserName(String userName);
+    void setUsername(String userName);
 }

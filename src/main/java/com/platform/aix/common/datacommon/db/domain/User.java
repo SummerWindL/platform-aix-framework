@@ -23,7 +23,7 @@ public class User extends BaseEntity implements Serializable, UserInterface, Clo
 
     @NotNull
     @Size(max = 255)
-    private String userName;
+    private String username;
 
     /**
      *  数量
@@ -39,12 +39,12 @@ public class User extends BaseEntity implements Serializable, UserInterface, Clo
         this.id = id == null ? null : id.trim();
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Integer getCount() {

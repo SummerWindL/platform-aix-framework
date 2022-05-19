@@ -1,6 +1,9 @@
 package com.platform.aix.config;
 
 import com.platform.aix.service.processor.disruptor.SeriesDataEventHandler;
+import com.platform.aix.service.processor.disruptor.info.RegisterUserInformationHandler;
+import com.platform.aix.service.processor.disruptor.pay.PayUserHandler;
+import com.platform.aix.service.processor.disruptor.record.RecordUserSignInformationHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -73,5 +76,20 @@ public class DisruptorConfig {
     @Bean
     public SeriesDataEventHandler smsParamEventHandler6() {
         return new SeriesDataEventHandler();
+    }
+
+    @Bean
+    public RegisterUserInformationHandler registerUserInformationHandler(){
+        return new RegisterUserInformationHandler();
+    }
+
+    @Bean
+    public RecordUserSignInformationHandler recordUserSignInformationHandler(){
+        return new RecordUserSignInformationHandler();
+    }
+
+    @Bean
+    public PayUserHandler payUserHandler(){
+        return new PayUserHandler();
     }
 }

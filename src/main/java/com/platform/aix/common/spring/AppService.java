@@ -48,6 +48,10 @@ public class AppService implements ApplicationContextAware {
         return beanName;
     }
 
+    public static <T> T getBean(Class<T> tClass) throws BeansException {
+        return context.getBean(tClass);
+    }
+
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         AppService.context = applicationContext;
@@ -61,6 +65,15 @@ public class AppService implements ApplicationContextAware {
      */
     public static ApplicationContext getApplicationContext() {
         return context;
+    }
+
+    /**
+     * 暴露的静态方法
+     * @param applicationContext
+     * @throws BeansException
+     */
+    public static void setApplicationContextStatic(ApplicationContext applicationContext) throws BeansException {
+        AppService.context = applicationContext;
     }
 
 }

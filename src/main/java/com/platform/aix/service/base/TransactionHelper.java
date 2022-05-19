@@ -39,6 +39,15 @@ public class TransactionHelper implements ApplicationListener<ApplicationReadyEv
         logger.info("start {} , {}","TransactionHelper","onApplicationEvent");
         //执行数据库查询 一些基础数据到 内存中
         List<User> users = Lists.newArrayList(); //模拟数据库查询
+        User user = new User();
+        user.setId("1");
+        user.setUsername("张三");
+        User user2 = new User();
+        user2.setId("2");
+        user2.setUsername("李四");
+        users.add(new User());
+        users.add(user);
+        users.add(user2);
         logger.info("onApplicationEvent users :{}", JSONArray.toJSONString(users));
         if (Objects.nonNull(users)) {
             userService.saveUserInfo(users);

@@ -50,21 +50,22 @@ spring:
 #          driver-class-name: com.mysql.cj.jdbc.Driver
         #......省略
         #以上会配置一个默认库master，一个组slave下有两个子库slave_1,slave_2
-#  redis:
-#    database: 0
-#    host: 101.35.80.154
-#    #    host: 101.35.80.154
-#    port: 6379
-#    password: 123456
-#    pool:
-#      max-active: 8
-#      max-wait: -1
-#      max-idle: 8
-#      min-idle: 0
-#    timeout: 20000
   redis:
-    cluster:
-      nodes: 101.35.80.154:7001,101.35.80.154:7002,101.35.80.154:7003,101.35.80.154:7004,101.35.80.154:7005,101.35.80.154:7006
+    database: 0
+    host: localhost
+    #    host: 101.35.80.154
+    port: 6379
+#    password: 123456
+    pool:
+      max-active: 8
+      max-wait: -1
+      max-idle: 8
+      min-idle: 0
+    timeout: 20000
+# redis 集群
+#  redis:
+#    cluster:
+#      nodes: 101.35.80.154:7001,101.35.80.154:7002,101.35.80.154:7003,101.35.80.154:7004,101.35.80.154:7005,101.35.80.154:7006
 #    password: 123456
 
 # aix平台配置选项
@@ -84,6 +85,7 @@ platform:
       access-token-secret: itsss
       refresh-token-secret: itsss
     redis:
+      usecluster: false
       clusters: 101.35.80.154:7001,101.35.80.154:7002,101.35.80.154:7003,101.35.80.154:7004,101.35.80.154:7005,101.35.80.154:7006
     door:
       enable: true
@@ -127,6 +129,11 @@ custom:
     core-pool-size: 8 # 线程池长期维持的线程数 默认 8
     maximum-pool-size: 10 # 线程数的上限 默认 10
     capacity: 512 # 任务的排队队列 默认 512
+
+trade:
+  thread:
+    msg:
+      num: 8
 
 
 #配置文件加密解密

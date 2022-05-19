@@ -12,7 +12,9 @@ import java.util.List;
  */
 public interface UserService extends AsyncService<String, User> {
 
-    List<User> queryByUserId(String userId);
+    User queryByUserId(String userId);
 
     void saveUserInfo(List<User> userList);
+
+    List<User> queryAllUsers();
 }

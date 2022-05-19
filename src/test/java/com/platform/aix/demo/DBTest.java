@@ -1,6 +1,9 @@
 package com.platform.aix.demo;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.apache.commons.lang.StringUtils;
+import org.junit.Test;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -630,5 +633,7 @@ public class DBTest {
             e.printStackTrace();
         }
     }
+
+
 
 }

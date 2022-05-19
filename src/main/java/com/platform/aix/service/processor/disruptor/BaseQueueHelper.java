@@ -131,6 +131,23 @@ public abstract class BaseQueueHelper<D, E extends ValueWrapper<D>, H extends Wo
         }, data);
     }
 
+    public synchronized  <T> T publishEvent(D data,T handler) {
+        if (ringBuffer == null) {
+            initQueue.add(data);
+            return null;
+        }
+        long seq = ringBuffer.next();
+        try {
+            E e = ringBuffer.get(seq);
+        }catch (Throwable e){
+            logger.error("publish exception:{}", e);
+        }finally {
+            ringBufferMsg.publish(seq);
+            productOffset.incrementAndGet();
+        }
+        return null;
+    }
+
     private void publish(int msgType, Object msg) {
         publish(msgType, msg, null);
     }

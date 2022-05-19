@@ -1,5 +1,11 @@
 package com.platform.aix.demo;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+import org.junit.Test;
+
+import java.sql.SQLException;
+
 /**
  * @author Advance
  * @date 2021年09月26日 19:05
@@ -203,5 +209,46 @@ public class TestUnit {
 
         String str = sql.substring(sql.indexOf("clob")+4);
         System.out.println(str);
+    }
+    @Test
+    public void test01() throws SQLException {
+        HikariConfig config=new HikariConfig();
+        config.setJdbcUrl("jdbc:oracle:thin:@//localhost:1521/orcl");//获取连接路径
+        config.setUsername("AIX");//密码
+        config.setPassword("AIX");//账号
+        HikariDataSource hd=new HikariDataSource(config);//进行连接
+        System.out.println(hd.getConnection());//输出是否连接成功
+    }
+
+    @Test
+    public void contextLoads() {
+        System.out.println("===== 构建一个returnVO模型开始 =====");
+//        ReturnVOProto.ReturnVO.Builder builder = ReturnVOProto.ReturnVO.newBuilder();
+//        builder.setCode("200");
+//        builder.setData("OK");
+//        builder.setMessage("GO");
+//
+//
+//        ReturnVOProto.ReturnVO returnVO = builder.build();
+//        System.out.println(returnVO.toString());
+//        System.out.println("===== 构建returnVO模型结束 =====");
+//
+//        System.out.println("===== returnVO Byte 开始=====");
+//        for(byte b : returnVO.toByteArray()){
+//            System.out.print(b);
+//        }
+//        System.out.println("\n" + "returnVO" + returnVO.toByteString().size());
+//        System.out.println("===== returnVO Byte 结束 =====");
+//
+//        System.out.println("===== returnVO 反序列化生成对象开始 =====");
+//        ReturnVOProto.ReturnVO returnVO1 = null;
+//        try {
+//            returnVO1 =ReturnVOProto.ReturnVO.parseFrom(returnVO.toByteArray());
+//        } catch (InvalidProtocolBufferException e) {
+//            e.printStackTrace();
+//        }
+//        System.out.print(returnVO1.toString());
+        System.out.println("===== returnVO 反序列化生成对象结束 =====");
+
     }
 }

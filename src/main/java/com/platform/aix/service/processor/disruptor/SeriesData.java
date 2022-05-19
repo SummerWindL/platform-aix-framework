@@ -10,13 +10,27 @@ import org.slf4j.LoggerFactory;
  */
 public class SeriesData implements Cloneable {
     private static final Logger logger = LoggerFactory.getLogger(SeriesData.class);
-    private String deviceInfoStr;
+    private String deviceInfoStr; //存放各种格式的字符串
+    private Object data;
 
     public SeriesData() {
     }
 
     public SeriesData(String deviceInfoStr) {
         this.deviceInfoStr = deviceInfoStr;
+    }
+
+    public SeriesData(String deviceInfoStr, Object data) {
+        this.deviceInfoStr = deviceInfoStr;
+        this.data = data;
+    }
+
+    public Object getData() {
+        return data;
+    }
+
+    public void setData(Object data) {
+        this.data = data;
     }
 
     public String getDeviceInfoStr() {

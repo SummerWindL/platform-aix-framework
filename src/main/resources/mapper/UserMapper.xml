@@ -156,7 +156,7 @@
         id = #{id,jdbcType=VARCHAR},
       </if>
       <if test="userName != null">
-        USER_NAME = #{userName,jdbcType=VARCHAR},
+        USERNAME = #{userName,jdbcType=VARCHAR},
       </if>
     </set>
     where ID = #{id,jdbcType=VARCHAR}
@@ -169,7 +169,7 @@
         ID,
       </if>
       <if test="userName != null">
-        USER_NAME,
+        USERNAME,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">

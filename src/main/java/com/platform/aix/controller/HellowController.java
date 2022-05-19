@@ -5,11 +5,19 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.collect.Maps;
 import com.platform.aix.cmd.bean.Account;
 import com.platform.aix.cmd.bean.response.UserInfo;
+import com.platform.aix.common.datacommon.db.domain.User;
+import com.platform.aix.common.datacommon.db.service.UserService;
 import com.platform.aix.common.exception.AixException;
 import com.platform.aix.common.response.APIResponse;
 import com.platform.aix.common.util.CacheUtil;
 import com.platform.aix.service.processor.disruptor.SeriesData;
 import com.platform.aix.service.processor.disruptor.SeriesDataEventQueueHelper;
+import com.platform.aix.service.processor.disruptor.info.RegisterUserInfoEventTranslator;
+import com.platform.aix.service.processor.disruptor.info.RegisterUserInfoQueueHelper;
+import com.platform.aix.service.processor.disruptor.info.RegisterUserInformationHandler;
+import com.platform.aix.service.processor.msg.MsgReceiverManager;
+import com.platform.aix.service.processor.msg.MsgType;
+import com.platform.aix.service.processor.msg.TradeMsgReceiver;
 import com.platform.common.util.JsonAdaptor;
 import com.platform.comservice.check.CommonCheckHelper;
 import com.platform.comservice.door.annotation.DoDoor;
@@ -21,9 +29,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author Advance
@@ -104,8 +114,58 @@ public class HellowController extends CommonCheckHelper {
         objectObjectConcurrentMap.putIfAbsent("3",new Date());
         objectObjectConcurrentMap.putIfAbsent("4",new Account());
         seriesDataEventQueueHelper.publishEvent(new SeriesData(JSONObject.toJSONString(objectObjectConcurrentMap)));
+
     }
 
+    @Autowired
+    private RegisterUserInfoQueueHelper registerUserInfoQueueHelper;
+    @GetMapping("demo2")
+    public void demo2(){
+        ConcurrentMap<Object, Object> objectObjectConcurrentMap = Maps.newConcurrentMap();
+        objectObjectConcurrentMap.putIfAbsent("1","hello word");
+        objectObjectConcurrentMap.putIfAbsent("2",123456);
+        objectObjectConcurrentMap.putIfAbsent("3",new Date());
+        objectObjectConcurrentMap.putIfAbsent("4",new Account());
+        RegisterUserInfoEventTranslator translator = new RegisterUserInfoEventTranslator();
+        registerUserInfoQueueHelper.publishEvent(new SeriesData(JSONObject.toJSONString(objectObjectConcurrentMap)));
+
+    }
+
+    @GetMapping("demo1")
+    public void demo1(){
+        ConcurrentMap<Object, Object> objectObjectConcurrentMap = Maps.newConcurrentMap();
+        objectObjectConcurrentMap.putIfAbsent("1","hello word");
+        objectObjectConcurrentMap.putIfAbsent("2",123456);
+        objectObjectConcurrentMap.putIfAbsent("3",new Date());
+        objectObjectConcurrentMap.putIfAbsent("4",new Account());
+        //指定生产者
+        seriesDataEventQueueHelper.publishEvent(new SeriesData(JSONObject.toJSONString(objectObjectConcurrentMap)));
+
+    }
+
+    @Autowired
+    MsgReceiverManager msgReceiverManager;
+    @Autowired
+    private UserService userService;
+    @GetMapping("demo3")
+    @ResponseBody
+    public APIResponse demo3(){
+        ConcurrentMap<Object, Object> objectObjectConcurrentMap = Maps.newConcurrentMap();
+        objectObjectConcurrentMap.putIfAbsent("userName","1");
+        objectObjectConcurrentMap.putIfAbsent("age","18");
+        TradeMsgReceiver tradeMsgReceiver = msgReceiverManager.getMsgReceiverByUserId("1");
+        List<User> users = userService.findAll();
+        //第一种形式的发送
+        tradeMsgReceiver.addMsg(MsgType.HOST_REGIST_INFO,users);
+
+        seriesDataEventQueueHelper.publishEvent(new SeriesData(JSONObject.toJSONString(objectObjectConcurrentMap),
+                users));
+
+        List<User> userList = userService.queryAllUsers();
+        //分组
+        Map<String, List<User>> collect = userList.stream().collect(Collectors.groupingBy(user -> user.getId() + "_" + user.getUsername()));
+        return new APIResponse(collect);
+    }
 }
 
 class Response {

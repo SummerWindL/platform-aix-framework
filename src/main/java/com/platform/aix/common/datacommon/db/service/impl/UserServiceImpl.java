@@ -9,6 +9,7 @@ import com.platform.aix.common.datacommon.db.domain.User;
 import com.platform.aix.common.datacommon.db.domain.UserExample;
 import com.platform.aix.common.datacommon.db.service.UserService;
 import com.platform.aix.common.spring.AppService;
+import com.platform.common.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -86,9 +87,7 @@ public class UserServiceImpl extends AsyncServiceImpl<String, User> implements U
 
     @Override
     protected void save(User user) {
-        {
-            update(user);
-        }
+       update(user);
     }
 
     @Override
@@ -97,8 +96,8 @@ public class UserServiceImpl extends AsyncServiceImpl<String, User> implements U
     }
 
     @Override
-    public List<User> queryByUserId(String userId) {
-        return null;
+    public User queryByUserId(String userId) {
+        return userMapper.selectByPrimaryKey(userId);
     }
 
     /**
@@ -109,8 +108,19 @@ public class UserServiceImpl extends AsyncServiceImpl<String, User> implements U
     public void saveUserInfo(List<User> userList) {
         usersMap.clear();
         userList.forEach(user -> {
-            String key = user.getId();
-            usersMap.put(key,user);
+            if(!StringUtil.isEmpty(user.getId())){
+                String key = user.getId();
+                usersMap.put(key,user);
+                //插入redis缓存
+                asyncUpdate(user);
+            }
+
         });
+
+    }
+
+    @Override
+    public List<User> queryAllUsers() {
+        return userMapper.selectByExample(null);
     }
 }

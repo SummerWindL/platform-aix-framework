@@ -72,6 +72,11 @@ public class TradeMsgReceiver {
         this.publish(msgType, msg, agent);
     }
 
+    /**
+     * 对外暴露通用接口
+     * @param msgType
+     * @param msg
+     */
     public void addMsg(int msgType, Object msg) {
         this.publish(msgType, msg);
     }

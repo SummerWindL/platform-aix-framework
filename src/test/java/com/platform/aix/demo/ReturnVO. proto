@@ -1,0 +1,6 @@
+syntax = "proto3";        // PB协议版本
+message ReturnVO{
+  string code = 1;             // 支付相关的字段信息
+  string message = 2;          // optional 为可选参数
+  string data = 3;          // required为必填参数
+}

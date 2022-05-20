@@ -1,11 +1,15 @@
 package com.platform.aix.service.base;
 
 import com.alibaba.fastjson.JSONArray;
+import com.cluster.platform.redis.common.IValue;
+import com.cluster.platform.redis.common.Value;
 import com.google.common.collect.Lists;
 import com.platform.aix.common.constants.DBSaveType;
 import com.platform.aix.common.datacommon.cache.config.DataServiceConfig;
 import com.platform.aix.common.datacommon.db.domain.User;
 import com.platform.aix.common.datacommon.db.service.UserService;
+import com.platform.aix.service.redisservice.param.service.UserInfoParamValService;
+import com.platform.common.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +17,9 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -28,6 +34,7 @@ public class TransactionHelper implements ApplicationListener<ApplicationReadyEv
     private UserService userService;
     @Autowired
     private DataServiceConfig dataServiceConfig;
+
 
     public void save(){
         int dbSaveType = dataServiceConfig.isAsyncDb() ? DBSaveType.ASYNC.value : DBSaveType.SYNC_BATCH.value;

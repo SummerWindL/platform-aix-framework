@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -36,6 +37,7 @@ public class TcpServer implements ApplicationListener<ContextRefreshedEvent> {
         AppService.setApplicationContextStatic(ctx);
     }
     @Override
+    @Lazy
     public void onApplicationEvent(ContextRefreshedEvent event) {
         try {
             if (startFlag) {

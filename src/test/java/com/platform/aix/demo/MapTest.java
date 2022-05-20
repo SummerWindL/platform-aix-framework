@@ -16,6 +16,13 @@ import java.util.*;
  */
 public class MapTest {
     public static void main(String[] args) {
+
+        if(false){
+            System.out.println(111);
+        }else{
+            System.out.println(222);
+        }
+
         Map<String,Object> map = new HashMap<>();
         map.put("finprodType2","");
         map.put("test2",new Date());

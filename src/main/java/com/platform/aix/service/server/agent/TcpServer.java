@@ -43,7 +43,7 @@ public class TcpServer implements ApplicationListener<ContextRefreshedEvent> {
             if (startFlag) {
                 startFlag = false;
                 msgReceiverManager.init();
-                logger.error("建立TCP连接成功");
+                logger.info("建立TCP连接成功");
             }
         } catch (Exception e) {
             logger.error("建立TCP连接失败： {}", e);

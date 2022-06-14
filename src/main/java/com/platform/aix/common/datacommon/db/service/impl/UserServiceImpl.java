@@ -123,4 +123,11 @@ public class UserServiceImpl extends AsyncServiceImpl<String, User> implements U
     public List<User> queryAllUsers() {
         return userMapper.selectByExample(null);
     }
+
+    @Override
+    public User getUser(User user) {
+        //第一种获取user
+        //return usersMap.get(user.getId());
+        return userIdMap.get(user.getId()).get(user.getId());
+    }
 }

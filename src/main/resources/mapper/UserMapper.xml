@@ -155,8 +155,8 @@
       <if test="id != null">
         id = #{id,jdbcType=VARCHAR},
       </if>
-      <if test="userName != null">
-        USERNAME = #{userName,jdbcType=VARCHAR},
+      <if test="username != null">
+        USERNAME = #{username,jdbcType=VARCHAR},
       </if>
     </set>
     where ID = #{id,jdbcType=VARCHAR}
@@ -168,7 +168,7 @@
       <if test="id != null">
         ID,
       </if>
-      <if test="userName != null">
+      <if test="username != null">
         USERNAME,
       </if>
     </trim>
@@ -176,8 +176,8 @@
       <if test="id != null">
         #{id,jdbcType=VARCHAR},
       </if>
-      <if test="userName != null">
-        #{userName,jdbcType=VARCHAR},
+      <if test="username != null">
+        #{username,jdbcType=VARCHAR},
       </if>
     </trim>
   </sql>

@@ -17,10 +17,9 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import java.util.*;
 
 /**
  * @author Advance
@@ -30,11 +29,23 @@ import java.util.Objects;
 @Component
 public class TransactionHelper implements ApplicationListener<ApplicationReadyEvent> {
     private Logger logger = LoggerFactory.getLogger(getClass());
+    private ThreadLocal<ParamContext> context = new ThreadLocal<ParamContext>() {
+        public ParamContext initialValue() {
+            return new ParamContext();
+        }
+    };
+
     @Autowired
     private UserService userService;
     @Autowired
     private DataServiceConfig dataServiceConfig;
 
+    @PostConstruct
+    public void start() {
+    }
+    @PreDestroy
+    public void stop() throws Exception {
+    }
 
     public void save(){
         int dbSaveType = dataServiceConfig.isAsyncDb() ? DBSaveType.ASYNC.value : DBSaveType.SYNC_BATCH.value;
@@ -52,7 +63,6 @@ public class TransactionHelper implements ApplicationListener<ApplicationReadyEv
         User user2 = new User();
         user2.setId("2");
         user2.setUsername("李四");
-        users.add(new User());
         users.add(user);
         users.add(user2);
         logger.info("onApplicationEvent users :{}", JSONArray.toJSONString(users));
@@ -60,4 +70,6 @@ public class TransactionHelper implements ApplicationListener<ApplicationReadyEv
             userService.saveUserInfo(users);
         }
     }
+
+
 }

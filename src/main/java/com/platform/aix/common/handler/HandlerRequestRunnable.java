@@ -18,7 +18,7 @@ import com.platform.aix.common.response.ZxApiResponse;
 import com.platform.aix.common.response.enums.ResponseResult;
 import com.platform.aix.common.response.enums.ResponseResult;
 import com.platform.aix.common.spring.AppService;
-import com.platform.aix.common.util.JsonAdaptor;
+import com.platform.common.util.JsonAdaptor;
 import com.platform.aix.config.ApisPorperties;
 import org.eclipse.jetty.continuation.Continuation;
 import org.slf4j.Logger;

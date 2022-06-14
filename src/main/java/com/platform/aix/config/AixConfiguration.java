@@ -12,6 +12,9 @@ import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -26,7 +29,11 @@ import java.util.concurrent.TimeUnit;
  */
 @Configuration
 public class AixConfiguration implements WebMvcConfigurer{
-    @Bean
+    /**
+     * 跨域问题
+     * @return
+     */
+   /* @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
@@ -34,12 +41,44 @@ public class AixConfiguration implements WebMvcConfigurer{
                 registry.addMapping("/**")
                         .allowedOriginPatterns("*")
                         .allowCredentials(true)
-                        .allowedMethods("GET", "POST", "DELETE", "PUT", "PATCH")
-                        .maxAge(3600);
+                        .allowedMethods("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS")
+                        .maxAge(3600)
+                        .allowedHeaders("*");
             }
         };
     }
 
+    private CorsConfiguration buildConfig() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        //corsConfiguration.addAllowedOrigin("*");
+        corsConfiguration.addAllowedHeader("*");
+        corsConfiguration.addAllowedMethod("*");
+        corsConfiguration.addAllowedOriginPattern("*");
+        corsConfiguration.setAllowCredentials(true);
+        return corsConfiguration;
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", buildConfig());
+        return new CorsFilter(source);
+    }
+
+
+    *//**
+     * 解决跨域问题
+     * @param registry
+     *//*
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOriginPatterns("*")
+                .allowedMethods("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowCredentials(true)
+                .maxAge(3600)
+                .allowedHeaders("*");
+    }*/
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

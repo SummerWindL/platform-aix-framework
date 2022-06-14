@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
 public class HellowController extends CommonCheckHelper {
 
     @DoDoor(key = "userId",returnJson = "{\"code\":\"1111\",\"info\":\"非白名单可访问用于拦截！\"}",value = Request.class)
-    @GetMapping("/api/queryUserInfo")
+    @PostMapping("/api/queryUserInfo")
     public UserInfo queryUserInfo(@RequestParam String userId,@RequestBody @Validated Request request){
         log.info("获取到前端请求");
         return new UserInfo();
@@ -155,6 +155,11 @@ public class HellowController extends CommonCheckHelper {
         objectObjectConcurrentMap.putIfAbsent("age","18");
         TradeMsgReceiver tradeMsgReceiver = msgReceiverManager.getMsgReceiverByUserId("1");
         List<User> users = userService.findAll();
+        //测试切面数据
+        User newUser = new User();
+        newUser.setUsername("王五");
+        newUser.setId("3");
+        userService.getUser(newUser);
         //第一种形式的发送
         tradeMsgReceiver.addMsg(MsgType.HOST_REGIST_INFO,users);
 

@@ -1,4 +1,4 @@
-package com.platform.aix.demo;
+package com.platform.aix.common.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.ftp.FTP;
@@ -11,11 +11,14 @@ import java.io.IOException;
 
 /**
  * @author Advance
- * @date 2021年10月13日 14:22
+ * @date 2022年05月29日 14:54
  * @since V1.0.0
  */
 @Slf4j
 public class FileUtil {
+
+    //存放文件的 文件夹
+    static String FileMkdir="ExcelFile";
 
     static String filePath = FileUtil.class.getResource("/").getPath();
 
@@ -64,5 +67,45 @@ public class FileUtil {
         return false;
     }
 
+    public static String upload(MultipartFile head_pic) throws IOException {
+        String finalFileName = "";
+        if (head_pic.getSize() > 0) {
+            String FileName = head_pic.getOriginalFilename();
+            finalFileName = new File(filePath).getParentFile().getParentFile().getAbsolutePath()+"\\"+FileMkdir+"\\"+FileName;
+            System.out.println(finalFileName);
+            //目标文件
+            File file = new File(finalFileName);
+            if (!file.exists()) {
+                //开始上传
+                head_pic.transferTo(file);
+            }else{
+                return null;
+            }
+        }
+        return finalFileName;
+    }
+
+    /**
+     * 以文件名字里有的字符进行匹配删除
+     * @param fileName
+     */
+    public static void deleteExcelFile(String fileName){
+        File file = new File(new File(filePath).getParentFile().getParentFile().getAbsolutePath()+"\\"+FileMkdir);
+        File[] list = file.listFiles();
+        //如果等于空就删除全部文件
+        if(fileName!=null){
+            for (File f:list) {
+                if(f.getName().contains(fileName)){
+                    f.delete();
+                    return;
+                }
+            }
+        }
+        for (File f:list) {
+            f.delete();
+        }
+
+    }
 
 }
+

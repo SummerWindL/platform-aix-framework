@@ -6,7 +6,7 @@
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>[ %-5level] [%date{yyyy-MM-dd HH:mm:ss}] %logger{96} [%line] - %msg%n</pattern>
+            <pattern>[ %-5level] [%date{HH:mm:ss}] [%thread] %logger{36} [%line] - %msg%n</pattern>
             <charset>UTF-8</charset>
         </encoder>
     </appender>
@@ -20,7 +20,7 @@
         </rollingPolicy>
 
         <encoder>
-            <pattern>[ %-5level] [%date{yyyy-MM-dd HH:mm:ss}] %logger{96} [%line] - %msg%n</pattern>
+            <pattern>[ %-5level] [%date{HH:mm:ss}] [%thread] %logger{36} [%line] - %msg%n</pattern>
             <charset>UTF-8</charset>
         </encoder>
         <prudent>false</prudent>
@@ -40,7 +40,7 @@
         </rollingPolicy>
 
         <encoder>
-            <pattern>[ %-5level] [%date{yyyy-MM-dd HH:mm:ss}] %logger{96} [%line] - %msg%n</pattern>
+            <pattern>[ %-5level] [%date{HH:mm:ss}] [%thread] %logger{36} [%line] - %msg%n</pattern>
             <charset>UTF-8</charset>
         </encoder>
         <!-- Safely log to the same file from multiple JVMs. Degrades performance! -->

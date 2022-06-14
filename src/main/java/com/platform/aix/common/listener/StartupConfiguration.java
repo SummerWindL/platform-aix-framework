@@ -12,8 +12,10 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class StartupConfiguration extends AppStartupAdapter {
+
     @Override
     public void afterStartup(ApplicationContext applicationContext) {
         log.info("系统成功启动..");
+
     }
 }

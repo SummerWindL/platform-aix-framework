@@ -17,4 +17,6 @@ public interface UserService extends AsyncService<String, User> {
     void saveUserInfo(List<User> userList);
 
     List<User> queryAllUsers();
+
+    User getUser(User user);
 }

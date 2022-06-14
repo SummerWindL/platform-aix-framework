@@ -1,17 +1,22 @@
 package com.platform.aix;
 
+import cn.hutool.core.thread.ThreadUtil;
 import com.platform.aix.service.base.ThreadPoolExecutorShutdownDefinition;
 import com.platform.common.util.BeanUtil;
 import com.platform.comservice.config.StarterService;
 import org.mybatis.spring.annotation.MapperScan;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.reactive.function.client.WebClientCustomizer;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.web.client.AsyncRestTemplate;
 
 import javax.annotation.Resource;
 import java.util.concurrent.*;
@@ -26,6 +31,7 @@ import java.util.concurrent.*;
 @MapperScan("com.platform.aix.common.datacommon.db.dao")
 public class PlatformAixApplication implements CommandLineRunner {
 
+    private static Logger logger = LoggerFactory.getLogger(PlatformAixApplication.class);
     @Resource
     private TaskExecutor taskExecutor;
     @Autowired
@@ -87,7 +93,8 @@ public class PlatformAixApplication implements CommandLineRunner {
 
     }
 
+
     private void doRequest() {
-        System.out.printf("发送XXX请求！");
+        logger.info("发送XXXX请求！");
     }
 }

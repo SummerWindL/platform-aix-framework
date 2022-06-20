@@ -2,7 +2,8 @@ package com.platform.aix.service.base;
 
 import com.platform.aix.common.exception.BIZException;
 import com.platform.aix.common.response.enums.ResponseResult;
-import com.platform.aix.common.util.JsonAdaptor;
+
+import com.platform.common.util.JsonAdaptor;
 import com.platform.comservice.check.CommonCheckHelper;
 import com.platform.repo.pg.model.base.BasePlpgsqlModel;
 import lombok.extern.slf4j.Slf4j;

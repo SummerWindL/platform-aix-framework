@@ -1,0 +1,21 @@
+#==============dataload配置==================#
+dataloader:
+  main:
+    runscript: false #是否一启动直接执行sql脚本
+    #url: jdbc:postgresql://101.35.80.154:5432/aixdb?stringtype=unspecified&currentSchema=aix
+    #drive: org.postgresql.Driver
+    #username: postgres
+    #password: postgres
+    url: jdbc:oracle:thin:@//192.168.101.9:1521/orcl.lan
+    drive: oracle.jdbc.OracleDriver
+    username: BS306_DEV_20220707
+    password: BS306_DEV_20220707
+    #filepath: D:\日常工作\fudian\06_脚本文件\处理脚本\升级脚本 # 脚本本地路径
+    filepath: D:\日常工作\fudian\06_脚本文件\处理脚本\升级脚本\2.1.1版本升级到2.1.2.1版本增量脚本\1.升级版本脚本\1.基础脚本（2.1.1版本升级到2.1.2.1版本脚本）
+    #filepath: D:\日常工作\fudian\06_脚本文件\测试 # 脚本本地路径
+    # 以下配置是生成数据库表结构清单使用  默认只需要生成一次就好
+    generate:
+      imgentabledoc: false #是否一启动就生成数据库表结构
+      fileoutputdir: E:\\
+      enginefiletype: WORD  # value: HTML MD WORD
+      filename: 投资交易

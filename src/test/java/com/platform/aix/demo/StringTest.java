@@ -1,6 +1,7 @@
 package com.platform.aix.demo;
 
 import com.alibaba.fastjson.JSONArray;
+import com.platform.common.util.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
@@ -79,17 +80,21 @@ public class StringTest {
 //        String modulePath = "\\/tams\\/public\\/js\\/modules\\";
 //        String path = modulePath.lastIndexOf('/') != modulePath.length() ? modulePath + '/' : modulePath;
 
-        Map<String,Object> map = new HashMap<>();
-        DecimalFormat format = new DecimalFormat(",###");
-        String result = format.format(new BigDecimal(567854321));
-        map.put("secNum_sh",result);
-        try {
-            Number parse = format.parse(result);
-            System.out.println(parse);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        System.out.println(new BigDecimal(result));
+//        Map<String,Object> map = new HashMap<>();
+//        DecimalFormat format = new DecimalFormat(",###");
+//        String result = format.format(new BigDecimal(567854321));
+//        map.put("secNum_sh",result);
+//        try {
+//            Number parse = format.parse(result);
+//            System.out.println(parse);
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
+//        System.out.println(new BigDecimal(result));
+
+        boolean equals = StringUtil.equals("1", null);
+        System.out.println(equals);
+
 
     }
 }

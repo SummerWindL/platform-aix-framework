@@ -8,6 +8,12 @@ package com.platform.aix.common.constants;
  */
 public enum RedisKeyEnum {
     /**
+     * MQ指令信息推送-Redis主键
+     */
+    MQ指令信息推送(
+            "RSK{MQ}COMMAND"
+    ),
+    /**
      * 指标参数配置-Redis主键
      */
     指标参数配置(

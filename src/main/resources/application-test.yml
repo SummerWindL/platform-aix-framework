@@ -1,5 +1,5 @@
 server:
-  port: 8069
+  port: 8071
 # mapper.xml文件位置
 mybatis:
   mapper-locations: classpath:mapper/*Mapper.xml
@@ -22,62 +22,12 @@ spring:
 #          google:
 #            client-id: google-client-id
 #            client-secret: google-client-secret
-  jpa:
-    show-sql: true
-    # 格式化输出sql
-  #    properties:
-  #      hibernate:
-  #        format_sql: true
-  datasource:
-    dynamic:
-      primary: master #设置默认的数据源或者数据源组,默认值即为master
-      strict: false #严格匹配数据源,默认false. true未匹配到指定数据源时抛异常,false使用默认数据源
-      datasource:
-        master:
-          url: jdbc:postgresql://101.35.80.154:5432/aixdb?stringtype=unspecified&currentSchema=aix
-          username: postgres
-          password: postgres
-          driver-class-name: org.postgresql.Driver # 3.2.0开始支持SPI可省略此配置
-        slave_1:
-          url: jdbc:mysql://101.35.80.154:3306/dynamic?useSSL=false
-          username: root
-          password: 1234
-          driver-class-name: com.mysql.cj.jdbc.Driver
-        slave_2:
-          url: jdbc:oracle:thin:@//localhost:1521/orcl
-          username: AIX
-          password: AIX
-          driver-class-name: oracle.jdbc.driver.OracleDriver
-#        slave_2:
-#          url: ENC(xxxxx) # 内置加密,使用请查看详细文档
-#          username: ENC(xxxxx)
-#          password: ENC(xxxxx)
-#          driver-class-name: com.mysql.cj.jdbc.Driver
-        #......省略
-        #以上会配置一个默认库master，一个组slave下有两个子库slave_1,slave_2
-  redis:
-    database: 0
-    host: localhost
-    #    host: 101.35.80.154
-    port: 6379
-#    password: 123456
-    pool:
-      max-active: 8
-      max-wait: -1
-      max-idle: 8
-      min-idle: 0
-    timeout: 20000
-# redis 集群
-#  redis:
-#    cluster:
-#      nodes: 101.35.80.154:7001,101.35.80.154:7002,101.35.80.154:7003,101.35.80.154:7004,101.35.80.154:7005,101.35.80.154:7006
-#    password: 123456
 
 # aix平台配置选项
 platform:
   aix:
     server:
-      port: 16089
+      port: 16090
       thread-count: 8
       jetty:
         max-http-post-size: 81920
@@ -107,25 +57,6 @@ middle:   # middle server 专项配置参数
       test-topic-scheduled-fixed-delay: 1000  # 测试专用，定时广播topic的时间间隔，单位：毫秒
       websocket-message-broker-stats-period: 10  # 定时打印SpringBoot Websocket Session统计数值，时间间隔，单位：秒
 
-## dataloader配置
-dataloader:
-  main:
-    executecreatetableflag: false # 是否需要建立数据库数据加载日志表（DR_SQL_LOADER_LOG）
-    runscript: false #是否一启动直接执行sql脚本
-    url: jdbc:oracle:thin:@//192.168.90.230:1521/orcl
-    drive: oracle.jdbc.driver.OracleDriver
-    username: FAMS_FYL
-    password: FAMS_FYL
-    #filepath: D:\日常工作\fudian\06_脚本文件\处理脚本\升级脚本 # 脚本本地路径
-    filepath: D:\\
-    #filepath: D:\日常工作\fudian\06_脚本文件\测试 # 脚本本地路径
-    # 以下配置是生成数据库表结构清单使用  默认只需要生成一次就好
-    generate:
-      imgentabledoc: false #是否一启动就生成数据库表结构
-      fileoutputdir: E:\\
-      enginefiletype: HTML  # value: HTML MD WORD
-      filename: XX系统表结构
-
 # 开启监控所有项 sba配置选项
 management:
   endpoints:
@@ -133,27 +64,20 @@ management:
       exposure:
         include: '*'
 
-custom:
-  thread-pool:
-    core-pool-size: 8 # 线程池长期维持的线程数 默认 8
-    maximum-pool-size: 10 # 线程数的上限 默认 10
-    capacity: 512 # 任务的排队队列 默认 512
+---
+server:
+  port: 8080
+spring:
+  profiles: producer
 
-trade:
-  thread:
-    msg:
-      num: 8
-agent:
-  cache:
-    path: F:\gitworkspace\platform-aix-framework\cache
-    clean: 0 0 16 ? * MON-FRI
+---
+server:
+  port: 8081
+spring:
+  profiles: consumer1
 
-
-#配置文件加密解密
-jasypt:
-  encryptor:
-    bean: stringEncryptor
-
-application:
-  cache:
-    file: classpath:aix-ehcache.xml
+---
+server:
+  port: 8082
+spring:
+  profiles: consumer2

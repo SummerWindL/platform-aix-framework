@@ -71,6 +71,8 @@ public class TableStructureDescription extends StartupConfiguration {
         //忽略表前缀
         ArrayList<String> ignorePrefix = new ArrayList<>();
         ignorePrefix.add("test_");
+        ignorePrefix.add("CHB_"); //报送
+        ignorePrefix.add("REP_");
         //忽略表后缀
         ArrayList<String> ignoreSuffix = new ArrayList<>();
         ignoreSuffix.add("_test");

@@ -81,22 +81,6 @@ platform:
     app-request-url: https://192.168.9.201/
     app-regist-file-folder: D:\upload  #D:\upload  # 201 APP注册文件存放目录 /var/www/html
 
-dataloader:
-  main:
-    runscript: false #是否一启动直接执行sql脚本
-    url: jdbc:oracle:thin:@//192.168.90.230:1521/orcl
-    drive: oracle.jdbc.driver.OracleDriver
-    username: FAMS_FYL
-    password: FAMS_FYL
-    #filepath: D:\日常工作\fudian\06_脚本文件\处理脚本\升级脚本 # 脚本本地路径
-    filepath: D:\日常工作\fudian\06_脚本文件\处理脚本\升级脚本\2.1.1版本升级到2.1.2.1版本增量脚本\1.升级版本脚本\1.基础脚本（2.1.1版本升级到2.1.2.1版本脚本）
-    #filepath: D:\日常工作\fudian\06_脚本文件\测试 # 脚本本地路径
-    # 以下配置是生成数据库表结构清单使用  默认只需要生成一次就好
-    generate:
-      imgentabledoc: true #是否一启动就生成数据库表结构
-      fileoutputdir: E:\\
-      enginefiletype: HTML  # value: HTML MD WORD
-      filename: 富滇银行资管系统表结构
 
 server:
   port: 8070

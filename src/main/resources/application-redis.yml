@@ -1,0 +1,18 @@
+spring:
+  redis:
+    database: 0
+    host: localhost
+    #    host: 101.35.80.154
+    port: 6379
+    #    password: 123456
+    pool:
+      max-active: 8
+      max-wait: -1
+      max-idle: 8
+      min-idle: 0
+    timeout: 20000
+  # redis 集群
+  #  redis:
+  #    cluster:
+  #      nodes: 101.35.80.154:7001,101.35.80.154:7002,101.35.80.154:7003,101.35.80.154:7004,101.35.80.154:7005,101.35.80.154:7006
+  #    password: 123456

@@ -1,5 +1,7 @@
 package com.platform.aix.config;
 
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.Header;
 import org.apache.http.HttpHost;
 import org.apache.http.message.BasicHeader;
@@ -8,6 +10,7 @@ import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -17,22 +20,25 @@ import org.springframework.context.annotation.PropertySource;
  * @date 2022年06月20日 10:42
  * @since V1.0.0
  */
+@Data
 @Configuration
-@PropertySource("classpath:es-config.properties")
+//@PropertySource("classpath:es-config.properties")
+@ConfigurationProperties(prefix = "es")
+@Slf4j
 public class RestHighLevelClientConfig {
-    @Value("${es.host}")
+    //@Value("${es.host}")
     private String host;
-    @Value("${es.port}")
+    //@Value("${es.port}")
     private int port;
-    @Value("${es.scheme}")
+    //@Value("${es.scheme}")
     private String scheme;
-    @Value("${es.token}")
+    //@Value("${es.token}")
     private String token;
-    @Value("${es.charset}")
+    //@Value("${es.charset}")
     private String charSet;
-    @Value("${es.client.connectTimeOut}")
+    //@Value("${es.client.connectTimeOut}")
     private int connectTimeOut;
-    @Value("${es.client.socketTimeout}")
+    //@Value("${es.client.socketTimeout}")
     private int socketTimeout;
 
     @Bean
@@ -51,7 +57,7 @@ public class RestHighLevelClientConfig {
         restClientBuilder.setFailureListener(new RestClient.FailureListener(){
             @Override
             public void onFailure(Node node) {
-                System.out.println("监听某个es节点失败");
+                log.error("监听 [{}] es节点失败",node.getHost());
             }
         });
         restClientBuilder.setRequestConfigCallback(builder ->

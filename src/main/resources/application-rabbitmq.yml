@@ -1,0 +1,19 @@
+spring:
+  rabbitmq:
+    publisher-confirm-type: simple
+    publisher-returns: true   #消息没有被路由到指定的queue时将消息返回
+    addresses: localhost:5673
+    username: rbmq
+    password: rbmq
+    listener:
+      simple:
+        max-concurrency: 20
+        concurrency: 1
+        acknowledge-mode: manual
+        retry:
+          enabled: true
+    template:
+      retry:
+        enabled: false
+      mandatory: true
+

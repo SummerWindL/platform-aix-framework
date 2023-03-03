@@ -21,5 +21,12 @@ spring:
   main:
     allow-bean-definition-overriding: true # 存在repo相同的情况 原phis的存储过程与aigw重名
   profiles:
-    active:
+    include:
       - test
+      - dataload  # dataload
+      - redis     # redis
+      - aix       # aix主工程
+      - rmdb      # 关系型数据库
+      - ignite    # ignite
+      - es        # elasticsearch
+      - rabbitmq  # rabbitmq

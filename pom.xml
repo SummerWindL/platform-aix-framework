@@ -215,12 +215,20 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.28</version>
         </dependency>
-        <dependency>
+        <!--11g版本以前的数据库可使用ojdbc6-->
+        <!--<dependency>
             <groupId>com.oracle</groupId>
             <artifactId>ojdbc6</artifactId>
             <version>11.2.0.1.0</version>
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/ojdbc6-11.2.0.1.0.jar</systemPath>
+        </dependency>-->
+        <!--12c以上版本使用ojdbc8-->
+        <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc8</artifactId>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/ojdbc8-21.1.0.0.jar</systemPath>
         </dependency>
         <!--dynamic-datasource-spring-boot-starter 是一个基于springboot的快速集成多数据源的启动器。-->
         <!--https://github.com/baomidou/dynamic-datasource-spring-boot-starter-->
@@ -250,7 +258,8 @@
         <dependency>
             <groupId>cn.smallbun.screw</groupId>
             <artifactId>screw-core</artifactId>
-            <version>1.0.5</version>
+            <version>1.0.6-SNAPSHOT</version><!--latested-->
+            <!--<version>1.0.5</version>-->
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.mybatis/mybatis -->
         <dependency>
@@ -332,6 +341,65 @@
             <scope>system</scope> <!--system，类似provided，需要显式提供依赖的jar以后，Maven就不会在Repository中查找它-->
             <systemPath>${project.basedir}/lib/jodconverter-2.2.2.jar</systemPath> <!--项目根目录下的lib文件夹下-->
         </dependency>
+        <!--ignite-->
+        <!--<dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.199</version>
+            <scope>provided</scope>
+        </dependency>-->
+        <dependency>
+            <groupId>org.apache.ignite</groupId>
+            <artifactId>ignite-spring-boot-autoconfigure-ext</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ignite</groupId>
+            <artifactId>ignite-core</artifactId>
+            <version>2.10.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ignite</groupId>
+            <artifactId>ignite-spring</artifactId>
+            <version>2.10.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ignite</groupId>
+            <artifactId>ignite-indexing</artifactId>
+            <version>2.10.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.h2database</groupId>
+                    <artifactId>h2</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ignite</groupId>
+            <artifactId>ignite-slf4j</artifactId>
+            <version>2.10.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ignite</groupId>
+            <artifactId>ignite-log4j</artifactId>
+            <version>2.10.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.197</version>
+            <scope>compile</scope>
+        </dependency>
+        <!--<dependency>
+            <groupId>com.rabbitmq</groupId>
+            <artifactId>amqp-client</artifactId>
+            <version>4.0.3</version>
+        </dependency>-->
+        <dependency>
+            <groupId>com.platform.rabbitmq</groupId>
+            <artifactId>platform-rabbitmq</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 
     <!--原始打包方法-->
@@ -358,7 +426,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>2.5.4</version>
+                <!--<version>2.5.4</version>-->
                 <!-- 打包时会将本地jar一起打包 -->
                 <configuration>
                     <mainClass>com.platform.aix.PlatformAixApplication</mainClass>

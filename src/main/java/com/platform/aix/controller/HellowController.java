@@ -139,7 +139,7 @@ public class HellowController extends CommonCheckHelper {
         objectObjectConcurrentMap.putIfAbsent("3",new Date());
         objectObjectConcurrentMap.putIfAbsent("4",new Account());
         //指定生产者
-        seriesDataEventQueueHelper.publishEvent(new SeriesData(JSONObject.toJSONString(objectObjectConcurrentMap)));
+        seriesDataEventQueueHelper.publishEvent(new SeriesData(JSONObject.toJSONString(objectObjectConcurrentMap),this.getClass(),this.getClass()));
 
     }
 

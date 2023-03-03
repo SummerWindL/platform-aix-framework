@@ -1,18 +1,23 @@
 package com.platform.aix.common.util;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.platform.common.util.StringUtil;
 import com.platform.core.cache.CacheKey;
 import com.platform.core.constant.GlobalConstant;
+import com.platform.core.interf.DataDict;
+import com.platform.core.interf.Menu;
+import com.platform.core.interf.Page;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -202,16 +207,17 @@ public class CacheUtil {
      * 设置画面缓存到default中
      *
      * @param value 画面缓存值
+     */
     public static void putPageCache(Map<String, Page> value) {
         cache(pageCache, DEFALUT_KEY, value);
     }
 
-    *//**
+    /**
      * 从画面缓存中获取画面
      *
      * @param pageId 画面ID
      * @return 画面对象
-     *//*
+     */
     @SuppressWarnings("unchecked")
     public static Page getPage(String pageId) {
         Map<String, Page> pageMap = getPages();
@@ -221,29 +227,29 @@ public class CacheUtil {
         return null;
     }
 
-    *//**
+    /**
      * 从画面缓存中获取所有画面
      * @return Map
-     *//*
+     */
     @SuppressWarnings({"rawtypes"})
     public static Map getPages(){
         return getCache(pageCache, DEFALUT_KEY, Map.class);
     }
 
-    *//**
+    /**
      * 设置菜单缓存到default中
      *
      * @param value 菜单缓存值
-     *//*
+     */
     public static void putMenuCache(Map<String, Menu> value) {
         cache(menuCache, DEFALUT_KEY, value);
     }
 
-    *//**
+    /**
      * 从菜单缓存中获取菜单
      *
      * @return 菜单对象
-     *//*
+     */
     @SuppressWarnings("unchecked")
     public static Collection<Menu> getAllMenu() {
         Map<String, Menu> menuMap = getCache(menuCache, DEFALUT_KEY, Map.class);
@@ -253,12 +259,12 @@ public class CacheUtil {
         return null;
     }
 
-    *//**
+    /**
      * 从菜单缓存中获取菜单
      *
      * @param menuId 菜单ID
      * @return 菜单对象
-     *//*
+     */
     @SuppressWarnings("unchecked")
     public static Menu getMenu(String menuId) {
         Map<String, Menu> menuMap = getCache(menuCache, DEFALUT_KEY, Map.class);
@@ -270,7 +276,7 @@ public class CacheUtil {
 
     private static Menu findMenuById(Collection<Menu> menus, String menuId) {
         Menu temp;
-        if(CollectionUtils.isNotEmpty(menus)) {
+        if(CollectionUtil.isNotEmpty(menus)) {
             for (Menu menu : menus) {
                 if(StringUtils.equals(menu.getId(), menuId)) {
                     temp = menu;
@@ -286,20 +292,20 @@ public class CacheUtil {
         return null;
     }
 
-    *//**
+    /**
      * 设置数据字典缓存值
      *
      * @param value 缓存值
-     *//*
+     */
     public static void putDictCache(Map<String, DataDict> value) {
         cache(dictCache, DEFALUT_KEY, value);
     }
 
-    *//**
+    /**
      * 获取数据字典缓存
      * @param dictCode 数据字典代码
      * @return 数据字典
-     *//*
+     */
     public static DataDict getDictCode(String dictCode) {
         Map<String, DataDict> dictMap = getAllDictCode();
         if (dictMap != null) {
@@ -308,16 +314,16 @@ public class CacheUtil {
         return null;
     }
 
-    *//**
+    /**
      * 获取所有数据字典缓存
      *
      * @return 数据字典
-     *//*
+     */
     @SuppressWarnings("unchecked")
     public static Map<String, DataDict> getAllDictCode() {
         return getCache(dictCache, DEFALUT_KEY, Map.class);
     }
-*/
+
     /**
      * 清除所有app缓存
      */

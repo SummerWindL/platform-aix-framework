@@ -129,3 +129,13 @@ admin
 
 2、新增异步代码数据库、redis插入逻辑 代码路径：
 src/main/java/com/platform/aix/common/datacommon
+
+
+--------------
+
+## word转pdf类
+1.word转pdf，文件上传形式，使用vue-manager前端访问
+```Word2PdfController``` <br/>
+2.在线word转pdf在线预览 使用openofficce ```PreviewDocumentController``` <br/>
+请求方式:
+```http://localhost:8071/api/preview?filePath=C:\Users\Administrator\Desktop\V1.0.docx&fileName=V1.0.docx```

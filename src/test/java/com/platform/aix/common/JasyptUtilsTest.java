@@ -24,7 +24,7 @@ public class JasyptUtilsTest extends PlatformAixApplicationTests {
     public void test(){
         JasyptUtils.encrypt("哈哈哈哈");
 
-        System.out.println(JasyptUtils.decrypt("AWwWlIH6R5suGVRphMThs4j6YewrqyBo"));
+        //System.out.println(JasyptUtils.decrypt("Gh10NrvTw6ZIwfop9aD3zuY2A9dzy70p"));
     }
     @Test
     public void assertTest(){

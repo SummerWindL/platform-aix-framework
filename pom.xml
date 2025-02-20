@@ -258,7 +258,7 @@
         <dependency>
             <groupId>cn.smallbun.screw</groupId>
             <artifactId>screw-core</artifactId>
-            <version>1.0.6-SNAPSHOT</version><!--latested-->
+            <version>1.0.5</version><!--latested-->
             <!--<version>1.0.5</version>-->
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.mybatis/mybatis -->

@@ -28,4 +28,5 @@ public class SysPara {
     private Date updatetime;
     private String institutioncode;
     private String updateflg;
+
 }

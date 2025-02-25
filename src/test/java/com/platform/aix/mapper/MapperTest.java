@@ -12,5 +12,8 @@ public class MapperTest {
         String mapperName = StringUtil.replaceOnce("MstCustomerInfoAddWithBLOBs", "com.joyintech.tams.common.base.entity.",
                 "com.joyintech.tams.common.base.dao.") + "Mapper";
         System.out.println(mapperName);
+
+        System.out.println("136108".hashCode());
+        System.out.println("136109".hashCode());
     }
 }

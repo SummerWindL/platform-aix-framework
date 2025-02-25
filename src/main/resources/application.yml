@@ -30,3 +30,4 @@ spring:
       - ignite    # ignite
       - es        # elasticsearch
       - rabbitmq  # rabbitmq
+      - kafka     # kafka

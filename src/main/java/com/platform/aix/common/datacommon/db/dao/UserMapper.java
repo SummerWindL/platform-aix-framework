@@ -32,7 +32,7 @@ public interface UserMapper extends IMybatisMapper<User, String, UserExample> {
      */
     @DS("slave_1")
     int updateOrInsertSelective(User record);
-
+//    @DS("slave_1")
     List<User> selectByExample(UserExample example);
 
     int updateByExampleSelective(@Param("record") User record, @Param("example") UserExample example);

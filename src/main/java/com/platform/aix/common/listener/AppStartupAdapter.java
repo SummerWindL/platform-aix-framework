@@ -64,14 +64,14 @@ public abstract class AppStartupAdapter extends TimerTask implements AppStartupL
     }
     @Override
     public void run() {
-        String runOptimize = AppService.getApplicationContext().getEnvironment().getProperty("application.runOptimize");
-        if (!StringUtils.equals(runOptimize, "Y")) {
-            logger.info("开始执行一些定时任务......");
-        }
-        logger.info("开始刷新缓存...");
-        CacheUtil.putDictCache(dictCodeCache());
-        CacheUtil.putPageCache(pageCache());
-        CacheUtil.putMenuCache(menuCache());
+//        String runOptimize = AppService.getApplicationContext().getEnvironment().getProperty("application.runOptimize");
+//        if (!StringUtils.equals(runOptimize, "Y")) {
+//            logger.info("开始执行一些定时任务......");
+//        }
+//        logger.info("开始刷新缓存...");
+//        CacheUtil.putDictCache(dictCodeCache());
+//        CacheUtil.putPageCache(pageCache());
+//        CacheUtil.putMenuCache(menuCache());
     }
     /**
      * 向apache beanutil添加Converter

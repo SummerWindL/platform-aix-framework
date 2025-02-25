@@ -12,7 +12,7 @@ spring:
       strict: false #严格匹配数据源,默认false. true未匹配到指定数据源时抛异常,false使用默认数据源
       datasource:
         master:
-          url: jdbc:postgresql://localhost:5432/postgres?stringtype=unspecified&currentSchema=aix
+          url: jdbc:postgresql://localhost:5432/aixdb?stringtype=unspecified&currentSchema=aix
           username: postgres
           password: postgres
           driver-class-name: org.postgresql.Driver # 3.2.0开始支持SPI可省略此配置
@@ -23,7 +23,7 @@ spring:
         slave_1:
           url: jdbc:mysql://localhost:3306/dynamic?useSSL=false
           username: root
-          password: 1234
+          password: root123
           driver-class-name: com.mysql.cj.jdbc.Driver
         slave_2:
           url: jdbc:oracle:thin:@//localhost:1521/orcl

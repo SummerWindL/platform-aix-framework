@@ -2,7 +2,7 @@ spring:
   rabbitmq:
     publisher-confirm-type: simple
     publisher-returns: true   #消息没有被路由到指定的queue时将消息返回
-    addresses: localhost:5673
+    addresses: localhost:5672
     username: rbmq
     password: rbmq
     listener:

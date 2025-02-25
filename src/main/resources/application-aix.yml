@@ -10,7 +10,7 @@ trade:
       num: 8
 agent:
   cache:
-    path: F:\gitworkspace\platform-aix-framework\cache
+    path: D:\work\2_workspace\my-project\platform-aix-framework\cache
     clean: 0 0 16 ? * MON-FRI
 
 

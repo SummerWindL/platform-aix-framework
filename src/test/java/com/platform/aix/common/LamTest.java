@@ -6,7 +6,10 @@ import org.jasypt.encryption.StringEncryptor;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Advance
@@ -33,6 +36,11 @@ public class LamTest extends PlatformAixApplicationTests {
                         () -> msgA + msgB
                 )
         );
+
+        List<String> collect = Stream.of("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12")
+                .map(m -> "2023-" + m)
+                .collect(Collectors.toList());
+        System.out.println(collect);
 
     }
 

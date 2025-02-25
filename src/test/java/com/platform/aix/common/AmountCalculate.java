@@ -53,5 +53,6 @@ public class AmountCalculate {
             portfolioIdAcctCdateMap.put(key,totalAmount);//value =  amount
         });
         System.out.println(JSONObject.toJSONString(portfolioIdAcctCdateMap));
+        System.out.println("CP001_B".split("_")[1]);
     }
 }

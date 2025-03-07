@@ -12,6 +12,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +26,14 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * word转pdf后台处理
@@ -59,6 +70,66 @@ public class Word2PdfController {
     @AccessLimit(limit = 1,sec = 10) //该接口访问限制 10秒一次 不生效
     public void download(HttpServletResponse response, @RequestParam String fileUrl ) {
         fileService.downLoadFile(response,fileUrl);
+    }
+
+    @PostMapping("/batchDownLoad")
+    @ResponseBody
+    @AccessLimit(limit = 1, sec = 30) // 增加接口限流
+    public ResponseEntity<Resource> batchDownLoad(@RequestBody List<String> fileUrls,
+                                                  HttpServletRequest request) throws IOException {
+        // 创建带时间戳的临时文件
+        String tempFileName = "batch_" + System.currentTimeMillis() + ".zip";
+        File zipFile = new File(CacheUtil.getAppParamCache(GlobalConstant.SYS_PARA_KEY,
+                GlobalConstant.COM_PROP_OUTPUT_PATH), tempFileName);
+
+        try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(zipFile))) {
+            // 遍历文件路径列表
+            for (String fileUrl : fileUrls) {
+                File sourceFile = new File(fileUrl);
+                if (!sourceFile.exists() || !sourceFile.isFile()) {
+                    log.warn("文件不存在: {}", fileUrl);
+                    continue;
+                }
+
+                try (FileInputStream fis = new FileInputStream(sourceFile)) {
+                    ZipEntry entry = new ZipEntry(sourceFile.getName());
+                    zos.putNextEntry(entry);
+
+                    byte[] buffer = new byte[1024];
+                    int length;
+                    while ((length = fis.read(buffer)) > 0) {
+                        zos.write(buffer, 0, length);
+                    }
+                    zos.closeEntry();
+                }
+            }
+        } catch (IOException e) {
+            log.error("压缩文件创建失败", e);
+            throw new IOException("文件打包失败");
+        }
+
+        // 设置响应头
+        // 后端编码调整
+        String encodedFileName = URLEncoder.encode("批量文件.zip", "UTF-8")
+                .replace("+", "%20");  // 显式替换加号
+        String contentDisposition = "attachment; filename*=UTF-8''" + encodedFileName;
+
+        // 使用文件服务获取资源
+        Resource resource = fileService.loadFileAsResource(zipFile.getAbsolutePath());
+
+        // 后台删除临时文件
+        new Thread(() -> {
+            try {
+                Files.deleteIfExists(zipFile.toPath());
+            } catch (IOException ex) {
+                log.warn("临时文件删除失败: {}", zipFile.getAbsolutePath());
+            }
+        }).start();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
+                .contentType(MediaType.parseMediaType("application/zip"))
+                .body(resource);
     }
 
 

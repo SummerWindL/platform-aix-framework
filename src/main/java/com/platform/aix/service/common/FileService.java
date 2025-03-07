@@ -1,5 +1,6 @@
 package com.platform.aix.service.common;
 
+import org.springframework.core.io.Resource;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -30,4 +31,13 @@ public interface FileService {
      * @param fileUrl
      */
     void downLoadFile(HttpServletResponse response,String fileUrl);
+
+    /**
+     * 
+     * @author jitwxs
+     * @date 2025/3/7 17:20
+     * @param filePath 
+     * @return org.springframework.core.io.Resource
+     */
+    Resource loadFileAsResource(String filePath);
 }

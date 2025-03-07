@@ -1,4 +1,6 @@
+# RestHighLevelClientConfig
 es:
+  esEnabled: false  # 不启用es
   charset: UTF-8
   client:
     connectTimeOut: 5000

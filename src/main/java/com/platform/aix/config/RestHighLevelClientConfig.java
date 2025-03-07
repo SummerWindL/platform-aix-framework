@@ -10,6 +10,7 @@ import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -40,13 +41,16 @@ public class RestHighLevelClientConfig {
     private int connectTimeOut;
     //@Value("${es.client.socketTimeout}")
     private int socketTimeout;
+    // 是否启用es
+    private boolean esEnabled;
 
     @Bean
+    @ConditionalOnProperty(value = "esEnabled", matchIfMissing = false)
     public RestClientBuilder restClientBuilder() {
+        log.info("开始构建 --- restClientBuilder");
         RestClientBuilder restClientBuilder = RestClient.builder(
                 new HttpHost(host, port, scheme)
         );
-
         Header[] defaultHeaders = new Header[]{
                 new BasicHeader("Accept", "*/*"),
                 new BasicHeader("Charset", charSet),
@@ -54,10 +58,10 @@ public class RestHighLevelClientConfig {
                 new BasicHeader("E_TOKEN", token)
         };
         restClientBuilder.setDefaultHeaders(defaultHeaders);
-        restClientBuilder.setFailureListener(new RestClient.FailureListener(){
+        restClientBuilder.setFailureListener(new RestClient.FailureListener() {
             @Override
             public void onFailure(Node node) {
-                log.error("监听 [{}] es节点失败",node.getHost());
+                log.error("监听 [{}] es节点失败", node.getHost());
             }
         });
         restClientBuilder.setRequestConfigCallback(builder ->
@@ -66,7 +70,9 @@ public class RestHighLevelClientConfig {
     }
 
     @Bean
+    @ConditionalOnProperty(value = "esEnabled", matchIfMissing = false)
     public RestHighLevelClient restHighLevelClient(RestClientBuilder restClientBuilder) {
+        log.info("创建 RestHighLevelClient ");
         return new RestHighLevelClient(restClientBuilder);
     }
 }

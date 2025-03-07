@@ -78,6 +78,8 @@
         <appender-ref ref="error"/>
         <appender-ref ref="access"/>
     </logger>
+    <!--屏蔽kafka日志-->
+    <logger name="org.apache.kafka" level="ERROR"/>
 
     <!--<logger name="com.platform" level="DEBUG">
         <appender-ref ref="console"/>

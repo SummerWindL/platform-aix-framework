@@ -7,6 +7,8 @@ import com.platform.core.constant.GlobalConstant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,7 +18,9 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URLEncoder;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -70,7 +74,7 @@ public class FileServiceImpl implements FileService {
                         String prexFileName = myFileName.substring(0,
                                 myFileName.lastIndexOf(GlobalConstant.POINT));
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-                        String path = uploadFilePath + File.separator + prexFileName
+                        String path = uploadFilePath +File.separator + prexFileName
                                 + GlobalConstant.UNDER_LINE + sdf.format(new Date())
                                 + GlobalConstant.POINT
                                 + myFileName.substring(
@@ -138,6 +142,20 @@ public class FileServiceImpl implements FileService {
                 }
             }
         }
+    }
+
+    @Override
+    public Resource loadFileAsResource(String filePath) {
+        try {
+            Path path = Paths.get(filePath);
+            Resource resource = new UrlResource(path.toUri());
+            if(resource.exists()) {
+                return resource;
+            }
+        } catch (MalformedURLException ex) {
+            // 异常处理
+        }
+        return null;
     }
 
     public static MultipartFile getFileFromRequest(MultipartHttpServletRequest multiRequest, String filePath) {

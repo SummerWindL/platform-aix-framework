@@ -342,13 +342,14 @@
             <systemPath>${project.basedir}/lib/jodconverter-2.2.2.jar</systemPath> <!--项目根目录下的lib文件夹下-->
         </dependency>
         <!--ignite-->
+        <!--先注释ignite,因为这个版本的ignite用到了Lucene,与ES 7.3.2的版本冲突-->
         <!--<dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>1.4.199</version>
             <scope>provided</scope>
         </dependency>-->
-        <dependency>
+        <!--<dependency>
             <groupId>org.apache.ignite</groupId>
             <artifactId>ignite-spring-boot-autoconfigure-ext</artifactId>
             <version>1.0.0</version>
@@ -383,7 +384,7 @@
             <groupId>org.apache.ignite</groupId>
             <artifactId>ignite-log4j</artifactId>
             <version>2.10.0</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
@@ -395,10 +396,16 @@
             <artifactId>amqp-client</artifactId>
             <version>4.0.3</version>
         </dependency>-->
-        <dependency>
+        <!--<dependency>
             <groupId>com.platform.rabbitmq</groupId>
             <artifactId>platform-rabbitmq</artifactId>
             <version>1.0</version>
+        </dependency>-->
+        <!-- kafka 依赖 -->
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+            <version>2.5.4.RELEASE</version>
         </dependency>
     </dependencies>
 

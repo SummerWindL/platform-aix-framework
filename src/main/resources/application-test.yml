@@ -55,7 +55,7 @@ middle:   # middle server 专项配置参数
     websocket:
       endpoint: /demo-zx-websocket-midserver  # Websocket通道地址
       test-topic-scheduled-fixed-delay: 1000  # 测试专用，定时广播topic的时间间隔，单位：毫秒
-      websocket-message-broker-stats-period: 10  # 定时打印SpringBoot Websocket Session统计数值，时间间隔，单位：秒
+      websocket-message-broker-stats-period: 600  # 定时打印SpringBoot Websocket Session统计数值，时间间隔，单位：秒
 
 # 开启监控所有项 sba配置选项
 management:

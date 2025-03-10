@@ -153,7 +153,7 @@ public class FileServiceImpl implements FileService {
                 return resource;
             }
         } catch (MalformedURLException ex) {
-            // 异常处理
+            ex.printStackTrace();
         }
         return null;
     }

@@ -33,10 +33,10 @@ public interface FileService {
     void downLoadFile(HttpServletResponse response,String fileUrl);
 
     /**
-     * 
-     * @author jitwxs
-     * @date 2025/3/7 17:20
-     * @param filePath 
+     * 将流加载为文件
+     * @author fuyanliang
+     * @date 2025/3/10 10:18
+     * @param filePath
      * @return org.springframework.core.io.Resource
      */
     Resource loadFileAsResource(String filePath);

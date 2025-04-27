@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.platform.aix.common.datacommon.db.dao.PikaiThirdPartyAuthMapper" >
+  <resultMap id="BaseResultMap" type="com.platform.aix.common.datacommon.db.domain.PikaiThirdPartyAuth" >
+    <id column="provider" property="provider" jdbcType="VARCHAR" />
+    <id column="provider_user_id" property="providerUserId" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="access_token" property="accessToken" jdbcType="VARCHAR" />
+    <result column="refresh_token" property="refreshToken" jdbcType="VARCHAR" />
+    <result column="expires_at" property="expiresAt" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    provider, provider_user_id, user_id, access_token, refresh_token, expires_at
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.platform.aix.common.datacommon.db.domain.PikaiThirdPartyAuthExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_pikai_third_party_auth
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.platform.aix.common.datacommon.db.domain.PikaiThirdPartyAuthKey" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_pikai_third_party_auth
+    where provider = #{provider,jdbcType=VARCHAR}
+      and provider_user_id = #{providerUserId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.platform.aix.common.datacommon.db.domain.PikaiThirdPartyAuthKey" >
+    delete from t_pikai_third_party_auth
+    where provider = #{provider,jdbcType=VARCHAR}
+      and provider_user_id = #{providerUserId,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.platform.aix.common.datacommon.db.domain.PikaiThirdPartyAuthExample" >
+    delete from t_pikai_third_party_auth
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.platform.aix.common.datacommon.db.domain.PikaiThirdPartyAuth" >
+    insert into t_pikai_third_party_auth (provider, provider_user_id, user_id, 
+      access_token, refresh_token, expires_at
+      )
+    values (#{provider,jdbcType=VARCHAR}, #{providerUserId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, 
+      #{accessToken,jdbcType=VARCHAR}, #{refreshToken,jdbcType=VARCHAR}, #{expiresAt,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.platform.aix.common.datacommon.db.domain.PikaiThirdPartyAuth" >
+    insert into t_pikai_third_party_auth
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="provider != null" >
+        provider,
+      </if>
+      <if test="providerUserId != null" >
+        provider_user_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="accessToken != null" >
+        access_token,
+      </if>
+      <if test="refreshToken != null" >
+        refresh_token,
+      </if>
+      <if test="expiresAt != null" >
+        expires_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="provider != null" >
+        #{provider,jdbcType=VARCHAR},
+      </if>
+      <if test="providerUserId != null" >
+        #{providerUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="accessToken != null" >
+        #{accessToken,jdbcType=VARCHAR},
+      </if>
+      <if test="refreshToken != null" >
+        #{refreshToken,jdbcType=VARCHAR},
+      </if>
+      <if test="expiresAt != null" >
+        #{expiresAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.platform.aix.common.datacommon.db.domain.PikaiThirdPartyAuthExample" resultType="java.lang.Integer" >
+    select count(*) from t_pikai_third_party_auth
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_pikai_third_party_auth
+    <set >
+      <if test="record.provider != null" >
+        provider = #{record.provider,jdbcType=VARCHAR},
+      </if>
+      <if test="record.providerUserId != null" >
+        provider_user_id = #{record.providerUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userId != null" >
+        user_id = #{record.userId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.accessToken != null" >
+        access_token = #{record.accessToken,jdbcType=VARCHAR},
+      </if>
+      <if test="record.refreshToken != null" >
+        refresh_token = #{record.refreshToken,jdbcType=VARCHAR},
+      </if>
+      <if test="record.expiresAt != null" >
+        expires_at = #{record.expiresAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_pikai_third_party_auth
+    set provider = #{record.provider,jdbcType=VARCHAR},
+      provider_user_id = #{record.providerUserId,jdbcType=VARCHAR},
+      user_id = #{record.userId,jdbcType=VARCHAR},
+      access_token = #{record.accessToken,jdbcType=VARCHAR},
+      refresh_token = #{record.refreshToken,jdbcType=VARCHAR},
+      expires_at = #{record.expiresAt,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.platform.aix.common.datacommon.db.domain.PikaiThirdPartyAuth" >
+    update t_pikai_third_party_auth
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="accessToken != null" >
+        access_token = #{accessToken,jdbcType=VARCHAR},
+      </if>
+      <if test="refreshToken != null" >
+        refresh_token = #{refreshToken,jdbcType=VARCHAR},
+      </if>
+      <if test="expiresAt != null" >
+        expires_at = #{expiresAt,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where provider = #{provider,jdbcType=VARCHAR}
+      and provider_user_id = #{providerUserId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.platform.aix.common.datacommon.db.domain.PikaiThirdPartyAuth" >
+    update t_pikai_third_party_auth
+    set user_id = #{userId,jdbcType=VARCHAR},
+      access_token = #{accessToken,jdbcType=VARCHAR},
+      refresh_token = #{refreshToken,jdbcType=VARCHAR},
+      expires_at = #{expiresAt,jdbcType=TIMESTAMP}
+    where provider = #{provider,jdbcType=VARCHAR}
+      and provider_user_id = #{providerUserId,jdbcType=VARCHAR}
+  </update>
+</mapper>

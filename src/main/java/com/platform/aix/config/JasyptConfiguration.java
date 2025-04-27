@@ -6,6 +6,7 @@ import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author Advance
@@ -13,6 +14,7 @@ import org.springframework.context.annotation.Bean;
  * @since V1.0.0
  */
 @EnableEncryptableProperties
+@Configuration
 public class JasyptConfiguration {
     @Bean("stringEncryptor")
     public StringEncryptor stringEncryptor() {

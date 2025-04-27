@@ -38,7 +38,7 @@ public class WebSocketListener extends StartupConfiguration {
     public void afterStartup(ApplicationContext applicationContext) {
         //initWebsocket();
         //模拟client建立连接
-        newClient();
+        //newClient();
     }
 
     private WebSocketStompClient newClient() {

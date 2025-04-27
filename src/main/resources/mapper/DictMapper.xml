@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.platform.aix.common.datacommon.db.dao.DictMapper">
+
+    <resultMap id="dictItemMap" type="com.platform.aix.common.datacommon.db.domain.dict.DictItem">
+        <result property="dictCode" column="dict_code"/>
+        <result property="itemCode" column="item_code"/>
+        <result property="itemName" column="item_name"/>
+        <result property="itemValue" column="item_value"/>
+        <result property="sort" column="sort"/>
+    </resultMap>
+    <resultMap id="dictTypeMap" type="com.platform.aix.common.datacommon.db.domain.dict.DictType">
+        <result property="dictCode" column="dict_code"/>
+        <result property="dictName" column="dict_name"/>
+        <result property="isFixed" column="is_fixed"/>
+    </resultMap>
+
+    <select id="selectDynamicItems" resultMap="dictItemMap">
+        SELECT di.dict_code, di.item_code, di.item_name, di.item_value, di.sort
+        FROM t_pikai_sys_dict_item di
+        JOIN t_pikai_sys_dict_type dt ON di.dict_code = dt.dict_code
+        WHERE dt.is_fixed = false
+    </select>
+
+    <select id="selectAllDictTypes" resultMap="dictTypeMap">
+        SELECT dict_code, dict_name, is_fixed FROM sys_dict_type
+    </select>
+
+    <select id="selectItemsByDictCode" resultMap="dictItemMap">
+        SELECT * FROM sys_dict_item WHERE dict_code = #{dictCode}
+    </select>
+
+</mapper>

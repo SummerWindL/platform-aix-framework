@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.platform.aix.common.datacommon.db.dao.PikaiUserConfMapper" >
+  <resultMap id="BaseResultMap" type="com.platform.aix.common.datacommon.db.domain.PikaiUserConf" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="conf_item_code" property="confItemCode" jdbcType="VARCHAR" />
+    <result column="conf_item_name" property="confItemName" jdbcType="VARCHAR" />
+    <result column="conf_item_value" property="confItemValue" jdbcType="OTHER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, user_id, conf_item_code, conf_item_name, conf_item_value, create_time, update_time
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.platform.aix.common.datacommon.db.domain.PikaiUserConfExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_pikai_user_conf
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_pikai_user_conf
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_pikai_user_conf
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.platform.aix.common.datacommon.db.domain.PikaiUserConfExample" >
+    delete from t_pikai_user_conf
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.platform.aix.common.datacommon.db.domain.PikaiUserConf" >
+    insert into t_pikai_user_conf (id, user_id, conf_item_code, 
+      conf_item_name, conf_item_value, create_time, 
+      update_time)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=VARCHAR}, #{confItemCode,jdbcType=VARCHAR}, 
+      #{confItemName,jdbcType=VARCHAR}, #{confItemValue,jdbcType=OTHER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.platform.aix.common.datacommon.db.domain.PikaiUserConf" >
+    insert into t_pikai_user_conf
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="confItemCode != null" >
+        conf_item_code,
+      </if>
+      <if test="confItemName != null" >
+        conf_item_name,
+      </if>
+      <if test="confItemValue != null" >
+        conf_item_value,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="confItemCode != null" >
+        #{confItemCode,jdbcType=VARCHAR},
+      </if>
+      <if test="confItemName != null" >
+        #{confItemName,jdbcType=VARCHAR},
+      </if>
+      <if test="confItemValue != null" >
+        #{confItemValue,jdbcType=OTHER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.platform.aix.common.datacommon.db.domain.PikaiUserConfExample" resultType="java.lang.Integer" >
+    select count(*) from t_pikai_user_conf
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_pikai_user_conf
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.userId != null" >
+        user_id = #{record.userId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.confItemCode != null" >
+        conf_item_code = #{record.confItemCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.confItemName != null" >
+        conf_item_name = #{record.confItemName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.confItemValue != null" >
+        conf_item_value = #{record.confItemValue,jdbcType=OTHER},
+      </if>
+      <if test="record.createTime != null" >
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null" >
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_pikai_user_conf
+    set id = #{record.id,jdbcType=INTEGER},
+      user_id = #{record.userId,jdbcType=VARCHAR},
+      conf_item_code = #{record.confItemCode,jdbcType=VARCHAR},
+      conf_item_name = #{record.confItemName,jdbcType=VARCHAR},
+      conf_item_value = #{record.confItemValue,jdbcType=OTHER},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.platform.aix.common.datacommon.db.domain.PikaiUserConf" >
+    update t_pikai_user_conf
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="confItemCode != null" >
+        conf_item_code = #{confItemCode,jdbcType=VARCHAR},
+      </if>
+      <if test="confItemName != null" >
+        conf_item_name = #{confItemName,jdbcType=VARCHAR},
+      </if>
+      <if test="confItemValue != null" >
+        conf_item_value = #{confItemValue,jdbcType=OTHER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.platform.aix.common.datacommon.db.domain.PikaiUserConf" >
+    update t_pikai_user_conf
+    set user_id = #{userId,jdbcType=VARCHAR},
+      conf_item_code = #{confItemCode,jdbcType=VARCHAR},
+      conf_item_name = #{confItemName,jdbcType=VARCHAR},
+      conf_item_value = #{confItemValue,jdbcType=OTHER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

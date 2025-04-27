@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.platform.aix.common.datacommon.db.dao.PikaiMenuMapper" >
+  <resultMap id="BaseResultMap" type="com.platform.aix.common.datacommon.db.domain.PikaiMenu" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="menu_id" property="menuId" jdbcType="VARCHAR" />
+    <result column="parent_menu_id" property="parentMenuId" jdbcType="VARCHAR" />
+    <result column="menu_name" property="menuName" jdbcType="VARCHAR" />
+    <result column="menu_layer" property="menuLayer" jdbcType="VARCHAR" />
+    <result column="menu_order" property="menuOrder" jdbcType="SMALLINT" />
+    <result column="menu_url" property="menuUrl" jdbcType="VARCHAR" />
+    <result column="menu_icon" property="menuIcon" jdbcType="OTHER" />
+    <result column="menu_status" property="menuStatus" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, menu_id, parent_menu_id, menu_name, menu_layer, menu_order, menu_url, menu_icon, 
+    menu_status
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.platform.aix.common.datacommon.db.domain.PikaiMenuExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_pikai_menu
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_pikai_menu
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_pikai_menu
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.platform.aix.common.datacommon.db.domain.PikaiMenuExample" >
+    delete from t_pikai_menu
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.platform.aix.common.datacommon.db.domain.PikaiMenu" >
+    insert into t_pikai_menu (id, menu_id, parent_menu_id, 
+      menu_name, menu_layer, menu_order, 
+      menu_url, menu_icon, menu_status
+      )
+    values (#{id,jdbcType=INTEGER}, #{menuId,jdbcType=VARCHAR}, #{parentMenuId,jdbcType=VARCHAR}, 
+      #{menuName,jdbcType=VARCHAR}, #{menuLayer,jdbcType=VARCHAR}, #{menuOrder,jdbcType=SMALLINT}, 
+      #{menuUrl,jdbcType=VARCHAR}, #{menuIcon,jdbcType=OTHER}, #{menuStatus,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.platform.aix.common.datacommon.db.domain.PikaiMenu" >
+    insert into t_pikai_menu
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="menuId != null" >
+        menu_id,
+      </if>
+      <if test="parentMenuId != null" >
+        parent_menu_id,
+      </if>
+      <if test="menuName != null" >
+        menu_name,
+      </if>
+      <if test="menuLayer != null" >
+        menu_layer,
+      </if>
+      <if test="menuOrder != null" >
+        menu_order,
+      </if>
+      <if test="menuUrl != null" >
+        menu_url,
+      </if>
+      <if test="menuIcon != null" >
+        menu_icon,
+      </if>
+      <if test="menuStatus != null" >
+        menu_status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="menuId != null" >
+        #{menuId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentMenuId != null" >
+        #{parentMenuId,jdbcType=VARCHAR},
+      </if>
+      <if test="menuName != null" >
+        #{menuName,jdbcType=VARCHAR},
+      </if>
+      <if test="menuLayer != null" >
+        #{menuLayer,jdbcType=VARCHAR},
+      </if>
+      <if test="menuOrder != null" >
+        #{menuOrder,jdbcType=SMALLINT},
+      </if>
+      <if test="menuUrl != null" >
+        #{menuUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="menuIcon != null" >
+        #{menuIcon,jdbcType=OTHER},
+      </if>
+      <if test="menuStatus != null" >
+        #{menuStatus,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.platform.aix.common.datacommon.db.domain.PikaiMenuExample" resultType="java.lang.Integer" >
+    select count(*) from t_pikai_menu
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_pikai_menu
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.menuId != null" >
+        menu_id = #{record.menuId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.parentMenuId != null" >
+        parent_menu_id = #{record.parentMenuId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.menuName != null" >
+        menu_name = #{record.menuName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.menuLayer != null" >
+        menu_layer = #{record.menuLayer,jdbcType=VARCHAR},
+      </if>
+      <if test="record.menuOrder != null" >
+        menu_order = #{record.menuOrder,jdbcType=SMALLINT},
+      </if>
+      <if test="record.menuUrl != null" >
+        menu_url = #{record.menuUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="record.menuIcon != null" >
+        menu_icon = #{record.menuIcon,jdbcType=OTHER},
+      </if>
+      <if test="record.menuStatus != null" >
+        menu_status = #{record.menuStatus,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_pikai_menu
+    set id = #{record.id,jdbcType=INTEGER},
+      menu_id = #{record.menuId,jdbcType=VARCHAR},
+      parent_menu_id = #{record.parentMenuId,jdbcType=VARCHAR},
+      menu_name = #{record.menuName,jdbcType=VARCHAR},
+      menu_layer = #{record.menuLayer,jdbcType=VARCHAR},
+      menu_order = #{record.menuOrder,jdbcType=SMALLINT},
+      menu_url = #{record.menuUrl,jdbcType=VARCHAR},
+      menu_icon = #{record.menuIcon,jdbcType=OTHER},
+      menu_status = #{record.menuStatus,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.platform.aix.common.datacommon.db.domain.PikaiMenu" >
+    update t_pikai_menu
+    <set >
+      <if test="menuId != null" >
+        menu_id = #{menuId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentMenuId != null" >
+        parent_menu_id = #{parentMenuId,jdbcType=VARCHAR},
+      </if>
+      <if test="menuName != null" >
+        menu_name = #{menuName,jdbcType=VARCHAR},
+      </if>
+      <if test="menuLayer != null" >
+        menu_layer = #{menuLayer,jdbcType=VARCHAR},
+      </if>
+      <if test="menuOrder != null" >
+        menu_order = #{menuOrder,jdbcType=SMALLINT},
+      </if>
+      <if test="menuUrl != null" >
+        menu_url = #{menuUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="menuIcon != null" >
+        menu_icon = #{menuIcon,jdbcType=OTHER},
+      </if>
+      <if test="menuStatus != null" >
+        menu_status = #{menuStatus,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.platform.aix.common.datacommon.db.domain.PikaiMenu" >
+    update t_pikai_menu
+    set menu_id = #{menuId,jdbcType=VARCHAR},
+      parent_menu_id = #{parentMenuId,jdbcType=VARCHAR},
+      menu_name = #{menuName,jdbcType=VARCHAR},
+      menu_layer = #{menuLayer,jdbcType=VARCHAR},
+      menu_order = #{menuOrder,jdbcType=SMALLINT},
+      menu_url = #{menuUrl,jdbcType=VARCHAR},
+      menu_icon = #{menuIcon,jdbcType=OTHER},
+      menu_status = #{menuStatus,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

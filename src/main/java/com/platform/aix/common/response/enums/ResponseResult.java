@@ -319,6 +319,9 @@ public enum ResponseResult {
     BIZ_ERROR_NETHOSP_APPHOSPCODE_ERR(-7001,"APPHOSPCODE非法！"),
     BIZ_ERROR_NETHOSP_IMPARAMS_ISRMPTY(-7001,"医院IMPARAMS配置不可为空！"),
 
+
+    //++++++++++++++++++Pikai错误定义++++++++++++++++++++++++
+    BIZ_PIKAI_EROOR_EMAIL_EXISTS(-100010,"该邮箱已被注册！"),
     // ++++++++++++++++++成功+++++++++++++++++++++++
     ZX_SUCCESS(0, "成功"),
     COMMON_SUCCESS(0, "成功");

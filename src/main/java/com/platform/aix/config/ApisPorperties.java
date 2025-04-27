@@ -23,6 +23,9 @@ public class ApisPorperties {
 
     private ApisServer server = new ApisServer();
 
+    // 邮箱相关配置
+    private Mail mail = new Mail();
+
     private String ecgFileParserUrl = "http://114.55.11.51:18081/";
 
     private String mailSubject = "房颤信息中心患者数据库";
@@ -45,5 +48,82 @@ public class ApisPorperties {
 
     private String appRegistFileFolder = "/var/www/html"; //app注册文件默认存放地址
     private String appRequestUrl = "https://192.168.9.201/"; //数据库 regsiterprotourl 前缀
+
+
+    public class Mail{
+        private String host = "";
+        private Integer port;
+        private String userName;
+        private String passWord;
+        private Integer expireHours;
+
+        private String templateHost;
+        private String templateToken;
+        private String templateUUID;
+
+        public String getTemplateHost() {
+            return templateHost;
+        }
+
+        public void setTemplateHost(String templateHost) {
+            this.templateHost = templateHost;
+        }
+
+        public String getTemplateToken() {
+            return templateToken;
+        }
+
+        public void setTemplateToken(String templateToken) {
+            this.templateToken = templateToken;
+        }
+
+        public String getTemplateUUID() {
+            return templateUUID;
+        }
+
+        public void setTemplateUUID(String templateUUID) {
+            this.templateUUID = templateUUID;
+        }
+
+        public String getHost() {
+            return host;
+        }
+
+        public void setHost(String host) {
+            this.host = host;
+        }
+
+        public Integer getPort() {
+            return port;
+        }
+
+        public void setPort(Integer port) {
+            this.port = port;
+        }
+
+        public String getUserName() {
+            return userName;
+        }
+
+        public void setUserName(String userName) {
+            this.userName = userName;
+        }
+
+        public String getPassWord() {
+            return passWord;
+        }
+
+        public void setPassWord(String passWord) {
+            this.passWord = passWord;
+        }
+
+        public Integer getExpireHours() {
+            return expireHours;
+        }
+
+        public void setExpireHours(Integer expireHours) {
+            this.expireHours = expireHours;
+        }
+    }
 
 }

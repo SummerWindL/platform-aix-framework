@@ -18,6 +18,10 @@ agent:
 jasypt:
   encryptor:
     bean: stringEncryptor
+    algorithm: PBEWITHHMACSHA512ANDAES_256
+    key-obtention-iterations: 1000
+#    iv-generator-classname: org.jasypt.iv.RandomIvGenerator
+    provider-name: SunJCE  # 必须与加密时一致
 
 application:
   cache:

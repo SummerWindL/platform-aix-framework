@@ -2,6 +2,7 @@ package com.platform.aix.config;
 
 import com.platform.aix.common.interceptor.LogInterceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -129,10 +130,14 @@ public class AixConfiguration implements WebMvcConfigurer{
      * @return
      */
     private ClientHttpRequestFactory getOkClientHttpRequestFactory(){
+        // 添加日志拦截器
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .connectTimeout(5, TimeUnit.SECONDS)
-                .writeTimeout(5, TimeUnit.SECONDS)
-                .readTimeout(5, TimeUnit.SECONDS)
+                .connectTimeout(15, TimeUnit.SECONDS)
+                .writeTimeout(15, TimeUnit.SECONDS)
+                .readTimeout(15, TimeUnit.SECONDS)
+                .addInterceptor(loggingInterceptor)
                 .build();
         return new OkHttp3ClientHttpRequestFactory(okHttpClient);
     }

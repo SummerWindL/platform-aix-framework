@@ -35,9 +35,19 @@
             <columnOverride column="USER_ID" javaType="long"/>
             <columnOverride column="USER_AGE" javaType="long"/>
         </table>-->
-        <!--<table schema="" tableName="t_puzzle_history_list" domainObjectName="PuzzleHistory">-->
-        <table schema="" tableName="t_tcm_prescriptions" domainObjectName="Prescription">
-        </table>
+        <!--<table schema="" tableName="t_puzzle_history_list" domainObjectName="PuzzleHistory"></table>-->
+        <!--<table schema="" tableName="t_tcm_prescriptions" domainObjectName="Prescription"></table>-->
+        <!--<table schema="" tableName="t_pikai_user" domainObjectName="PikaiUser"></table>
+        <table schema="" tableName="t_pikai_third_party_auth" domainObjectName="PikaiThirdPartyAuth"></table>-->
+        <!--<table schema="" tableName="t_pikai_user_conf" domainObjectName="PikaiUserConf"></table>
+        <table schema="" tableName="t_pikai_timeline_content" domainObjectName="PikaiTimelineContent"></table>
+        <table schema="" tableName="t_pikai_timeline_images" domainObjectName="PikaiTimelineImages"></table>
+        <table schema="" tableName="t_pikai_menu" domainObjectName="PikaiMenu"></table>
+        <table schema="" tableName="t_pikai_dict" domainObjectName="PikaiDict"></table>-->
+        <!--<table schema="" tableName="t_pikai_sys_dict_type" domainObjectName="PikaiSysDictType"></table>
+        <table schema="" tableName="t_pikai_sys_dict_item" domainObjectName="PikaiSysDictItem"></table>-->
+        <!--<table schema="" tableName="t_pikai_login_log" domainObjectName="PikaiLoginLog"></table>-->
+        <table schema="" tableName="t_pikai_email_verification" domainObjectName="PikaiEmailVerification"></table>
 
     </context>
 </generatorConfiguration>

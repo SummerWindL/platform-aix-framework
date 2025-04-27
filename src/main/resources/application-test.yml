@@ -1,3 +1,4 @@
+# tomcat 访问端口
 server:
   port: 8071
 # mapper.xml文件位置
@@ -14,6 +15,8 @@ spring:
     multipart:
       max-file-size: 100MB
       max-request-size: 100MB
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
 
   #  security:
 #    oauth2:
@@ -23,7 +26,7 @@ spring:
 #            client-id: google-client-id
 #            client-secret: google-client-secret
 
-# aix平台配置选项
+# aix平台配置选项 框架访问端口
 platform:
   aix:
     server:
@@ -49,6 +52,17 @@ platform:
     crosurl: '*'
     ## openoffice 安装路径
     openofficeinstallationpath: C:\Program Files (x86)\OpenOffice 4\
+    # mailtrap 邮箱配置：https://mailtrap.io/inboxes/3631079/messages
+    mail:
+      host: sandbox.smtp.mailtrap.io
+      port: 2525
+      userName: b8439d49070036
+      passWord: 31a8feb02e4800
+      # template 方式调用 mailtrap 发送验证邮件
+      templateHost: send.api.mailtrap.io
+      templateToken: 3a49845f4d61f5cbf4ffe7f358195ef7
+      templateUUID: 96829dfe-5014-4687-af73-90d4794c34f6
+
 
 middle:   # middle server 专项配置参数
   server:

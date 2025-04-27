@@ -20,6 +20,11 @@ logging:
 spring:
   main:
     allow-bean-definition-overriding: true # 存在repo相同的情况 原phis的存储过程与aigw重名
+  # 禁用 es 模块，需要启用es模块 注释此配置
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.elasticsearch.ElasticsearchRestClientAutoConfiguration
+
   profiles:
     include:
       - test

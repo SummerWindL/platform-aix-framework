@@ -12,14 +12,16 @@ spring:
       strict: false #严格匹配数据源,默认false. true未匹配到指定数据源时抛异常,false使用默认数据源
       datasource:
         master:
-          url: jdbc:postgresql://pikai.cloud:5432/aixdb?stringtype=unspecified&currentSchema=aix
-          username: aix
-          password: ENC(SP+s1qUegeto17wVT0zDMH8K2bL2N4eM)
-          driver-class-name: org.postgresql.Driver # 3.2.0开始支持SPI可省略此配置
-#          url: jdbc:postgresql://localhost:5432/aixdb?stringtype=unspecified&currentSchema=aix
-#          username: postgres
-#          password: ENC(pISTbvTH8w1pnujfBd6Z5ORvhL1nIU8i)
+          # 云服务器
+#          url: jdbc:postgresql://pikai.cloud:5432/aixdb?stringtype=unspecified&currentSchema=aix
+#          username: aix
+#          password: ENC(SP+s1qUegeto17wVT0zDMH8K2bL2N4eM)
 #          driver-class-name: org.postgresql.Driver # 3.2.0开始支持SPI可省略此配置
+          # 本地
+          url: jdbc:postgresql://localhost:5432/aixdb?stringtype=unspecified&currentSchema=aix
+          username: postgres
+          password: ENC(pISTbvTH8w1pnujfBd6Z5ORvhL1nIU8i)
+          driver-class-name: org.postgresql.Driver # 3.2.0开始支持SPI可省略此配置
 #          url: jdbc:oracle:thin:@//192.168.101.95:1521/orcl
 #          username: BS306_DEV_20220707
 #          password: BS306_DEV_20220707

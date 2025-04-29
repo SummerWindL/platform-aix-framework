@@ -103,13 +103,14 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.platform.aix.common.datacommon.db.domain.PikaiTimelineContent" >
-    insert into t_pikai_timeline_content (id, title, content, 
+  <!--在 PostgreSQL 中，当主键被定义为 GENERATED ALWAYS AS IDENTITY 时，数据库会强制自动生成主键值，不允许手动插入。-->
+  <insert id="insert" parameterType="com.platform.aix.common.datacommon.db.domain.PikaiTimelineContent" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    insert into t_pikai_timeline_content (title, content,
       tag, user_id, img_id, video_id, 
       create_time, update_time)
-    values (#{id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, 
+    values ( #{title,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR},
       #{tag,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{imgId,jdbcType=OTHER}, #{videoId,jdbcType=OTHER}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+      now(), now())
   </insert>
   <insert id="insertSelective" parameterType="com.platform.aix.common.datacommon.db.domain.PikaiTimelineContent" >
     insert into t_pikai_timeline_content

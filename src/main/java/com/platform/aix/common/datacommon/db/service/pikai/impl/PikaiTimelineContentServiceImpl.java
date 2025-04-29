@@ -5,6 +5,8 @@ import com.platform.aix.common.datacommon.db.dao.IMybatisMapper;
 import com.platform.aix.common.datacommon.db.dao.PikaiTimelineContentMapper;
 import com.platform.aix.common.datacommon.db.domain.PikaiTimelineContent;
 import com.platform.aix.common.datacommon.db.service.pikai.PikaiTimelineContentService;
+import com.platform.aix.controller.pikai.common.request.PikaiTimelineContentReq;
+import com.platform.common.util.BeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,8 +46,10 @@ public class PikaiTimelineContentServiceImpl extends AsyncServiceImpl<Integer, P
     }
 
     @Override
-    public int savePikaiTimelineContent(PikaiTimelineContent content) {
-        return mapper.insert(content);
+    public int savePikaiTimelineContent(PikaiTimelineContentReq content) {
+        PikaiTimelineContent pikaiTimelineContent = new PikaiTimelineContent();
+        BeanUtil.copyPropertiesIgnoreNull(pikaiTimelineContent,content);
+        return mapper.insert(pikaiTimelineContent);
     }
 
     @Override

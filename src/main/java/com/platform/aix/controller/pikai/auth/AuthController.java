@@ -216,7 +216,8 @@ public class AuthController{
         PikaiUser userInfo = new PikaiUser();
         userInfo.setId(claims.getSubject());
         userInfo.setAccountId((String) claims.get("accountId"));
-        userInfo.setUserId((String) claims.get("userName"));
+        userInfo.setUserId((String) claims.get("userId"));
+        userInfo.setUserName((String) claims.get("userName"));
 
         return ApiResponse.success(userInfo);
     }

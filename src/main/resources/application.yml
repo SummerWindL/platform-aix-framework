@@ -10,6 +10,8 @@ logging:
         data:
           mongodb:
             core: WARN
+        jdbc:
+          datasource: INFO
       # 获取到请求参数
       hibernate:
         type:

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+  <localRepository>C:\Users\tuzhan\.m2\repository</localRepository>
+  <mirrors>
+    <mirror>
+      <id>nexus</id>
+      <name>nexus maven</name>
+      <url>file://C:\Users\tuzhan\.m2\repository</url>
+      <mirrorOf>*</mirrorOf>
+    </mirror>
+  </mirrors>
+</settings>

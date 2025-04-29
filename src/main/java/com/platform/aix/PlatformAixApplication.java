@@ -36,7 +36,10 @@ import java.util.concurrent.*;
  * @create: 2020-08-24 14:25
  **/
 @EnableScheduling
-@SpringBootApplication(scanBasePackages = {"com.platform", "com.lemon"},scanBasePackageClasses = {StarterService.class})
+@SpringBootApplication(
+        scanBasePackages = {"com.platform", "com.lemon"},
+        scanBasePackageClasses = {StarterService.class}
+)
 @MapperScan("com.platform.aix.common.datacommon.db.dao")
 public class PlatformAixApplication implements CommandLineRunner {
 

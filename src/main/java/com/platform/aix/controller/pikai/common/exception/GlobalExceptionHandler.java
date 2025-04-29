@@ -4,12 +4,15 @@ import com.platform.aix.controller.pikai.common.ApiResponse;
 import com.platform.aix.controller.pikai.common.enums.ResponseCode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.messaging.handler.annotation.support.MethodArgumentNotValidException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.stream.Collectors;
 
 /**
@@ -25,24 +28,24 @@ public class GlobalExceptionHandler {
      * 处理业务异常
      * @return
      */
-    @ExceptionHandler(BusinessException.class)
-    public ApiResponse<?> handleBusinessException(BusinessException ex, WebRequest request) {
-        ResponseCode code = ex.getCode();
-        // 记录带上下文的错误日志
-//        log.error(
-//                "[业务异常] 路径: {} | 错误码: {} | 信息: {} " +
-//                        "请求参数: {} " +
-//                        "堆栈跟踪: {}",
-//                request.getDescription(false), // 请求路径
-//                ex.getCode().getCode(),        // 错误码
-//                ex.getCustomMessage(),         // 自定义消息
-//                request.getParameterMap(),     // 请求参数
-//                ExceptionUtils.getStackTrace(ex) // 完整堆栈（需 Apache Commons Lang3）
-//        );
-        // 记录错误日志（关键！）
-        log.error("API异常 - URI: {} | 参数: {}",
-                request.getDescription(false),
-                request.getParameterMap(),
+    @ExceptionHandler({BusinessException.class, HttpMessageNotReadableException.class})
+    public ApiResponse<?> handleExceptions(Exception ex, WebRequest request, HttpServletRequest httpRequest) {
+        String requestBody = (String) httpRequest.getAttribute("requestBody");
+        String requestURI = httpRequest.getRequestURI();
+        String method = httpRequest.getMethod();
+        String queryString = (String) httpRequest.getAttribute("requestQueryString");
+
+        // 如果属性中没有，则尝试直接从请求中获取
+        if (queryString == null) {
+            queryString = httpRequest.getQueryString();
+        }
+
+        // 记录错误日志
+        log.error("API异常 - URI: {} | 方法: {} | 查询参数: {} | 请求体: {}",
+                requestURI,
+                method,
+                queryString != null ? queryString : "",
+                requestBody != null ? requestBody : "",
                 ex
         );
         // 解析业务错误码和消息

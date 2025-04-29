@@ -8,6 +8,8 @@ import com.platform.aix.common.datacommon.db.domain.PikaiUser;
 import com.platform.aix.common.datacommon.db.service.pikai.PikaiTimelineContentService;
 import com.platform.aix.common.datacommon.db.service.pikai.PikaiUserService;
 import com.platform.aix.common.exception.AuthenticationException;
+import com.platform.aix.controller.pikai.common.enums.ResponseCode;
+import com.platform.aix.controller.pikai.common.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,7 +98,7 @@ public class PikaiUserServiceImpl extends AsyncServiceImpl<String, PikaiUser> im
 
     @Override
     public PikaiUser findByAccountId(String email) {
-        return pikaiUserMapper.findByAccountId(email).orElseThrow(() -> new AuthenticationException("用户不存在"));
+        return pikaiUserMapper.findByAccountId(email).orElseThrow(() -> new BusinessException(ResponseCode.USER_NOT_FOUND.getCode(),"用户不存在"));
     }
 
     @Override

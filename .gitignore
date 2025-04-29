@@ -4,6 +4,7 @@
 .idea/
 logs/
 ignite/
+upload/
 
 # Log file
 *.log

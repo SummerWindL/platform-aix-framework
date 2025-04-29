@@ -2,6 +2,7 @@ package com.platform.aix.common.datacommon.db.service.pikai;
 
 import com.platform.aix.common.datacommon.cache.AsyncService;
 import com.platform.aix.common.datacommon.db.domain.PikaiTimelineContent;
+import com.platform.aix.controller.pikai.common.request.PikaiTimelineContentReq;
 
 /**
  * @author fuyanliang
@@ -17,7 +18,7 @@ public interface PikaiTimelineContentService extends AsyncService<Integer, Pikai
      * @param content
      * @return int
      */
-    int savePikaiTimelineContent(PikaiTimelineContent content);
+    int savePikaiTimelineContent(PikaiTimelineContentReq content);
 
     /**
      * 更新

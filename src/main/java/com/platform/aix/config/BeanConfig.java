@@ -6,6 +6,7 @@ import com.google.code.kaptcha.Producer;
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import com.google.code.kaptcha.util.Config;
 import com.platform.aix.common.agent.RegisterBeanFactory;
+import com.platform.aix.controller.pikai.common.request.RequestLoggingFilter;
 import com.platform.common.util.JsonAdaptor;
 import com.platform.comservice.config.StarterService;
 import com.platform.comservice.config.StarterServiceProperties;
@@ -14,6 +15,7 @@ import org.jasypt.encryption.pbe.PooledPBEStringEncryptor;
 import org.jasypt.encryption.pbe.config.SimpleStringPBEConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
@@ -133,5 +135,14 @@ public class BeanConfig extends WebMvcConfigurerAdapter {
         Config config = new Config(properties);
         kaptcha.setConfig(config);
         return kaptcha;
+    }
+
+    @Bean
+    public FilterRegistrationBean<RequestLoggingFilter> requestLoggingFilterRegistration(RequestLoggingFilter filter) {
+        FilterRegistrationBean<RequestLoggingFilter> registration = new FilterRegistrationBean<>();
+        registration.setFilter(filter);
+        registration.setOrder(1);  // 设置过滤器顺序，越小越先执行
+        registration.addUrlPatterns("/*");  // 应用到所有URL
+        return registration;
     }
 }

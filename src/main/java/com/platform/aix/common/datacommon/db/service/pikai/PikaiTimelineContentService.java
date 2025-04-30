@@ -4,6 +4,8 @@ import com.platform.aix.common.datacommon.cache.AsyncService;
 import com.platform.aix.common.datacommon.db.domain.PikaiTimelineContent;
 import com.platform.aix.controller.pikai.common.request.PikaiTimelineContentReq;
 
+import java.util.List;
+
 /**
  * @author fuyanliang
  * @version V1.0.0
@@ -39,4 +41,13 @@ public interface PikaiTimelineContentService extends AsyncService<Integer, Pikai
     int deletPikaiTimelineContent(Integer id);
 
     PikaiTimelineContent queryPikaiTimelineContentOne(Integer id);
+
+    /**
+     * 根据条件查询全部文章
+     * @author fuyanliang
+     * @date 2025/4/30 17:21
+     * @param content
+     * @return List<PikaiTimelineContent>
+     */
+    List<PikaiTimelineContent> queryAllContent(PikaiTimelineContentReq content);
 }

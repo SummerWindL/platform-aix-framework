@@ -3,6 +3,7 @@
 <mapper namespace="com.platform.aix.common.datacommon.db.dao.PikaiTimelineContentMapper" >
   <resultMap id="BaseResultMap" type="com.platform.aix.common.datacommon.db.domain.PikaiTimelineContent" >
     <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="content_uid" property="contentUid" jdbcType="VARCHAR" />
     <result column="title" property="title" jdbcType="VARCHAR" />
     <result column="content" property="content" jdbcType="VARCHAR" />
     <result column="tag" property="tag" jdbcType="VARCHAR" />
@@ -271,4 +272,93 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <insert id ="updateOrInsertSelective" parameterType="com.platform.aix.common.datacommon.db.domain.PikaiTimelineContent" >
+    <selectKey keyProperty="count" resultType="int" order="BEFORE">
+      select count(1) from t_pikai_timeline_content where content_uid = #{contentUid,jdbcType=VARCHAR}
+    </selectKey>
+    <if test="count > 0">
+      <include refid="updateSql"/>
+    </if>
+    <if test="count == 0">
+      <include refid="insertSql"/>
+    </if>
+  </insert>
+  <sql id="updateSql">
+    update t_pikai_timeline_content
+    set title = #{title,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      tag = #{tag,jdbcType=VARCHAR},
+      user_id = #{userId,jdbcType=VARCHAR},
+      img_id = #{imgId,jdbcType=OTHER},
+      video_id = #{videoId,jdbcType=OTHER},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where content_uid = #{contentUid,jdbcType=VARCHAR}
+  </sql>
+  <sql id="insertSql">
+    insert into t_pikai_timeline_content
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="contentUid != null" >
+        content_uid,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="tag != null" >
+        tag,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="imgId != null" >
+        img_id,
+      </if>
+      <if test="videoId != null" >
+        video_id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="contentUid != null" >
+        #{contentUid,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="tag != null" >
+        #{tag,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="imgId != null" >
+        #{imgId,jdbcType=OTHER},
+      </if>
+      <if test="videoId != null" >
+        #{videoId,jdbcType=OTHER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </sql>
 </mapper>

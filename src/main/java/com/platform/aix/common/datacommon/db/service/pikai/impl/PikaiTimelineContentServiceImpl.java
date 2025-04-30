@@ -4,11 +4,15 @@ import com.platform.aix.common.datacommon.cache.impl.AsyncServiceImpl;
 import com.platform.aix.common.datacommon.db.dao.IMybatisMapper;
 import com.platform.aix.common.datacommon.db.dao.PikaiTimelineContentMapper;
 import com.platform.aix.common.datacommon.db.domain.PikaiTimelineContent;
+import com.platform.aix.common.datacommon.db.domain.PikaiTimelineContentExample;
 import com.platform.aix.common.datacommon.db.service.pikai.PikaiTimelineContentService;
 import com.platform.aix.controller.pikai.common.request.PikaiTimelineContentReq;
 import com.platform.common.util.BeanUtil;
+import com.platform.common.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author fuyanliang
@@ -49,7 +53,8 @@ public class PikaiTimelineContentServiceImpl extends AsyncServiceImpl<Integer, P
     public int savePikaiTimelineContent(PikaiTimelineContentReq content) {
         PikaiTimelineContent pikaiTimelineContent = new PikaiTimelineContent();
         BeanUtil.copyPropertiesIgnoreNull(pikaiTimelineContent,content);
-        return mapper.insert(pikaiTimelineContent);
+        pikaiTimelineContent.setUpdateTime(DateUtil.now());
+        return mapper.updateOrInsertSelective(pikaiTimelineContent);
     }
 
     @Override
@@ -65,5 +70,12 @@ public class PikaiTimelineContentServiceImpl extends AsyncServiceImpl<Integer, P
     @Override
     public PikaiTimelineContent queryPikaiTimelineContentOne(Integer id) {
         return mapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public List<PikaiTimelineContent> queryAllContent(PikaiTimelineContentReq contentReq) {
+        PikaiTimelineContentExample pikaiTimelineContentExample = new PikaiTimelineContentExample();
+        BeanUtil.copyPropertiesIgnoreNull(pikaiTimelineContentExample,contentReq);
+        return mapper.selectByExample(pikaiTimelineContentExample);
     }
 }

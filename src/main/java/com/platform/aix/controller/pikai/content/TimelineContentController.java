@@ -1,15 +1,15 @@
 package com.platform.aix.controller.pikai.content;
 
+import com.platform.aix.common.datacommon.db.domain.PikaiTimelineContent;
 import com.platform.aix.common.datacommon.db.service.pikai.PikaiTimelineContentService;
 import com.platform.aix.controller.pikai.common.ApiResponse;
 import com.platform.aix.controller.pikai.common.AuthResponse;
 import com.platform.aix.controller.pikai.common.request.PikaiTimelineContentReq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 内容保存
@@ -28,4 +28,10 @@ public class TimelineContentController {
         pikaiTimelineContentService.savePikaiTimelineContent(pikaiTimelineContentReq);
         return ApiResponse.success("保存成功");
     }
+
+    @PostMapping("getUserAllContents")
+    public ApiResponse<List<PikaiTimelineContent>> getUserAllContent(@RequestBody PikaiTimelineContentReq pikaiTimelineContentReq){
+        return ApiResponse.success(pikaiTimelineContentService.queryAllContent(pikaiTimelineContentReq));
+    }
+
 }

@@ -10,6 +10,15 @@ public class PikaiTimelineContentReq {
     private String tag;
     private String title;
     private String userId;
+    private String contentUid;
+
+    public String getContentUid() {
+        return contentUid;
+    }
+
+    public void setContentUid(String contentUid) {
+        this.contentUid = contentUid;
+    }
 
     public String getContent() {
         return content;

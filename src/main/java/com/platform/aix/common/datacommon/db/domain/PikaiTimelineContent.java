@@ -26,6 +26,17 @@ public class PikaiTimelineContent extends BaseEntity implements Serializable, Pi
 
     private Date updateTime;
 
+    // 新增字段写在下面
+    private String contentUid;
+
+    public String getContentUid() {
+        return contentUid;
+    }
+
+    public void setContentUid(String contentUid) {
+        this.contentUid = contentUid;
+    }
+
     public Integer getId() {
         return id;
     }

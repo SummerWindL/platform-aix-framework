@@ -29,4 +29,13 @@ public interface PikaiTimelineContentMapper extends IMybatisMapper<PikaiTimeline
     int updateByPrimaryKeySelective(PikaiTimelineContent record);
 
     int updateByPrimaryKey(PikaiTimelineContent record);
+
+    /**
+     * 更新 || 插入
+     * @author fuyanliang
+     * @date 2025/4/30 10:55
+     * @param record
+     * @return com.platform.aix.common.datacommon.db.domain.PikaiTimelineContent
+     */
+    int updateOrInsertSelective(PikaiTimelineContent record);
 }

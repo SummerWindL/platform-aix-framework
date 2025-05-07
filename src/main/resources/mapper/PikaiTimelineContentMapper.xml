@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.platform.aix.common.datacommon.db.domain.PikaiTimelineContent" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="content_uid" property="contentUid" jdbcType="VARCHAR" />
+    <result column="content_date" property="contentDate" jdbcType="DATE" />
     <result column="title" property="title" jdbcType="VARCHAR" />
     <result column="content" property="content" jdbcType="VARCHAR" />
     <result column="tag" property="tag" jdbcType="VARCHAR" />
@@ -72,7 +73,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    id, title, content, tag, user_id, img_id, video_id, create_time, update_time
+    id, title, content, tag, user_id, img_id, video_id, create_time, update_time,content_date,content_uid
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.platform.aix.common.datacommon.db.domain.PikaiTimelineContentExample" >
     select

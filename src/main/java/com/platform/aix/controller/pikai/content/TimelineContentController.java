@@ -34,4 +34,10 @@ public class TimelineContentController {
         return ApiResponse.success(pikaiTimelineContentService.queryAllContent(pikaiTimelineContentReq));
     }
 
+    @DeleteMapping("content/{id}")
+    public ApiResponse<String> deleteContent(Integer id){
+        int i = pikaiTimelineContentService.deletPikaiTimelineContent(id);
+        return ApiResponse.success("删除成功");
+    }
+
 }

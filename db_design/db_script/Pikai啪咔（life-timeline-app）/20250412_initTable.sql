@@ -97,6 +97,9 @@ COMMENT ON COLUMN aix.t_pikai_user_conf.update_time IS E'更新时间';
 ALTER TABLE aix.t_pikai_user_conf OWNER TO postgres;
 -- ddl-end --
 
+-- 唯一约束
+ALTER TABLE aix.t_pikai_user_conf ADD CONSTRAINT unique_user_conf UNIQUE (user_id, conf_item_code);
+
 -- -- object: aix.t_pikai_user_conf_id_seq | type: SEQUENCE --
 -- -- DROP SEQUENCE IF EXISTS aix.t_pikai_user_conf_id_seq CASCADE;
 -- CREATE SEQUENCE aix.t_pikai_user_conf_id_seq

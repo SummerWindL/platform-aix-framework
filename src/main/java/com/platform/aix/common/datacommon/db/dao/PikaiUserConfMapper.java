@@ -29,4 +29,14 @@ public interface PikaiUserConfMapper extends IMybatisMapper<PikaiUserConf,Intege
     int updateByPrimaryKeySelective(PikaiUserConf record);
 
     int updateByPrimaryKey(PikaiUserConf record);
+    /**
+     * 更新 || 插入
+     * @author fuyanliang
+     * @date 2025/5/8 17:15
+     * @param record
+     * @return int
+     */
+    int updateOrInsertSelective(PikaiUserConf record);
+
+    PikaiUserConf selectUserConf(String userId,String confItemCode);
 }

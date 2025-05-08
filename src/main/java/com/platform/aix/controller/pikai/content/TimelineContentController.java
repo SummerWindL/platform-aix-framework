@@ -35,7 +35,7 @@ public class TimelineContentController {
     }
 
     @DeleteMapping("content/{id}")
-    public ApiResponse<String> deleteContent(Integer id){
+    public ApiResponse<String> deleteContent(@PathVariable  Integer id){
         int i = pikaiTimelineContentService.deletPikaiTimelineContent(id);
         return ApiResponse.success("删除成功");
     }

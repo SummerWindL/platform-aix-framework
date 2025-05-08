@@ -6,7 +6,8 @@
     <result column="user_id" property="userId" jdbcType="VARCHAR" />
     <result column="conf_item_code" property="confItemCode" jdbcType="VARCHAR" />
     <result column="conf_item_name" property="confItemName" jdbcType="VARCHAR" />
-    <result column="conf_item_value" property="confItemValue" jdbcType="OTHER" />
+<!--    <result column="conf_item_value" property="confItemValue" jdbcType="OTHER" />-->
+    <result column="conf_item_value" property="confItemValue" typeHandler="com.platform.aix.common.handler.JsonbTypeHandler"/>
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
   </resultMap>
@@ -240,4 +241,79 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <insert id ="updateOrInsertSelective" parameterType="com.platform.aix.common.datacommon.db.domain.PikaiUserConf" >
+    <selectKey keyProperty="count" resultType="int" order="BEFORE">
+      select count(1) from t_pikai_user_conf where user_id = #{userId,jdbcType=VARCHAR} and conf_item_code = #{confItemCode}
+    </selectKey>
+    <if test="count > 0">
+      <include refid="updateSql"/>
+    </if>
+    <if test="count == 0">
+      <include refid="insertSql"/>
+    </if>
+  </insert>
+  <sql id="updateSql">
+    update t_pikai_user_conf
+    set
+      conf_item_name = #{confItemName,jdbcType=VARCHAR},
+      conf_item_value = #{confItemValue,typeHandler=com.platform.aix.common.handler.JsonbTypeHandler},
+      update_time = now()
+    where user_id = #{userId,jdbcType=VARCHAR} and conf_item_code = #{confItemCode}
+  </sql>
+  <sql id="insertSql">
+    insert into t_pikai_user_conf
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="confItemCode != null" >
+        conf_item_code,
+      </if>
+      <if test="confItemName != null" >
+        conf_item_name,
+      </if>
+      <if test="confItemValue != null" >
+        conf_item_value,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="confItemCode != null" >
+        #{confItemCode,jdbcType=VARCHAR},
+      </if>
+      <if test="confItemName != null" >
+        #{confItemName,jdbcType=VARCHAR},
+      </if>
+      <if test="confItemValue != null" >
+        #{confItemValue,typeHandler=com.platform.aix.common.handler.JsonbTypeHandler},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </sql>
+  <select id="selectUserConf" resultMap="BaseResultMap" >
+    select
+    <include refid="Base_Column_List" />
+    from t_pikai_user_conf
+    where user_id =#{userId,jdbcType=VARCHAR} and conf_item_code =  #{confItemCode,jdbcType=VARCHAR}
+  </select>
+
 </mapper>

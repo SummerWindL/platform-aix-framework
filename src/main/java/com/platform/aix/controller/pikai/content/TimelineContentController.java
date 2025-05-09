@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 内容保存
@@ -38,6 +39,17 @@ public class TimelineContentController {
     public ApiResponse<String> deleteContent(@PathVariable  Integer id){
         int i = pikaiTimelineContentService.deletPikaiTimelineContent(id);
         return ApiResponse.success("删除成功");
+    }
+
+    /**
+     * 统计用户文章数量 - 首页贡献时间表展示
+     * @author fuyanliang
+     * @date 2025/5/9 17:49
+     * @return com.platform.aix.controller.pikai.common.ApiResponse<java.lang.String>
+     */
+    @PostMapping("countUserContentNum")
+    public ApiResponse<List<Map<String,Object>>> countUserContentNum(){
+        return ApiResponse.success(pikaiTimelineContentService.countUserContentNum());
     }
 
 }

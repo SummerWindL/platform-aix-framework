@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author fuyanliang
@@ -77,5 +78,10 @@ public class PikaiTimelineContentServiceImpl extends AsyncServiceImpl<Integer, P
         PikaiTimelineContentExample pikaiTimelineContentExample = new PikaiTimelineContentExample();
         BeanUtil.copyPropertiesIgnoreNull(pikaiTimelineContentExample,contentReq);
         return mapper.selectByExample(pikaiTimelineContentExample);
+    }
+
+    @Override
+    public List<Map<String, Object>> countUserContentNum() {
+        return mapper.countUserContentNum();
     }
 }

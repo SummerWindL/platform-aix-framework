@@ -3,6 +3,8 @@ package com.platform.aix.common.datacommon.db.dao;
 import com.platform.aix.common.datacommon.db.domain.PikaiTimelineContent;
 import com.platform.aix.common.datacommon.db.domain.PikaiTimelineContentExample;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -38,4 +40,12 @@ public interface PikaiTimelineContentMapper extends IMybatisMapper<PikaiTimeline
      * @return com.platform.aix.common.datacommon.db.domain.PikaiTimelineContent
      */
     int updateOrInsertSelective(PikaiTimelineContent record);
+
+    /**
+     * 统计用户文章数量
+     * @author fuyanliang
+     * @date 2025/5/9 17:51
+     * @return java.util.Map<java.lang.String,java.lang.Object>
+     */
+    List<Map<String,Object>> countUserContentNum();
 }

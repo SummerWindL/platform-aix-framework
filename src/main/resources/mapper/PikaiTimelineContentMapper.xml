@@ -362,4 +362,7 @@
       </if>
     </trim>
   </sql>
+  <select id="countUserContentNum" resultType="map">
+    select content_date as contentDate,user_id as userId,count(1) as num from t_pikai_timeline_content group by user_id ,content_date
+  </select>
 </mapper>

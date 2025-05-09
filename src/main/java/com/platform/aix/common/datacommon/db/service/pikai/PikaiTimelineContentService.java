@@ -5,6 +5,7 @@ import com.platform.aix.common.datacommon.db.domain.PikaiTimelineContent;
 import com.platform.aix.controller.pikai.common.request.PikaiTimelineContentReq;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author fuyanliang
@@ -50,4 +51,6 @@ public interface PikaiTimelineContentService extends AsyncService<Integer, Pikai
      * @return List<PikaiTimelineContent>
      */
     List<PikaiTimelineContent> queryAllContent(PikaiTimelineContentReq content);
+
+    List<Map<String,Object>> countUserContentNum();
 }

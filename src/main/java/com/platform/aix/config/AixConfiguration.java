@@ -1,6 +1,7 @@
 package com.platform.aix.config;
 
 import com.platform.aix.common.interceptor.LogInterceptor;
+import com.platform.aix.common.interceptor.SystemTraceIdInterceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.apache.http.client.config.RequestConfig;
@@ -20,6 +21,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import javax.annotation.Resource;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
@@ -30,6 +32,10 @@ import java.util.concurrent.TimeUnit;
  */
 @Configuration
 public class AixConfiguration implements WebMvcConfigurer{
+
+    @Resource
+    private SystemTraceIdInterceptor systemTraceIdInterceptor;
+
     /**
      * 跨域问题
      * @return
@@ -84,6 +90,8 @@ public class AixConfiguration implements WebMvcConfigurer{
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LogInterceptor()).addPathPatterns("/*");
+        //配置链路追踪traceId拦截器
+        registry.addInterceptor(systemTraceIdInterceptor).addPathPatterns("/**");
     }
 
     /**
@@ -141,4 +149,6 @@ public class AixConfiguration implements WebMvcConfigurer{
                 .build();
         return new OkHttp3ClientHttpRequestFactory(okHttpClient);
     }
+
+
 }

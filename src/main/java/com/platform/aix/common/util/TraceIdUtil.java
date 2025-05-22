@@ -1,6 +1,7 @@
 package com.platform.aix.common.util;
 
 import java.util.UUID;
+import org.slf4j.MDC;
 
 /**
  * @author Advance
@@ -8,32 +9,27 @@ import java.util.UUID;
  * @since V1.0.0
  */
 public class TraceIdUtil {
-    /**
-     * 生产 traceId
-     *
-     * @return traceId
-     */
-    public static String traceIdString() {
-        UUID uuid = UUID.randomUUID();
-        String uuidStr = uuid.toString().replace("-", "");
-        return getUUID(uuidStr, 16);
+    public static final String TRACE_ID = "traceId";
+
+    public static String getTraceId() {
+        String traceId = MDC.get(TRACE_ID);
+        return traceId == null ? "" : traceId;
     }
 
-    /**
-     * 处理 traceId 长度
-     *
-     * @param uuid 原始uuid
-     * @param len  长度
-     * @return traceId
-     */
-    public static String getUUID(String uuid, int len) {
-        if (0 >= len) {
-            return null;
-        }
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < len; i++) {
-            sb.append(uuid.charAt(i));
-        }
-        return sb.toString();
+    public static void setTraceId(String traceId) {
+        MDC.put(TRACE_ID, traceId);
     }
+
+    public static void remove() {
+        MDC.remove(TRACE_ID);
+    }
+
+    public static void clear() {
+        MDC.clear();
+    }
+
+    public static String generateTraceId() {
+        return UUID.randomUUID().toString().replace("-", "");
+    }
+
 }

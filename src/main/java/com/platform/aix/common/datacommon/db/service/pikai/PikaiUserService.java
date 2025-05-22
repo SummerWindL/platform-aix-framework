@@ -2,6 +2,7 @@ package com.platform.aix.common.datacommon.db.service.pikai;
 
 import com.platform.aix.common.datacommon.cache.AsyncService;
 import com.platform.aix.common.datacommon.db.domain.PikaiUser;
+import com.platform.aix.controller.pikai.common.request.PikaiPasswordReq;
 
 /**
  * @author fuyanliang
@@ -35,5 +36,14 @@ public interface PikaiUserService extends AsyncService<String, PikaiUser> {
      */
     boolean existsByAccountId(String email);
 
+    PikaiUser selectOne(String userId);
+
+    /**
+     * 更新密码
+     * @author fuyanliang
+     * @date 2025/5/20 18:25
+     * @param pikaiPasswordReq
+     */
+    void updatePassword(PikaiPasswordReq pikaiPasswordReq);
 
 }

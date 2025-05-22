@@ -10,9 +10,13 @@ import com.platform.aix.common.datacommon.db.service.pikai.PikaiUserService;
 import com.platform.aix.common.exception.AuthenticationException;
 import com.platform.aix.controller.pikai.common.enums.ResponseCode;
 import com.platform.aix.controller.pikai.common.exception.BusinessException;
+import com.platform.aix.controller.pikai.common.request.PikaiPasswordReq;
+import com.platform.aix.controller.pikai.common.request.PikaiUserReq;
+import com.platform.common.util.UUIDUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -52,17 +56,17 @@ public class PikaiUserServiceImpl extends AsyncServiceImpl<String, PikaiUser> im
         return user;
     }
 
-    private String encryptPassword(String rawPassword, String salt, String encrypType) {
-        // 根据加密类型选择不同的加密方式
-        switch (encrypType) {
-            case "SHA256":
-                return DigestUtils.sha256Hex(rawPassword + salt);
-            case "BCRYPT":
-                return passwordEncoder.encode(rawPassword);
-            default:
-                throw new UnsupportedOperationException("不支持的加密类型: " + encrypType);
-        }
-    }
+//    private String encryptPassword(String rawPassword, String salt, String encrypType) {
+//        // 根据加密类型选择不同的加密方式
+//        switch (encrypType) {
+//            case "SHA256":
+//                return DigestUtils.sha256Hex(rawPassword + salt);
+//            case "BCRYPT":
+//                return passwordEncoder.encode(rawPassword);
+//            default:
+//                throw new UnsupportedOperationException("不支持的加密类型: " + encrypType);
+//        }
+//    }
 
 
 
@@ -93,7 +97,7 @@ public class PikaiUserServiceImpl extends AsyncServiceImpl<String, PikaiUser> im
 
     @Override
     public void doUpdate(PikaiUser user) {
-        pikaiUserMapper.updateByPrimaryKey(user);
+        pikaiUserMapper.updateByPrimaryKeySelective(user);
     }
 
     @Override
@@ -105,4 +109,41 @@ public class PikaiUserServiceImpl extends AsyncServiceImpl<String, PikaiUser> im
     public boolean existsByAccountId(String email) {
         return pikaiUserMapper.existsByAccountId(email);
     }
+
+    @Override
+    public PikaiUser selectOne(String userId) {
+        return pikaiUserMapper.selectByPrimaryKey(userId);
+    }
+
+    @Override
+    public void updatePassword(PikaiPasswordReq pikaiPasswordReq) {
+        PikaiUser pikaiUser = new PikaiUser();
+        // 2. 生成随机盐值
+        String salt = UUIDUtils.getUUID();
+
+        // 3. 加密密码
+        String encryptedPassword = encryptPassword(
+                pikaiPasswordReq.getNewPassword(),
+                salt,
+                "BCRYPT" // 使用BCRYPT加密方式
+        );
+        pikaiUser.setUserId(pikaiPasswordReq.getUserId());
+        pikaiUser.setSalt(salt);
+        pikaiUser.setPassword(encryptedPassword); // 加密后新密码
+        pikaiUserMapper.updateByPrimaryKeySelective(pikaiUser);
+    }
+
+    private String encryptPassword(String rawPassword, String salt, String encrypType) {
+        if ("BCRYPT".equals(encrypType)) {
+            return passwordEncoder.encode(rawPassword + salt);
+        }
+        throw new UnsupportedOperationException("不支持的加密类型: " + encrypType);
+    }
+
+//    public static void main(String[] args) {
+//        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+//        System.out.println(bCryptPasswordEncoder.encode("1" + "f7b346d63dd640769c37361768a31726"));
+//    }
+
+
 }

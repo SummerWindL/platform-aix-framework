@@ -20,7 +20,9 @@ public enum ResponseCode {
     USER_EXISTS(40001, "用户已存在"),
     ACCOUNT_DISABLED(50001, "账户已被禁用"),
     INVALID_CREDENTIALS(50001, "密码错误"),
-    VERIFICATION_CODE_ERROR(60001,"验证码错误或已过期");
+    VERIFICATION_CODE_ERROR(60001,"验证码错误或已过期"),
+    PASSWORD_ARE_NOT_MATCH(60002,"原始密码错误"),
+    PASSWORD_ARE_NOT_EQUALS(60003,"两次密码输入不匹配");
 
 
 

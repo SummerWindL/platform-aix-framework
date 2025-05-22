@@ -60,6 +60,8 @@ public class AuthController{
     @Autowired
     private ICache cache;
 
+
+
     @PostMapping("register")
     public ApiResponse<String> registerUser(@RequestBody LoginRequest registerRequest) {
         // 0. 校验验证码

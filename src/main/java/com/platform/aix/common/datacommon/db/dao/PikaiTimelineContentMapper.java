@@ -48,4 +48,13 @@ public interface PikaiTimelineContentMapper extends IMybatisMapper<PikaiTimeline
      * @return java.util.Map<java.lang.String,java.lang.Object>
      */
     List<Map<String,Object>> countUserContentNum();
+
+    /**
+     * 根据条件查询文章信息
+     * @author fuyanliang
+     * @date 2025/5/22 10:33
+     * @param keyword
+     * @return java.util.List<com.platform.aix.common.datacommon.db.domain.PikaiTimelineContent>
+     */
+    List<PikaiTimelineContent> selectContentByKeyword(String keyword);
 }

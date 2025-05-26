@@ -52,5 +52,14 @@ public interface PikaiTimelineContentService extends AsyncService<Integer, Pikai
      */
     List<PikaiTimelineContent> queryAllContent(PikaiTimelineContentReq content);
 
+    /**
+     * 查询文章内容
+     * @author fuyanliang
+     * @date 2025/5/22 10:31
+     * @param keyword
+     * @return java.util.List<com.platform.aix.common.datacommon.db.domain.PikaiTimelineContent>
+     */
+    List<PikaiTimelineContent> queryContentByKeyword(String keyword);
+
     List<Map<String,Object>> countUserContentNum();
 }

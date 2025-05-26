@@ -51,5 +51,11 @@ public class TimelineContentController {
     public ApiResponse<List<Map<String,Object>>> countUserContentNum(){
         return ApiResponse.success(pikaiTimelineContentService.countUserContentNum());
     }
+    
+    @PostMapping("searchContent")
+    public ApiResponse<List<PikaiTimelineContent>> searchContent(@RequestBody Map<String, String> params){
+        String keyword = params.get("keyword");
+        return ApiResponse.success(pikaiTimelineContentService.queryContentByKeyword(keyword));
+    }
 
 }

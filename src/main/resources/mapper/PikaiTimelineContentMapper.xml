@@ -365,4 +365,19 @@
   <select id="countUserContentNum" resultType="map">
     select content_date as contentDate,user_id as userId,count(1) as num from t_pikai_timeline_content group by user_id ,content_date
   </select>
+  <select id="selectContentByKeyword" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_pikai_timeline_content
+    <where>
+      <if test="keyword != null and keyword != ''">
+        (title like '%' || #{keyword} || '%'
+        or content like '%' || #{keyword} || '%'
+        or tag like '%' || #{keyword} || '%')
+      </if>
+    </where>
+  </select>
 </mapper>

@@ -8,7 +8,8 @@
     <result column="salt" property="salt" jdbcType="VARCHAR" />
     <result column="password" property="password" jdbcType="VARCHAR" />
     <result column="encryp_type" property="encrypType" jdbcType="VARCHAR" />
-    <result column="user_info" property="userInfo" jdbcType="OTHER" />
+<!--    <result column="user_info" property="userInfo" jdbcType="OTHER" />-->
+    <result column="user_info" property="userInfo" typeHandler="com.platform.aix.common.handler.JsonbTypeHandler"/>
     <result column="account_status" property="accountStatus" jdbcType="VARCHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
@@ -308,4 +309,119 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where user_id = #{userId,jdbcType=VARCHAR}
   </update>
+
+  <insert id ="updateOrInsertSelective" parameterType="com.platform.aix.common.datacommon.db.domain.PikaiUser" >
+    <selectKey keyProperty="count" resultType="int" order="BEFORE">
+      select count(1) from t_pikai_user where user_id = #{userId,jdbcType=VARCHAR}
+    </selectKey>
+    <if test="count > 0">
+      <include refid="updateSql"/>
+    </if>
+    <if test="count == 0">
+      <include refid="insertSql"/>
+    </if>
+  </insert>
+
+  <sql id="updateSql">
+    update t_pikai_user
+    <set >
+      <if test="accountId != null" >
+        account_id = #{accountId,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null" >
+        user_name = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="salt != null" >
+        salt = #{salt,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="encrypType != null" >
+        encryp_type = #{encrypType,jdbcType=VARCHAR},
+      </if>
+      <if test="userInfo != null" >
+        user_info = #{userInfo,typeHandler=com.platform.aix.common.handler.JsonbTypeHandler},
+      </if>
+      <if test="accountStatus != null" >
+        account_status = #{accountStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=VARCHAR}
+  </sql>
+
+  <sql id="insertSql">
+    insert into t_pikai_user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="accountId != null" >
+        account_id,
+      </if>
+      <if test="userName != null" >
+        user_name,
+      </if>
+      <if test="salt != null" >
+        salt,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+      <if test="encrypType != null" >
+        encryp_type,
+      </if>
+      <if test="userInfo != null" >
+        user_info,
+      </if>
+      <if test="accountStatus != null" >
+        account_status,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="accountId != null" >
+        #{accountId,jdbcType=VARCHAR},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="salt != null" >
+        #{salt,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="encrypType != null" >
+        #{encrypType,jdbcType=VARCHAR},
+      </if>
+      <if test="userInfo != null" >
+        #{userInfo,typeHandler=com.platform.aix.common.handler.JsonbTypeHandler},
+      </if>
+      <if test="accountStatus != null" >
+        #{accountStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </sql>
+
 </mapper>

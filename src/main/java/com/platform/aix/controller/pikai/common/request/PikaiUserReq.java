@@ -8,6 +8,18 @@ package com.platform.aix.controller.pikai.common.request;
 public class PikaiUserReq {
     private String userName;
     private String userId;
+    /**
+     * jsonb格式
+     */
+    private Object userInfo;
+
+    public Object getUserInfo() {
+        return userInfo;
+    }
+
+    public void setUserInfo(Object userInfo) {
+        this.userInfo = userInfo;
+    }
 
     public String getUserName() {
         return userName;

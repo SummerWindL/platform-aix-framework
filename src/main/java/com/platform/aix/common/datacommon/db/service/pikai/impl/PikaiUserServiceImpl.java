@@ -12,6 +12,7 @@ import com.platform.aix.controller.pikai.common.enums.ResponseCode;
 import com.platform.aix.controller.pikai.common.exception.BusinessException;
 import com.platform.aix.controller.pikai.common.request.PikaiPasswordReq;
 import com.platform.aix.controller.pikai.common.request.PikaiUserReq;
+import com.platform.common.util.BeanUtil;
 import com.platform.common.util.UUIDUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -131,6 +132,13 @@ public class PikaiUserServiceImpl extends AsyncServiceImpl<String, PikaiUser> im
         pikaiUser.setSalt(salt);
         pikaiUser.setPassword(encryptedPassword); // 加密后新密码
         pikaiUserMapper.updateByPrimaryKeySelective(pikaiUser);
+    }
+
+    @Override
+    public void updateUserInfo(PikaiUserReq pikaiUserReq) {
+        PikaiUser pikaiUser = new PikaiUser();
+        BeanUtil.copyPropertiesIgnoreNull(pikaiUser,pikaiUserReq);
+        pikaiUserMapper.updateOrInsertSelective(pikaiUser);
     }
 
     private String encryptPassword(String rawPassword, String salt, String encrypType) {

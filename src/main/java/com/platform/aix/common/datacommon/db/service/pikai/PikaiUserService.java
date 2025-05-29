@@ -3,6 +3,7 @@ package com.platform.aix.common.datacommon.db.service.pikai;
 import com.platform.aix.common.datacommon.cache.AsyncService;
 import com.platform.aix.common.datacommon.db.domain.PikaiUser;
 import com.platform.aix.controller.pikai.common.request.PikaiPasswordReq;
+import com.platform.aix.controller.pikai.common.request.PikaiUserReq;
 
 /**
  * @author fuyanliang
@@ -45,5 +46,17 @@ public interface PikaiUserService extends AsyncService<String, PikaiUser> {
      * @param pikaiPasswordReq
      */
     void updatePassword(PikaiPasswordReq pikaiPasswordReq);
+
+    /**
+     * 更新用户附属信息
+     * 1、地址 addr
+     * 2、电话 iphone
+     * 3、头像 avatar
+     * ...
+     * @author fuyanliang
+     * @date 2025/5/29 17:52
+     * @param pikaiUserReq
+     */
+    void updateUserInfo(PikaiUserReq pikaiUserReq);
 
 }

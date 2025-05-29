@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.platform.aix.common.datacommon.db.domain.PikaiUser;
+import com.platform.aix.common.datacommon.db.domain.PikaiUserConf;
 import com.platform.aix.common.datacommon.db.domain.PikaiUserExample;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -58,4 +59,13 @@ public interface PikaiUserMapper extends IMybatisMapper<PikaiUser,String, PikaiU
      * @return com.platform.aix.common.datacommon.db.domain.PikaiUser
      */
     PikaiUser insertReturnEntity(PikaiUser record);
+
+    /**
+     * 更新插入记录
+     * @author fuyanliang
+     * @date 2025/5/29 17:43
+     * @param record
+     * @return int
+     */
+    int updateOrInsertSelective(PikaiUser record);
 }

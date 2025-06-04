@@ -1,6 +1,9 @@
 package com.platform.aix.common.datacommon.db.service.pikai.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.algolia.api.SearchClient;
+import com.algolia.model.search.Hit;
+import com.algolia.model.search.SearchResponse;
 import com.algolia.model.search.UpdatedAtResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -14,13 +17,16 @@ import com.platform.aix.common.datacommon.db.service.pikai.PikaiTimelineContentS
 import com.platform.aix.controller.pikai.common.request.PikaiTimelineContentReq;
 import com.platform.common.util.BeanUtil;
 import com.platform.common.util.DateUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +35,7 @@ import java.util.Map;
  * @version V1.0.0
  * @date 2025年04月17日 11:02
  */
+@Slf4j
 @Service
 public class PikaiTimelineContentServiceImpl extends AsyncServiceImpl<Integer, PikaiTimelineContent> implements PikaiTimelineContentService {
 
@@ -87,7 +94,7 @@ public class PikaiTimelineContentServiceImpl extends AsyncServiceImpl<Integer, P
         PikaiTimelineContentExample pikaiTimelineContentExample = new PikaiTimelineContentExample();
         BeanUtil.copyPropertiesIgnoreNull(pikaiTimelineContentExample,contentReq);
         List<PikaiTimelineContent> pikaiTimelineContents = mapper.selectByExample(pikaiTimelineContentExample);
-        logger.info("====数据初始化Algolia开始====");
+        log.info("====数据初始化Algolia开始====");
         // 将内容放到Algolia中
         // Connect and authenticate with your Algolia app
         SearchClient client = new SearchClient("E9C63HCURS", "5d47ca31cd4b1c7365e661c1b97c552b");
@@ -104,11 +111,18 @@ public class PikaiTimelineContentServiceImpl extends AsyncServiceImpl<Integer, P
          *                         "lvl6": null
          *                     }
          */
-        UpdatedAtResponse content_index = client.clearObjects("content_index");
-        logger.info("====clear content_index successed：{}====",content_index);
-        // Save records in Algolia index
-        client.saveObjects("content_index", pikaiTimelineContents);
-        logger.info("===={} 条数据初始化Algolia完成====",pikaiTimelineContents.size());
+        SearchResponse<Hit> indexResult = client.searchSingleIndex("content_index", Hit.class);
+//        client.clearObjects("content_index");
+        if(CollectionUtils.isEmpty(indexResult.getHits())){
+            UpdatedAtResponse content_index = client.clearObjects("content_index");
+            log.info("====clear content_index successed：{}====",content_index);
+            // Save records in Algolia index
+            client.saveObjects("content_index", pikaiTimelineContents);
+            log.info("===={} 条数据初始化Algolia完成====",pikaiTimelineContents.size());
+        }else{
+            log.info("====已存在content_index无需创建====");
+        }
+
         try {
             client.close();
         } catch (IOException e) {

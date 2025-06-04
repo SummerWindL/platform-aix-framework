@@ -73,13 +73,13 @@ public class UserProfileController {
             String base64Image = Base64.getEncoder().encodeToString(fileBytes);
             // 4. 更新用户头像URL到数据库 (存储Base64字符串)
             String avatarUrl = "data:image/" + fileExtension.substring(1) + ";base64," + base64Image;
-            HashMap<String, String> avatarJson = MapUtil.of("avatarUrl", avatarUrl);
+            HashMap<String, Object> avatarJson = MapUtil.of("avatarUrl", avatarUrl);
             PikaiUserReq pikaiUserReq = new PikaiUserReq();
             pikaiUserReq.setUserId(userId);
             pikaiUserReq.setUserInfo(avatarJson);
             pikaiUserService.updateUserInfo(pikaiUserReq);
             // 5. 返回成功响应
-            return ApiResponse.success(MapUtil.of("avatarUrl", avatarUrl));
+            return ApiResponse.success(avatarJson);
 
         } catch (Exception e) {
             e.printStackTrace();

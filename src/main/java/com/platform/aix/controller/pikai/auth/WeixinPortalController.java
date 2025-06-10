@@ -18,7 +18,7 @@ import javax.annotation.Resource;
  */
 @Slf4j
 @RestController()
-@CrossOrigin("*")
+//@CrossOrigin("*")
 @RequestMapping("/api/v1/weixin/portal/")
 public class WeixinPortalController {
     @Value("${weixin.config.originalid}")
@@ -27,7 +27,7 @@ public class WeixinPortalController {
     private Cache<String, String> openidToken;
 
     /**
-     * 验签，硬编码 token b8b6 - 按需修改
+     * 验签，硬编码 token ae86 - 按需修改
      */
     @GetMapping(value = "receive", produces = "text/plain;charset=utf-8")
     public String validate(@RequestParam(value = "signature", required = false) String signature,
@@ -39,7 +39,7 @@ public class WeixinPortalController {
             if (StringUtils.isAnyBlank(signature, timestamp, nonce, echostr)) {
                 throw new IllegalArgumentException("请求参数非法，请核实!");
             }
-            boolean check = SignatureUtil.check("b8b6", signature, timestamp, nonce);
+            boolean check = SignatureUtil.check("ae86", signature, timestamp, nonce);
             log.info("微信公众号验签信息完成 check：{}", check);
             if (!check) {
                 return null;

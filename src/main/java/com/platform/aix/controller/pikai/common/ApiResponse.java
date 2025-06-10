@@ -1,6 +1,7 @@
 package com.platform.aix.controller.pikai.common;
 
 import com.platform.aix.controller.pikai.common.enums.ResponseCode;
+import lombok.Builder;
 import org.springframework.http.HttpStatus;
 
 import java.io.Serializable;
@@ -10,6 +11,7 @@ import java.io.Serializable;
  * @version V1.0.0
  * @date 2025年04月17日 19:17
  */
+@Builder
 public class ApiResponse<T> implements Serializable {
     private int code;       // 业务状态码 (非HTTP状态码)
     private String message; // 提示信息

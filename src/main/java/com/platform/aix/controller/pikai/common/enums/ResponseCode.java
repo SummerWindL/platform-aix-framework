@@ -22,7 +22,8 @@ public enum ResponseCode {
     INVALID_CREDENTIALS(50001, "密码错误"),
     VERIFICATION_CODE_ERROR(60001,"验证码错误或已过期"),
     PASSWORD_ARE_NOT_MATCH(60002,"原始密码错误"),
-    PASSWORD_ARE_NOT_EQUALS(60003,"两次密码输入不匹配");
+    PASSWORD_ARE_NOT_EQUALS(60003,"两次密码输入不匹配"),
+    NO_LOGIN(60004,"未登录");
 
 
 

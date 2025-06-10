@@ -13,6 +13,7 @@ import com.platform.aix.controller.pikai.common.AuthResponse;
 import com.platform.aix.controller.pikai.common.LoginRequest;
 import com.platform.aix.controller.pikai.common.enums.ResponseCode;
 import com.platform.aix.controller.pikai.common.exception.BusinessException;
+import com.platform.aix.service.pikai.weixin.ILoginService;
 import com.platform.common.util.DateUtil;
 import com.platform.common.util.UUIDUtils;
 import com.platform.core.util.StringUtil;
@@ -21,6 +22,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +30,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
+import org.apache.commons.lang3.StringUtils;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -60,7 +64,61 @@ public class AuthController{
     @Autowired
     private ICache cache;
 
+    @Resource
+    private ILoginService loginService;
 
+    /**
+     * 获取微信 ticket 凭证
+     * <a href="http://xfg-studio.natapp1.cc/api/v1/login/weixin_qrcode_ticket">/api/v1/login/weixin_qrcode_ticket</a>
+     */
+    @RequestMapping(value = "weixin_qrcode_ticket", method = RequestMethod.GET)
+    public ApiResponse<String> weixinQrCodeTicket() {
+        try {
+            String qrCodeTicket = loginService.createQrCodeTicket();
+            log.info("生成微信扫码登录 ticket {}", qrCodeTicket);
+            return ApiResponse.<String>builder()
+                    .code(ResponseCode.SUCCESS.getCode())
+                    .message(ResponseCode.SUCCESS.getMessage())
+                    .data(qrCodeTicket)
+                    .build();
+        } catch (Exception e) {
+            log.info("生成微信扫码登录 ticket 失败", e);
+            return ApiResponse.<String>builder()
+                    .code(ResponseCode.INTERNAL_ERROR.getCode())
+                    .message(ResponseCode.INTERNAL_ERROR.getMessage())
+                    .build();
+        }
+    }
+
+    /**
+     * 轮训登录
+     * <a href="http://xfg-studio.natapp1.cc/api/v1/login/check_login">/api/v1/login/check_login</a>
+     */
+    @RequestMapping(value = "check_login", method = RequestMethod.GET)
+    public ApiResponse<String> checkLogin(@RequestParam String ticket) {
+        try {
+            String openidToken = loginService.checkLogin(ticket);
+            log.info("扫描检测登录结果 ticket:{} openidToken:{}", ticket, openidToken);
+            if (StringUtils.isNotBlank(openidToken)) {
+                return ApiResponse.<String>builder()
+                        .code(ResponseCode.SUCCESS.getCode())
+                        .message(ResponseCode.SUCCESS.getMessage())
+                        .data(openidToken)
+                        .build();
+            } else {
+                return ApiResponse.<String>builder()
+                        .code(ResponseCode.NO_LOGIN.getCode())
+                        .message(ResponseCode.NO_LOGIN.getMessage())
+                        .build();
+            }
+        } catch (Exception e) {
+            log.info("扫描检测登录结果失败 ticket:{}", ticket);
+            return ApiResponse.<String>builder()
+                    .code(ResponseCode.INTERNAL_ERROR.getCode())
+                    .message(ResponseCode.INTERNAL_ERROR.getMessage())
+                    .build();
+        }
+    }
 
     @PostMapping("register")
     public ApiResponse<String> registerUser(@RequestBody LoginRequest registerRequest) {

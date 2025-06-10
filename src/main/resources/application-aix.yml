@@ -13,6 +13,12 @@ agent:
     path: D:\work\2_workspace\my-project\platform-aix-framework\cache
     clean: 0 0 16 ? * MON-FRI
 
+weixin:
+  config:
+    originalid: gh_a39f3126353a
+    app-id: wx7376901a14869dfe
+    app-secret: 6aa8f6a8f5b83004f29b42702ddc3970
+
 
 #配置文件加密解密
 jasypt:

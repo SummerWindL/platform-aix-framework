@@ -225,4 +225,70 @@
     where provider = #{provider,jdbcType=VARCHAR}
       and provider_user_id = #{providerUserId,jdbcType=VARCHAR}
   </update>
+  <insert id="updateOrInsertSelective" parameterType="com.platform.aix.common.datacommon.db.domain.PikaiThirdPartyAuth">
+    <selectKey keyProperty="count" resultType="int" order="BEFORE">
+      select count(1) from t_pikai_third_party_auth where provider_user_id = #{providerUserId,jdbcType=VARCHAR}
+    </selectKey>
+    <if test="count > 0">
+      <include refid="updateSql"/>
+    </if>
+    <if test="count == 0">
+      <include refid="insertSql"/>
+    </if>
+  </insert>
+
+  <sql id="updateSql">
+    update t_pikai_third_party_auth
+    <set >
+      <if test="refreshToken != null" >
+        refresh_token = #{refreshToken,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where provider_user_id = #{providerUserId,jdbcType=VARCHAR}
+  </sql>
+
+  <sql id="insertSql">
+    insert into t_pikai_third_party_auth
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="provider != null" >
+        provider,
+      </if>
+      <if test="providerUserId != null" >
+        provider_user_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="accessToken != null" >
+        access_token,
+      </if>
+      <if test="refreshToken != null" >
+        refresh_token,
+      </if>
+      <if test="expiresAt != null" >
+        expires_at,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="provider != null" >
+        #{provider,jdbcType=VARCHAR},
+      </if>
+      <if test="providerUserId != null" >
+        #{providerUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="accessToken != null" >
+        #{accessToken,jdbcType=VARCHAR},
+      </if>
+      <if test="refreshToken != null" >
+        #{refreshToken,jdbcType=VARCHAR},
+      </if>
+      <if test="expiresAt != null" >
+        #{expiresAt,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </sql>
+
 </mapper>

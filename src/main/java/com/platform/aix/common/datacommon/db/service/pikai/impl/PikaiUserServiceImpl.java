@@ -8,11 +8,13 @@ import com.platform.aix.common.datacommon.db.domain.PikaiUser;
 import com.platform.aix.common.datacommon.db.service.pikai.PikaiTimelineContentService;
 import com.platform.aix.common.datacommon.db.service.pikai.PikaiUserService;
 import com.platform.aix.common.exception.AuthenticationException;
+import com.platform.aix.controller.pikai.common.LoginRequest;
 import com.platform.aix.controller.pikai.common.enums.ResponseCode;
 import com.platform.aix.controller.pikai.common.exception.BusinessException;
 import com.platform.aix.controller.pikai.common.request.PikaiPasswordReq;
 import com.platform.aix.controller.pikai.common.request.PikaiUserReq;
 import com.platform.common.util.BeanUtil;
+import com.platform.common.util.DateUtil;
 import com.platform.common.util.UUIDUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -57,20 +59,6 @@ public class PikaiUserServiceImpl extends AsyncServiceImpl<String, PikaiUser> im
         return user;
     }
 
-//    private String encryptPassword(String rawPassword, String salt, String encrypType) {
-//        // 根据加密类型选择不同的加密方式
-//        switch (encrypType) {
-//            case "SHA256":
-//                return DigestUtils.sha256Hex(rawPassword + salt);
-//            case "BCRYPT":
-//                return passwordEncoder.encode(rawPassword);
-//            default:
-//                throw new UnsupportedOperationException("不支持的加密类型: " + encrypType);
-//        }
-//    }
-
-
-
     @Override
     public void clearCache() {
 
@@ -92,7 +80,28 @@ public class PikaiUserServiceImpl extends AsyncServiceImpl<String, PikaiUser> im
     }
 
     @Override
-    public PikaiUser doSave(PikaiUser user) {
+    public PikaiUser doSave(LoginRequest registerRequest) {
+        // 2. 生成随机盐值
+        String salt = UUIDUtils.getUUID();
+
+        // 3. 加密密码
+        String encryptedPassword = encryptPassword(
+                registerRequest.getPassword(),
+                salt,
+                "BCRYPT" // 使用BCRYPT加密方式
+        );
+
+        // 4. 创建用户对象
+        PikaiUser user = new PikaiUser();
+        user.setUserId(UUIDUtils.getUUID().toString());
+        user.setAccountId(registerRequest.getEmail());
+        user.setUserName(registerRequest.getEmail().split("@")[0]); // 默认用户名
+        user.setSalt(salt);
+        user.setPassword(encryptedPassword);
+        user.setEncrypType("BCRYPT");
+        user.setAccountStatus("0"); // 0表示正常状态
+        user.setCreateTime(DateUtil.now());
+        user.setUpdateTime(DateUtil.now());
         return pikaiUserMapper.insertReturnEntity(user);
     }
 
@@ -147,11 +156,5 @@ public class PikaiUserServiceImpl extends AsyncServiceImpl<String, PikaiUser> im
         }
         throw new UnsupportedOperationException("不支持的加密类型: " + encrypType);
     }
-
-//    public static void main(String[] args) {
-//        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-//        System.out.println(bCryptPasswordEncoder.encode("1" + "f7b346d63dd640769c37361768a31726"));
-//    }
-
 
 }

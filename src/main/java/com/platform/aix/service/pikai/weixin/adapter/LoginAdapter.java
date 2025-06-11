@@ -34,7 +34,7 @@ public class LoginAdapter implements ILoginAdapter {
         // 1. 获取 accessToken 【实际业务场景，按需处理下异常】
         String accessToken = weixinAccessToken.getIfPresent(appid);
         if (null == accessToken){
-            Call<WeixinTokenResponseDTO> call = weixinApiService.getToken("client_credential", "wx5a228ff69e28a91f", "0bea03aa1310bac050aae79dd8703928");
+            Call<WeixinTokenResponseDTO> call = weixinApiService.getToken("client_credential", "wx7376901a14869dfe", "6aa8f6a8f5b83004f29b42702ddc3970");
             WeixinTokenResponseDTO weixinTokenResponseDTO = call.execute().body();
             accessToken = weixinTokenResponseDTO.getAccess_token();
             weixinAccessToken.put(appid, accessToken);

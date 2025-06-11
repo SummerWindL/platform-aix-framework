@@ -1,14 +1,14 @@
 package com.platform.aix.common.datacommon.db.dao;
 
-import com.platform.aix.common.datacommon.db.domain.PikaiThirdPartyAuth;
-import com.platform.aix.common.datacommon.db.domain.PikaiThirdPartyAuthExample;
-import com.platform.aix.common.datacommon.db.domain.PikaiThirdPartyAuthKey;
+import com.platform.aix.common.datacommon.db.domain.*;
+
 import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PikaiThirdPartyAuthMapper {
+public interface PikaiThirdPartyAuthMapper  extends IMybatisMapper<PikaiThirdPartyAuth,String, PikaiThirdPartyAuthExample>{
     int countByExample(PikaiThirdPartyAuthExample example);
 
     int deleteByExample(PikaiThirdPartyAuthExample example);
@@ -30,4 +30,6 @@ public interface PikaiThirdPartyAuthMapper {
     int updateByPrimaryKeySelective(PikaiThirdPartyAuth record);
 
     int updateByPrimaryKey(PikaiThirdPartyAuth record);
+    
+    int updateOrInsertSelective(PikaiThirdPartyAuth record);
 }

@@ -1,6 +1,7 @@
 package com.platform.aix.config;
 
 import com.platform.aix.service.pikai.weixin.IWeixinApiService;
+import com.platform.aix.service.pikai.weixin.IWeixinMPService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import retrofit2.Retrofit;
@@ -14,7 +15,6 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 @Configuration
 public class Retrofit2Config {
     private static final String BASE_URL = "https://api.weixin.qq.com/";
-
     @Bean
     public Retrofit retrofit() {
         return new Retrofit.Builder()
@@ -27,5 +27,4 @@ public class Retrofit2Config {
     public IWeixinApiService weixinApiService(Retrofit retrofit) {
         return retrofit.create(IWeixinApiService.class);
     }
-
 }

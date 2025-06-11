@@ -9,6 +9,8 @@ import java.io.File;
  */
 public class Constants {
 
+    public static final long TOKEN_EXPIRE_TIME = 86400000; // 24小时
+    public static final String JWT_SECRET = "pikai-auth";
 
     public static final String TRACE_ID ="";
 

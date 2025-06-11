@@ -2,18 +2,24 @@ package com.platform.aix.controller.pikai.auth;
 
 import com.cluster.platform.redis.ICache;
 import com.google.code.kaptcha.Producer;
+import com.google.common.cache.Cache;
+import com.platform.aix.common.constants.Constants;
 import com.platform.aix.common.datacommon.db.domain.PikaiEmailVerification;
 import com.platform.aix.common.datacommon.db.domain.PikaiUser;
 import com.platform.aix.common.datacommon.db.domain.dict.DictItem;
 import com.platform.aix.common.datacommon.db.domain.dict.DictUtil;
 import com.platform.aix.common.datacommon.db.service.pikai.PikaiEmailVerificationService;
 import com.platform.aix.common.datacommon.db.service.pikai.PikaiUserService;
+import com.platform.aix.common.util.SecurityUtil;
 import com.platform.aix.controller.pikai.common.ApiResponse;
 import com.platform.aix.controller.pikai.common.AuthResponse;
 import com.platform.aix.controller.pikai.common.LoginRequest;
 import com.platform.aix.controller.pikai.common.enums.ResponseCode;
 import com.platform.aix.controller.pikai.common.exception.BusinessException;
+import com.platform.aix.service.pikai.gateway.dto.WeixinTokenResponseDTO;
 import com.platform.aix.service.pikai.weixin.ILoginService;
+import com.platform.aix.service.pikai.weixin.IWeixinApiService;
+import com.platform.aix.service.pikai.weixin.IWeixinMPService;
 import com.platform.common.util.DateUtil;
 import com.platform.common.util.UUIDUtils;
 import com.platform.core.util.StringUtil;
@@ -38,6 +44,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
 import org.apache.commons.lang3.StringUtils;
+import retrofit2.Call;
+
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -49,8 +57,7 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("/pikai/api/auth")
 @RequiredArgsConstructor
 public class AuthController{
-    private static final long TOKEN_EXPIRE_TIME = 86400000; // 24小时
-    private static final String JWT_SECRET = "pikai-auth";
+
     private static final int MAX_LOGIN_ATTEMPTS = 5;
     private Logger log = LoggerFactory.getLogger(getClass());
     @Autowired
@@ -66,6 +73,8 @@ public class AuthController{
 
     @Resource
     private ILoginService loginService;
+    @Resource
+    private IWeixinMPService weixinMPService;
 
     /**
      * 获取微信 ticket 凭证
@@ -90,30 +99,69 @@ public class AuthController{
         }
     }
 
+    // 获取微信凭证并生成二维码
+    /**
+     * 聚合接口
+     * @author fuyanliang
+     * @date 2025/6/10 18:50
+     * @return com.platform.aix.controller.pikai.common.ApiResponse<java.lang.Object>
+     */
+    @RequestMapping(value = "wechat/qrcode", method = RequestMethod.GET)
+    public ApiResponse<Map<String,Object>> getQrCode() {
+        try {
+            String qrCodeTicket = loginService.createQrCodeTicket();
+            log.info("生成微信扫码登录 ticket {}", qrCodeTicket);
+            HashMap result = new HashMap();
+            result.put("ticket",qrCodeTicket);
+            result.put("qrCode",weixinMPService.getQrCode(qrCodeTicket));
+            return ApiResponse.<Map<String,Object>>builder()
+                    .code(ResponseCode.SUCCESS.getCode())
+                    .message(ResponseCode.SUCCESS.getMessage())
+                    .data(result)
+                    .build();
+        } catch (Exception e) {
+            log.info("生成微信扫码登录 ticket 失败", e);
+            return ApiResponse.<Map<String,Object>>builder()
+                    .code(ResponseCode.INTERNAL_ERROR.getCode())
+                    .message(ResponseCode.INTERNAL_ERROR.getMessage())
+                    .build();
+        }
+    }
+
     /**
      * 轮训登录
      * <a href="http://xfg-studio.natapp1.cc/api/v1/login/check_login">/api/v1/login/check_login</a>
      */
-    @RequestMapping(value = "check_login", method = RequestMethod.GET)
-    public ApiResponse<String> checkLogin(@RequestParam String ticket) {
+    @RequestMapping(value = "wechat/check_login", method = RequestMethod.POST)
+    public ApiResponse<Map<String,String>> checkLogin(@RequestBody String ticket) {
         try {
             String openidToken = loginService.checkLogin(ticket);
             log.info("扫描检测登录结果 ticket:{} openidToken:{}", ticket, openidToken);
             if (StringUtils.isNotBlank(openidToken)) {
-                return ApiResponse.<String>builder()
+                // 返回token到前端
+                return ApiResponse.<Map<String,String>>builder()
                         .code(ResponseCode.SUCCESS.getCode())
                         .message(ResponseCode.SUCCESS.getMessage())
-                        .data(openidToken)
+                        .data(loginService.accessLoginData(ticket))
                         .build();
             } else {
-                return ApiResponse.<String>builder()
+                return ApiResponse.<Map<String,String>>builder()
                         .code(ResponseCode.NO_LOGIN.getCode())
                         .message(ResponseCode.NO_LOGIN.getMessage())
                         .build();
             }
+            // 测代码，模拟扫码成功
+//            Map<String,String> userMap = new HashMap<>();
+//            userMap.put("userId","9538984493df4340a32afc6b0de67787");
+//            userMap.put("token",SecurityUtil.generateJwtToken("1111"));
+//            return ApiResponse.<Map<String,String>>builder()
+//                        .code(ResponseCode.SUCCESS.getCode())
+//                        .message(ResponseCode.SUCCESS.getMessage())
+//                        .data(userMap)
+//                        .build();
         } catch (Exception e) {
             log.info("扫描检测登录结果失败 ticket:{}", ticket);
-            return ApiResponse.<String>builder()
+            return ApiResponse.<Map<String,String>>builder()
                     .code(ResponseCode.INTERNAL_ERROR.getCode())
                     .message(ResponseCode.INTERNAL_ERROR.getMessage())
                     .build();
@@ -138,30 +186,8 @@ public class AuthController{
             throw new BusinessException(ResponseCode.EMAIL_EXISTS.getCode(), "该邮箱已被注册");
         }
 
-        // 2. 生成随机盐值
-        String salt = UUIDUtils.getUUID();
-
-        // 3. 加密密码
-        String encryptedPassword = encryptPassword(
-                registerRequest.getPassword(),
-                salt,
-                "BCRYPT" // 使用BCRYPT加密方式
-        );
-
-        // 4. 创建用户对象
-        PikaiUser user = new PikaiUser();
-        user.setUserId(UUIDUtils.getUUID().toString());
-        user.setAccountId(registerRequest.getEmail());
-        user.setUserName(registerRequest.getEmail().split("@")[0]); // 默认用户名
-        user.setSalt(salt);
-        user.setPassword(encryptedPassword);
-        user.setEncrypType("BCRYPT");
-        user.setAccountStatus("0"); // 0表示正常状态
-        user.setCreateTime(DateUtil.now());
-        user.setUpdateTime(DateUtil.now());
-
         // 5. 保存用户
-        PikaiUser savedUser = pikaiUserService.doSave(user);
+        PikaiUser savedUser = pikaiUserService.doSave(registerRequest);
 
         // 6. 返回成功响应
         return ApiResponse.success(savedUser.getUserId());
@@ -206,13 +232,13 @@ public class AuthController{
 
         // 5. 返回成功响应和用户ID
         // 调整返回格式，确保包含 Next-Auth 所需信息
-        String token = generateJwtToken(user);
+        String token = SecurityUtil.generateJwtToken(user);
         AuthResponse response = new AuthResponse();
         response.setUserId(user.getUserId());
         response.setToken(token);                       // JWT token
         response.setEmail(user.getAccountId());         // 用户邮箱
         response.setUserName(user.getUserName());           // 用户名
-        response.setExpireTime(System.currentTimeMillis() + TOKEN_EXPIRE_TIME);
+        response.setExpireTime(System.currentTimeMillis() + Constants.TOKEN_EXPIRE_TIME);
 
         log.info("用户 {} 登录成功！",loginRequest.getEmail());
         return ApiResponse.success(response);
@@ -265,7 +291,7 @@ public class AuthController{
 
         try {
             claims = Jwts.parser()
-                    .setSigningKey(JWT_SECRET)
+                    .setSigningKey(Constants.JWT_SECRET)
                     .parseClaimsJws(jwt)
                     .getBody();
         } catch (Exception e) {
@@ -302,7 +328,7 @@ public class AuthController{
         try {
             // 允许过期的token解析，只取出用户ID
             claims = Jwts.parser()
-                    .setSigningKey(JWT_SECRET)
+                    .setSigningKey(Constants.JWT_SECRET)
                     .parseClaimsJws(jwt)
                     .getBody();
         } catch (ExpiredJwtException e) {
@@ -320,7 +346,7 @@ public class AuthController{
         }
 
         // 生成新token
-        String newToken = generateJwtToken(user);
+        String newToken = SecurityUtil.generateJwtToken(user);
 
         // 返回新token
         AuthResponse response = new AuthResponse();
@@ -328,7 +354,7 @@ public class AuthController{
         response.setToken(newToken);
         response.setEmail(user.getAccountId());
         response.setUserName(user.getUserName());
-        response.setExpireTime(System.currentTimeMillis() + TOKEN_EXPIRE_TIME);
+        response.setExpireTime(System.currentTimeMillis() + Constants.TOKEN_EXPIRE_TIME);
 
         return ApiResponse.success(response);
     }
@@ -340,172 +366,5 @@ public class AuthController{
         throw new UnsupportedOperationException("不支持的加密类型: " + encrypType);
     }
 
-    private String encryptPassword(String rawPassword, String salt, String encrypType) {
-        if ("BCRYPT".equals(encrypType)) {
-            return passwordEncoder.encode(rawPassword + salt);
-        }
-        throw new UnsupportedOperationException("不支持的加密类型: " + encrypType);
-    }
 
-//    @PostMapping("login")
-//    public ApiResponse<AuthResponse> loginUser(@RequestBody LoginRequest loginRequest) {
-//        // 0. 检查登录频率限制
-//        checkLoginRateLimit(loginRequest.getEmail());
-//
-//        // 准备登录日志
-//        LoginLog loginLog = new LoginLog();
-//        loginLog.setLogId(UUIDUtils.getUUID());
-//        loginLog.setAccountId(loginRequest.getEmail());
-//        loginLog.setLoginIp(getClientIp());
-//        loginLog.setLoginTime(DateUtil.now());
-//        loginLog.setLoginType(loginRequest.getLoginType());
-//        loginLog.setLoginDevice(loginRequest.getDeviceInfo());
-//
-//        try {
-//            // 1. 根据登录方式获取用户
-//            PikaiUser user;
-//            switch (loginRequest.getLoginType()) {
-//                case "EMAIL":
-//                    user = pikaiUserService.findByAccountId(loginRequest.getEmail());
-//                    break;
-//                case "PHONE":
-//                    user = pikaiUserService.findByPhone(loginRequest.getPhone());
-//                    break;
-//                case "VERIFICATION_CODE":
-//                    // 验证码登录逻辑
-//                    validateVerificationCode(loginRequest.getEmail(), loginRequest.getVerificationCode());
-//                    user = pikaiUserService.findByAccountId(loginRequest.getEmail());
-//                    break;
-//                default:
-//                    throw new BusinessException(ResponseCode.INVALID_LOGIN_TYPE.getCode(), "不支持的登录方式");
-//            }
-//
-//            if (user == null) {
-//                throw new BusinessException(ResponseCode.USER_NOT_FOUND.getCode(), "用户不存在");
-//            }
-//
-//            // 2. 检查账户状态
-//            if (!"0".equals(user.getAccountStatus())) {
-//                throw new BusinessException(ResponseCode.ACCOUNT_DISABLED.getCode(), "账户已被禁用");
-//            }
-//
-//            // 3. 验证密码或验证码
-//            if ("VERIFICATION_CODE".equals(loginRequest.getLoginType())) {
-//                // 已在上面验证过验证码
-//            } else {
-//                boolean isPasswordValid = validatePassword(
-//                        loginRequest.getPassword(),
-//                        user.getPassword(),
-//                        user.getSalt(),
-//                        user.getEncrypType()
-//                );
-//
-//                if (!isPasswordValid) {
-//                    // 记录失败登录
-//                    loginLog.setLoginResult("FAIL");
-//                    loginLog.setFailReason("密码错误");
-//                    loginLogService.saveLoginLog(loginLog);
-//
-//                    throw new BusinessException(ResponseCode.INVALID_CREDENTIALS.getCode(), "密码错误");
-//                }
-//            }
-//
-//            // 4. 更新最后登录时间
-//            user.setLastLoginTime(DateUtil.now());
-//            pikaiUserService.doUpdate(user);
-//
-//            // 5. 生成JWT Token
-//            String token = generateJwtToken(user);
-//
-//            // 6. 记录成功登录
-//            loginLog.setLoginResult("SUCCESS");
-//            loginLog.setUserId(user.getUserId());
-//            loginLogService.saveLoginLog(loginLog);
-//
-//            // 7. 返回成功响应、用户ID和JWT Token
-//            AuthResponse response = new AuthResponse();
-//            response.setUserId(user.getUserId());
-//            response.setToken(token);
-//            response.setExpireTime(System.currentTimeMillis() + TOKEN_EXPIRE_TIME);
-//
-//            return ApiResponse.success(response);
-//        } catch (BusinessException e) {
-//            // 记录失败登录
-//            if (loginLog.getLoginResult() == null) {
-//                loginLog.setLoginResult("FAIL");
-//                loginLog.setFailReason(e.getMessage());
-//                loginLogService.saveLoginLog(loginLog);
-//            }
-//            throw e;
-//        }
-//    }
-//
-//    private void checkLoginRateLimit(String accountId) {
-//        String key = "login_attempt:" + accountId;
-//        Long attempts = redisTemplate.opsForValue().increment(key, 1);
-//        if (attempts == 1) {
-//            // 设置过期时间，例如1小时
-//            redisTemplate.expire(key, 1, TimeUnit.HOURS);
-//        }
-//
-//        if (attempts > MAX_LOGIN_ATTEMPTS) {
-//            throw new BusinessException(ResponseCode.TOO_MANY_ATTEMPTS.getCode(),
-//                    "登录尝试次数过多，请稍后再试");
-//        }
-//    }
-//
-    private String generateJwtToken(PikaiUser user) {
-        long expireTime = System.currentTimeMillis() + TOKEN_EXPIRE_TIME;
-
-        return Jwts.builder()
-                .setSubject(user.getUserId())
-                .claim("accountId", user.getAccountId())
-                .claim("userName", user.getUserName())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(expireTime))
-                .signWith(SignatureAlgorithm.HS256, JWT_SECRET)
-                .compact();
-    }
-//
-//    private boolean validatePassword(String rawPassword, String storedPassword, String salt, String encrypType) {
-//        if ("BCRYPT".equals(encrypType)) {
-//            return passwordEncoder.matches(rawPassword + salt, storedPassword);
-//        }
-//        throw new UnsupportedOperationException("不支持的加密类型: " + encrypType);
-//    }
-//
-//    private void validateVerificationCode(String email, String code) {
-//        String storedCode = (String) redisTemplate.opsForValue().get("verification_code:" + email);
-//        if (storedCode == null || !storedCode.equals(code)) {
-//            throw new BusinessException(ResponseCode.INVALID_VERIFICATION_CODE.getCode(), "验证码错误或已过期");
-//        }
-//        // 使用后删除验证码
-//        redisTemplate.delete("verification_code:" + email);
-//    }
-//
-//    private String getClientIp() {
-//        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-//        String ip = request.getHeader("X-Forwarded-For");
-//        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-//            ip = request.getHeader("Proxy-Client-IP");
-//        }
-//        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-//            ip = request.getHeader("WL-Proxy-Client-IP");
-//        }
-//        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-//            ip = request.getRemoteAddr();
-//        }
-//        return ip;
-//    }
-//
-//    // 你需要在类前声明这些常量和服务
-//    @Autowired
-//    private LoginLogService loginLogService;
-//
-//    @Autowired
-//    private RedisTemplate<String, Object> redisTemplate;
-//
-//    private static final long TOKEN_EXPIRE_TIME = 86400000; // 24小时
-//    private static final String JWT_SECRET = "your-secret-key";
-//    private static final int MAX_LOGIN_ATTEMPTS = 5;
 }

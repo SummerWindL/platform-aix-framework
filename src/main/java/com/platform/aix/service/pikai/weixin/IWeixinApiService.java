@@ -43,4 +43,5 @@ public interface IWeixinApiService {
     @POST("cgi-bin/qrcode/create")
     Call<WeixinQrCodeResponseDTO> createQrCode(@Query("access_token") String accessToken, @Body WeixinQrCodeRequestDTO weixinQrCodeRequestDTO);
 
+
 }

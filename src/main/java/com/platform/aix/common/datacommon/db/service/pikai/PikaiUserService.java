@@ -2,6 +2,7 @@ package com.platform.aix.common.datacommon.db.service.pikai;
 
 import com.platform.aix.common.datacommon.cache.AsyncService;
 import com.platform.aix.common.datacommon.db.domain.PikaiUser;
+import com.platform.aix.controller.pikai.common.LoginRequest;
 import com.platform.aix.controller.pikai.common.request.PikaiPasswordReq;
 import com.platform.aix.controller.pikai.common.request.PikaiUserReq;
 
@@ -11,7 +12,7 @@ import com.platform.aix.controller.pikai.common.request.PikaiUserReq;
  * @date 2025年04月17日 16:15
  */
 public interface PikaiUserService extends AsyncService<String, PikaiUser> {
-    PikaiUser doSave(PikaiUser user);
+    PikaiUser doSave(LoginRequest user);
     /**
      * 更新
      * @author fuyanliang
